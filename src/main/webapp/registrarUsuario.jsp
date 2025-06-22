@@ -12,6 +12,19 @@
 	</head>
 <body>
 
+	<%
+	Boolean resultado = false;
+	if(request.getAttribute("resultado") != null){
+		resultado = Boolean.parseBoolean(request.getAttribute("resultado").toString());
+	} 
+	
+	// Cuando este terminado el ABML Cliente en realidad lo que tenemos que traer aca es el Cliente antes de
+	// cargarlo a la DB, asi primero verificamos que el usuario tenga bien todos los valores.
+	// De otra forma podemos cargar un cliente a la DB y que despues el usuario sea rechazado, quedandonos el cliente
+	// Sin usuario.
+	
+	%>
+
 	<form class="w-75 mx-auto mt-5" onsubmit="return validarContraseñas()">
 		    <div class="inicio">
           
@@ -64,7 +77,4 @@
 	<script	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 	
     </body>
-</html>
-
-</body>
 </html>
