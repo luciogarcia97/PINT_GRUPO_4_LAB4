@@ -69,10 +69,9 @@
                         <i class="bi bi-credit-card me-2"></i>
                         Administrar Cuentas
                     </h3>
-                    <a href="registrarCuenta.jsp" class="btn btn-success">
-                        <i class="bi bi-plus me-1"></i>
-                        Registrar Cuenta
-                    </a>
+                    <a href="ServletCuenta?Param=1" class="btn btn-success">
+					    Registrar Cuenta
+					</a>
                 </div>
                 
                 <div class="card shadow">
