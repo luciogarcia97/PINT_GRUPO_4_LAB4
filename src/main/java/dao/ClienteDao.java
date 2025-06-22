@@ -10,11 +10,6 @@ import java.util.List;
 import entidades.Cliente;
 
 public class ClienteDao {
-	
-	private String host = "jdbc:mysql://localhost:3306/";
-	private String user = "root";
-	private String pass = "root";
-	private String dbName = "banco_db";
 
 	public boolean insertarCliente(Cliente cliente) 
 	{
@@ -64,5 +59,8 @@ public class ClienteDao {
         return resultado;
 		
 	}
+	
+	
+	
 	
 }
