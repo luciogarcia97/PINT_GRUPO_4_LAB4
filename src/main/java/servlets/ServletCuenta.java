@@ -13,20 +13,26 @@ import javax.servlet.http.HttpServletResponse;
 
 import dao.CuentaDao;
 import dao.TipoCuentaDao;
+import daoImpl.CuentaDaoImpl;
+import daoImpl.TipoCuentaDaoImpl;
 import entidades.Cuenta;
 import entidades.TipoCuenta;
+import negocio.CuentaNegocio;
+import negocio.TipoCuentaNegocio;
+import negocioImpl.CuentaNegocioImpl;
+import negocioImpl.TipoCuentaNegocioImpl;
 
 @WebServlet("/ServletCuenta")
 public class ServletCuenta extends HttpServlet {
 private static final long serialVersionUID = 1L;
     
-    private CuentaDao cuentaDao;
-    private TipoCuentaDao tipoCuentaDao;
+    private CuentaNegocioImpl cuentaNegocio;
+    private TipoCuentaNegocioImpl tipoCuentaNegocio;
     
     public ServletCuenta() {
         super();
-        this.cuentaDao = new CuentaDao();
-        this.tipoCuentaDao = new TipoCuentaDao();
+        this.cuentaNegocio = new CuentaNegocioImpl();
+        this.tipoCuentaNegocio = new TipoCuentaNegocioImpl();
     }
     
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -53,7 +59,7 @@ private static final long serialVersionUID = 1L;
                 }
                 
                 // Validar que el tipo de cuenta existe
-                TipoCuenta tipoCuenta = tipoCuentaDao.obtenerTipoPorId(idTipoCuenta);
+                TipoCuenta tipoCuenta = tipoCuentaNegocio.obtenerTipoPorId(idTipoCuenta);
                 if (tipoCuenta == null) {
                     request.setAttribute("error", "Tipo de cuenta no válido");
                     cargarFormulario(request, response);
@@ -61,22 +67,22 @@ private static final long serialVersionUID = 1L;
                 }
                 
                 // Generar numero de cuenta unico
-                String numeroCuenta = cuentaDao.generarNumeroCuenta();
+                String numeroCuenta = cuentaNegocio.generarNumeroCuenta();
                 
                 // Verificar que el numero generado sea unico
-                while (cuentaDao.existeNumeroCuenta(numeroCuenta)) {
-                    numeroCuenta = cuentaDao.generarNumeroCuenta();
+                while (cuentaNegocio.existeNumeroCuenta(numeroCuenta)) {
+                    numeroCuenta = cuentaNegocio.generarNumeroCuenta();
                 }
                 
                 // Generar CBU
-                String cbu = cuentaDao.generarCBU(numeroCuenta);
+                String cbu = cuentaNegocio.generarCBU(numeroCuenta);
                 
                 // Crear objeto cuenta
                 Cuenta nuevaCuenta = new Cuenta(idCliente, idTipoCuenta, numeroCuenta, cbu);
                 nuevaCuenta.setFechaCreacion(LocalDate.now());
                 
                 // Insertar en base de datos
-                boolean resultado = cuentaDao.insertarCuenta(nuevaCuenta);
+                boolean resultado = cuentaNegocio.insertarCuenta(nuevaCuenta);
                 
                 if (resultado) {
                     // Formulario registrado - mostramos los datos registrados
@@ -105,7 +111,7 @@ private static final long serialVersionUID = 1L;
     
     private void cargarFormulario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Recargar tipos de cuenta para el desplegable
-        List<TipoCuenta> listaTipos = tipoCuentaDao.obtenerTiposCuenta();
+        List<TipoCuenta> listaTipos = tipoCuentaNegocio.obtenerTiposCuenta();
         request.setAttribute("listaTipos", listaTipos);
         
         RequestDispatcher rd = request.getRequestDispatcher("/registrarCuenta.jsp");
