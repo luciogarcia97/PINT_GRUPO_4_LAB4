@@ -155,13 +155,14 @@ public class ClienteDaolmpl implements ClienteDao {
 		Connection conexion = Conexion.getConexion().getSQLConexion();
 
 		try {
-			String query = "SELECT dni, cuil, nombre, apellido, sexo, nacionalidad, fecha_nacimiento, direccion, localidad, provincia, correo_electronico, eliminado FROM cliente WHERE eliminado = false";
+			String query = "SELECT id_cliente, dni, cuil, nombre, apellido, sexo, nacionalidad, fecha_nacimiento, direccion, localidad, provincia, correo_electronico, eliminado FROM cliente WHERE eliminado = false";
 			pst = conexion.prepareStatement(query);
 			rs = pst.executeQuery();
 
 			while (rs.next()) {
 				
 				Cliente cliente = new Cliente();
+				cliente.setIdCliente(rs.getInt("id_cliente"));
 				cliente.setDni(rs.getInt("dni"));
 				cliente.setCuil(rs.getString("cuil"));
 				cliente.setNombre(rs.getString("nombre"));
