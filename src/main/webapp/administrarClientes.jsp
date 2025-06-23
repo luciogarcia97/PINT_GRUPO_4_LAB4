@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="entidades.Cliente" %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -101,62 +103,50 @@
                                         <th>Localidad</th>
                                         <th>Provincia</th>
                                         <th>Email</th>
-                                        <th>Telefono</th>
                                         <th>Estado</th>  
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>lmessi</td>
-                                        <td>12345678</td>
-                                        <td>Lionel</td>
-                                        <td>Messi</td>
-                                        <td>Masculino</td>
-                                        <td>24/06/1987</td>
-                                        <td>Miami 123</td>
-                                        <td>Miami</td>
-                                        <td>Florida</td>
-                                        <td>messi10@gmail.com</td>
-                                        <td>1234567890</td> 
-                                        <td><span class="badge bg-success">Activo</span></td> 
-                                        <td>
-                                            <div class="d-flex gap-1">
-                                                <a href="modificarCliente.jsp" class="btn btn-sm btn-outline-primary" title="Modificar Cliente">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <button type="button" class="btn btn-sm btn-outline-danger" title="Eliminar Cliente">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>                   
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>mcuadrado</td>
-                                        <td>12345678</td>
-                                        <td>Maria</td>
-                                        <td>Estevez</td>
-                                        <td>Femenino</td>
-                                        <td>15/03/1990</td>
-                                        <td>Calle falsa 123</td>
-                                        <td>Buenos Aires</td>
-                                        <td>Buenos Aires</td>
-                                        <td>maria@email.com</td>
-                                        <td>0987654321</td>
-                                        <td><span class="badge bg-success">Activo</span></td>
-                                        <td>
-                                            <div class="d-flex gap-1">
-                                                <a href="modificarCliente.jsp" class="btn btn-sm btn-outline-primary" title="Modificar Cliente">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <button type="button" class="btn btn-sm btn-outline-danger" title="Eliminar Cliente">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                 <%
+                                   List<entidades.Cliente> listaClientes = (List<entidades.Cliente>) request.getAttribute("listaClientes");
+                                   if (listaClientes != null) {
+                                    for (entidades.Cliente c : listaClientes) {
+                                 %>
+                                  <tr>
+                                   <td><%= c.getIdCliente() %></td>
+                                   <td><%= c.getDni() %></td>
+                                   <td><%= c.getNombre() %></td>
+                                   <td><%= c.getApellido() %></td>
+                                   <td><%= c.getSexo() %></td>
+                                   <td><%= c.getFechaNacimiento() %></td>
+                                   <td><%= c.getDireccion() %></td>
+                                   <td><%= c.getLocalidad() %></td>
+                                   <td><%= c.getProvincia() %></td>
+                                   <td><%= c.getCorreoElectronico() %></td>                               
+                                   <td>
+                                     <span class="badge <%= c.getEliminado() ? "bg-danger" : "bg-success" %>">
+                                     <%= c.getEliminado() ? "Inactivo" : "Activo" %>
+                                     </span>
+                                 </td>
+                               <td>
+                              <div class="d-flex gap-1">
+                            <a href="modificarCliente.jsp?id=<%= c.getIdCliente() %>" class="btn btn-sm btn-outline-primary" title="Modificar Cliente">
+                            <i class="bi bi-pencil"></i>
+                            </a>
+                          <form action="ServletCliente" method="post" class="d-inline">
+                               <input type="hidden" name="idEliminar" value="<%= c.getIdCliente() %>"/>
+                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar Cliente" name="btnEliminarCliente">
+                         <i class="bi bi-trash"></i>
+                     </button>
+                </form>
+            </div>
+        </td>
+    </tr>
+<%
+        }
+    }
+%>
                                 </tbody>
                             </table>
                         </div>

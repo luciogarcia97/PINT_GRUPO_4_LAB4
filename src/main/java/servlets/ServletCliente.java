@@ -36,6 +36,10 @@ public class ServletCliente extends HttpServlet {
 		if (request.getParameter("Param") != null) {
         	cargarFormulario(request, response);
         }
+		else {
+			 System.out.println("Entró al doGet de ServletCliente");
+            cargarFormulario(request, response);
+        }
 	}
 
 	
@@ -70,8 +74,7 @@ public class ServletCliente extends HttpServlet {
 			// RequestDispatcher rd = request.getRequestDispatcher("/registrarUsuario.jsp");
 			// rd.forward(request, response);
 			
-			RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
-	        rd.forward(request, response);
+			cargarFormulario(request, response);
 			
 		}
 		
@@ -98,11 +101,11 @@ public class ServletCliente extends HttpServlet {
 	}
 
 	private void cargarFormulario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Recargar tipos de cuenta para el desplegable
-        List<Cliente> listadoClientes = 	clienteNegocio.obtenerClientes();
-        request.setAttribute("listaClientes", listadoClientes);
         
-        RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
+       // List<Cliente> listadoClientes = 	clienteNegocio.obtenerClientes();
+        //request.setAttribute("listaClientes", listadoClientes);
+        
+        RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
         rd.forward(request, response);
     }
 }
