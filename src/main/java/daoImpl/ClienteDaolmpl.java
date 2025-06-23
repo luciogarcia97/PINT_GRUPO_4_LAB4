@@ -23,7 +23,7 @@ public class ClienteDaolmpl implements ClienteDao {
 	    
 	    try {
 	    	
-            String query = "INSERT INTO cliente (dni, cuil, nombre, apellido, sexo, nacionalidad, fechaNacimiento, direccion, localidad, provincia, correoElectronico, eliminado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO cliente (dni, cuil, nombre, apellido, sexo, nacionalidad, fecha_nacimiento, direccion, localidad, provincia, correo_electronico, eliminado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             
             pst = conexion.prepareStatement(query);
             pst.setInt(1, cliente.getDni());

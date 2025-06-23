@@ -24,6 +24,7 @@ public class ServletCliente extends HttpServlet {
    
     public ServletCliente() {
         super();
+        this.clienteNegocio = new ClienteNegociolmpl();
         
         // TODO Auto-generated constructor stub
     }
@@ -40,6 +41,8 @@ public class ServletCliente extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		System.out.println("Entre en el doPost");
+		
 		if(request.getParameter("btnRegistrarCliente")!= null) 
 		{
 			
@@ -55,16 +58,20 @@ public class ServletCliente extends HttpServlet {
 			c.setFechaNacimiento(request.getParameter("txtFechaNacimiento"));
 			c.setDireccion(request.getParameter("txtDireccion"));
 			c.setLocalidad(request.getParameter("txtLocalidad"));
-			c.setProvincia(request.getParameter("txtProvinicia"));
-			c.setCorreoElectronico(request.getParameter("txtCorreoElectronico"));
+			c.setProvincia(request.getParameter("txtProvincia"));
+			c.setCorreoElectronico(request.getParameter("txtCorreo"));
 			c.setEliminado(false);
 			
+			System.out.println("Cargue el cliente");
 			
 			resultado = clienteNegocio.insertarCliente(c);
+			if (resultado) System.out.println("Registre el cliente");
+			// request.setAttribute("resultado", resultado);
+			// RequestDispatcher rd = request.getRequestDispatcher("/registrarUsuario.jsp");
+			// rd.forward(request, response);
 			
-			request.setAttribute("resultado", resultado);
-			RequestDispatcher rd = request.getRequestDispatcher("/registrarUsuario.jsp");
-			rd.forward(request, response);
+			RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
+	        rd.forward(request, response);
 			
 		}
 		

@@ -18,13 +18,6 @@
 
 <body style="background-color: rgb(104, 109, 250); min-height: 100vh; display: flex; flex-direction: column;"> 
 
-	<!--  <%
-	    if (session.getAttribute("adminLogueado") == null) {
-	        response.sendRedirect("index.jsp");
-	        return;
-	    }
-	%>   DEJO COMENTADO EL LOGIN --> 
-
     <nav class="navbar navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
