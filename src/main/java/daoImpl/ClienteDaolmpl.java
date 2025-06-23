@@ -6,9 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import dao.Conexion;
+import dao.ClienteDao;
 import entidades.Cliente;
 
-public class ClienteDaolmpl {
+public class ClienteDaolmpl implements ClienteDao {
 
 	public boolean insertarCliente(Cliente cliente) 
 	{

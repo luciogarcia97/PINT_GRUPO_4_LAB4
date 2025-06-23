@@ -1,17 +1,10 @@
 package dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import entidades.Cliente;
 
-public class ClienteDao {
+public interface ClienteDao {
 
-	public boolean insertarCliente(Cliente cliente) 
+	/*public boolean insertarCliente(Cliente cliente) 
 	{
 		
 		PreparedStatement pst = null;
@@ -59,8 +52,13 @@ public class ClienteDao {
         return resultado;
 		
 	}
+	*/
 	
-	
+	public boolean insertarCliente(Cliente cliente);
+
+    public Cliente BuscarPorID(int id); 
+
+    public boolean ModificarCliente(Cliente cliente);
 	
 	
 }

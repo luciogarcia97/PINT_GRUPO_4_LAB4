@@ -1,20 +1,24 @@
 package negocioImpl;
-
+import java.util.List;
+import dao.ClienteDao;
+import daoImpl.ClienteDaolmpl;
 import entidades.Cliente;
 import negocio.ClienteNegocio;
 
+
 public class ClienteNegociolmpl implements ClienteNegocio {
 
-	private Cliente clienteDaoImpl;
+	private ClienteDao clienteDao;
 	
 	public ClienteNegociolmpl() {
-	      this.clienteDaoImpl = new ClienteDaoImpl(); 
-  }
+		super();
+		this.clienteDao = new ClienteDaolmpl();
+	}
 	
 	@Override
 	public boolean insertarCliente(Cliente cliente) {
 		
-		boolean fila = clienteDaoImpl.insertarCliente(cliente);
+		boolean fila = clienteDao.insertarCliente(cliente);
 		
 		return fila;
 	}
@@ -28,16 +32,18 @@ public class ClienteNegociolmpl implements ClienteNegocio {
 	@Override
 	public boolean modificarCliente(Cliente cliente) {
 
-		boolean fila = clienteDaoImpl.ModificarCliente(cliente);
+		boolean fila = clienteDao.ModificarCliente(cliente);
 		
 		return fila;
 	}
-    
+
 	@Override
 	public List<Cliente> listadoClientes() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+    
+}
 	
 
 	

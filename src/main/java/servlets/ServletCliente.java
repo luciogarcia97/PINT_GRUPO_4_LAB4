@@ -10,15 +10,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dao.ClienteDao;
+import negocio.ClienteNegocio;
 import entidades.Cliente;
+import negocioImpl.ClienteNegociolmpl;
 
 @WebServlet("/ServletCliente")
 public class ServletCliente extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private ClienteNegociolmpl clienteNegocio;
        
    
     public ServletCliente() {
         super();
+        
         // TODO Auto-generated constructor stub
     }
 
@@ -51,8 +55,8 @@ public class ServletCliente extends HttpServlet {
 			c.setCorreoElectronico(request.getParameter("txtCorreoElectronico"));
 			c.setEliminado(false);
 			
-			ClienteDao cDao = new ClienteDao();
-			resultado = cDao.insertarCliente(c);
+			
+			resultado = clienteNegocio.insertarCliente(c);
 			
 			request.setAttribute("resultado", resultado);
 			RequestDispatcher rd = request.getRequestDispatcher("/registrarUsuario.jsp");
@@ -76,8 +80,7 @@ public class ServletCliente extends HttpServlet {
 			c.setProvincia(request.getParameter("txtProvinicia"));
 			c.setCorreoElectronico(request.getParameter("txtEmail"));
 			
-			ClienteDao cDao = new ClienteDao();
-			resultado = cDao.insertarCliente(c);
+			resultado = clienteNegocio.insertarCliente(c);
 			
 		}
 		
