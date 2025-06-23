@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -10,15 +11,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dao.ClienteDao;
+import negocio.ClienteNegocio;
 import entidades.Cliente;
+import entidades.TipoCuenta;
+import negocioImpl.ClienteNegociolmpl;
 
 @WebServlet("/ServletCliente")
 public class ServletCliente extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private ClienteNegociolmpl clienteNegocio;
        
    
     public ServletCliente() {
         super();
+        this.clienteNegocio = new ClienteNegociolmpl();
+        
         // TODO Auto-generated constructor stub
     }
 
@@ -26,11 +33,15 @@ public class ServletCliente extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 	
-		
+		if (request.getParameter("Param") != null) {
+        	cargarFormulario(request, response);
+        }
 	}
 
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		System.out.println("Entre en el doPost");
 		
 		if(request.getParameter("btnRegistrarCliente")!= null) 
 		{
@@ -47,19 +58,51 @@ public class ServletCliente extends HttpServlet {
 			c.setFechaNacimiento(request.getParameter("txtFechaNacimiento"));
 			c.setDireccion(request.getParameter("txtDireccion"));
 			c.setLocalidad(request.getParameter("txtLocalidad"));
-			c.setProvincia(request.getParameter("txtProvinicia"));
-			c.setCorreoElectronico(request.getParameter("txtCorreoElectronico"));
+			c.setProvincia(request.getParameter("txtProvincia"));
+			c.setCorreoElectronico(request.getParameter("txtCorreo"));
 			c.setEliminado(false);
 			
-			ClienteDao cDao = new ClienteDao();
-			resultado = cDao.insertarCliente(c);
+			System.out.println("Cargue el cliente");
 			
-			request.setAttribute("resultado", resultado);
-			RequestDispatcher rd = request.getRequestDispatcher("/registrarUsuario.jsp");
-			rd.forward(request, response);
+			resultado = clienteNegocio.insertarCliente(c);
+			if (resultado) System.out.println("Registre el cliente");
+			// request.setAttribute("resultado", resultado);
+			// RequestDispatcher rd = request.getRequestDispatcher("/registrarUsuario.jsp");
+			// rd.forward(request, response);
+			
+			RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
+	        rd.forward(request, response);
+			
+		}
+		
+		if(request.getParameter("btnModificarCliente")!= null) {
+			
+			
+			Cliente c = new Cliente();
+			Boolean resultado = false;
+			
+			c.setNombre(request.getParameter("txtNombre"));
+			c.setApellido(request.getParameter("txtApellido"));
+			c.setSexo(request.getParameter("txtSexo"));
+			c.setNacionalidad(request.getParameter("txtNacionalidad"));
+			c.setFechaNacimiento(request.getParameter("txtFechaNacimiento"));
+			c.setDireccion(request.getParameter("txtDireccion"));
+			c.setLocalidad(request.getParameter("txtLocalidad"));
+			c.setProvincia(request.getParameter("txtProvinicia"));
+			c.setCorreoElectronico(request.getParameter("txtEmail"));
+			
+			resultado = clienteNegocio.insertarCliente(c);
 			
 		}
 		
 	}
 
+	private void cargarFormulario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Recargar tipos de cuenta para el desplegable
+        List<Cliente> listadoClientes = 	clienteNegocio.obtenerClientes();
+        request.setAttribute("listaClientes", listadoClientes);
+        
+        RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
+        rd.forward(request, response);
+    }
 }

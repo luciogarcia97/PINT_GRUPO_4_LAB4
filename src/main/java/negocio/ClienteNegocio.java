@@ -13,6 +13,6 @@ public interface ClienteNegocio {
 	
 	public boolean elimiarCliente(Cliente cliente);
 	
-	public List<Cliente> listadoClientes();
+	public List<Cliente> obtenerClientes();
 	
 }

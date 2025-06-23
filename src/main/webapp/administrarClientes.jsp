@@ -18,13 +18,6 @@
 
 <body style="background-color: rgb(104, 109, 250); min-height: 100vh; display: flex; flex-direction: column;"> 
 
-	<!--  <%
-	    if (session.getAttribute("adminLogueado") == null) {
-	        response.sendRedirect("index.jsp");
-	        return;
-	    }
-	%>   DEJO COMENTADO EL LOGIN --> 
-
     <nav class="navbar navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
@@ -79,7 +72,7 @@
                         <i class="bi bi-people me-2"></i>
                         Administrar Clientes
                     </h3>
-                    <a href="registrarCliente.jsp" class="btn btn-success">
+                    <a href="ServletCliente?Param=1" class="btn btn-success">
                         <i class="bi bi-plus me-1"></i>
                         Registrar Cliente
                     </a>
