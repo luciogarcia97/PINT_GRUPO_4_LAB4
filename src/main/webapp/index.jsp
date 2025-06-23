@@ -15,22 +15,23 @@
 
 
 
-	<form class="w-25 mx-auto mt-5">
+	<form class="w-25 mx-auto mt-5" action="ServletLogin" method="get">
+		
 		<div class="inicio">
             <h2 class="text-center">Home Banking UTN</h2>
 		<div class="mb-3">
-			<label for="usuario" class="form-label">Usuario</label> <input
-				type="text" class="form-control" id="usuario"
+			<label for="usuario" class="form-label" >Usuario</label> <input
+				type="text" class="form-control" id="usuario" name="usuario"
 				placeholder="Tu usuario">
 		</div>		
 		<div class="mb-3">
 			<label for="clave" class="form-label">Contraseña</label> <input
-				type="password" class="form-control" id="clave"
+				type="password" class="form-control" id="clave" name="contrasena"
 				placeholder="Tu contraseña">
 		</div>
 		
     	<br>		
-		<button type="submit" class="btn btn-primary w-100">Ingresar</button>
+		<button type="submit" class="btn btn-primary w-100" name="btnLogin" >Ingresar</button>
         </div>
 	</form>
 

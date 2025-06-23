@@ -16,7 +16,14 @@
     <script src="https://cdn.datatables.net/2.3.2/js/dataTables.bootstrap5.min.js"></script>
 </head>
 
-<body style="background-color: rgb(104, 109, 250); min-height: 100vh; display: flex; flex-direction: column;">    
+<body style="background-color: rgb(104, 109, 250); min-height: 100vh; display: flex; flex-direction: column;"> 
+
+	<!--  <%
+	    if (session.getAttribute("adminLogueado") == null) {
+	        response.sendRedirect("index.jsp");
+	        return;
+	    }
+	%>   DEJO COMENTADO EL LOGIN --> 
 
     <nav class="navbar navbar-light bg-light">
         <div class="container-fluid">
@@ -24,7 +31,10 @@
                 <i class="bi bi-bank2 me-2"></i>        
                 Administrador - Clientes
             </a>
-            <button class="btn btn-outline-dark">Cerrar Sesión</button>        
+             <form action="ServletLogin" method="get" class="d-inline">
+            	<button class="btn btn-outline-dark" type="submit" name="btnCerrar">Cerrar Sesión</button>
+        	</form>
+          
         </div>
     </nav>
 

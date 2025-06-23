@@ -26,7 +26,9 @@
                 <i class="bi bi-bank2 me-2"></i>        
                 Administrador - Usuarios
             </a>
-            <button class="btn btn-outline-dark">Cerrar Sesión</button>        
+             <form action="ServletLogin" method="get" class="d-inline">
+            	<button class="btn btn-outline-dark" type="submit" name="btnCerrar">Cerrar Sesión</button>
+        	</form>       
         </div>
     </nav>
 

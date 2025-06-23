@@ -10,7 +10,7 @@ public class Conexion {
     
     private Conexion() {
         try {
-        	//Tuve que castear el driver de mysql porque no me funcionaba la conexion
+        	
             Class.forName("com.mysql.jdbc.Driver");
             this.connection = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/banco_db?useSSL=false", "facultad", "Facultad2025!");

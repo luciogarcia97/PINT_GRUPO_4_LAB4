@@ -31,8 +31,10 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="#">
             <i class="bi bi-person-circle"></i> Usuario Cliente
-        </a>
-        <button class="btn btn-outline-dark">Cerrar Sesión</button>
+        </a>        
+        <form action="ServletLogin" method="get" class="d-inline">
+            <button class="btn btn-outline-dark" type="submit" name="btnCerrar">Cerrar Sesión</button>
+        </form>
     </div>
 </nav>
 
