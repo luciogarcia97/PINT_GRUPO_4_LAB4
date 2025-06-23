@@ -14,6 +14,9 @@ public class Cliente {
 	private String localidad;
 	private int telefono;
 	private String provincia;
+	private String correoElectronico;
+	private boolean eliminado;
+	
 	public int getTelefono() {
 		return telefono;
 	}
@@ -22,8 +25,6 @@ public class Cliente {
 		this.telefono = telefono;
 	}
 
-	private String correoElectronico;
-	private boolean eliminado;
 	
 	
 	public Cliente(int idCliente, int dni, String cuil, String nombre, String apellido, String sexo,

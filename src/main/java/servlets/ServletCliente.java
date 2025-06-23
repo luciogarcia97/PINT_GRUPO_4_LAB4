@@ -33,9 +33,21 @@ public class ServletCliente extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 	
-		if (request.getParameter("Param") != null) {
-        	cargarFormulario(request, response);
-        }
+		// Para mostrar el formulario de registro
+	    if (request.getParameter("registrar") != null) {
+	        RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
+	        rd.forward(request, response);
+	    }
+	    
+	    // Para listar todos los clientes
+	    if (request.getParameter("listar") != null) {
+	        List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
+	        
+	        request.setAttribute("listaClientes", listaClientes);
+	        
+	        RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
+	        rd.forward(request, response);
+	    }
 	}
 
 	
@@ -70,8 +82,7 @@ public class ServletCliente extends HttpServlet {
 			// RequestDispatcher rd = request.getRequestDispatcher("/registrarUsuario.jsp");
 			// rd.forward(request, response);
 			
-			RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
-	        rd.forward(request, response);
+			cargarFormulario(request, response);
 			
 		}
 		
@@ -98,11 +109,11 @@ public class ServletCliente extends HttpServlet {
 	}
 
 	private void cargarFormulario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Recargar tipos de cuenta para el desplegable
-        List<Cliente> listadoClientes = 	clienteNegocio.obtenerClientes();
-        request.setAttribute("listaClientes", listadoClientes);
         
-        RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
+       // List<Cliente> listadoClientes = 	clienteNegocio.obtenerClientes();
+        //request.setAttribute("listaClientes", listadoClientes);
+        
+        RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
         rd.forward(request, response);
     }
 }
