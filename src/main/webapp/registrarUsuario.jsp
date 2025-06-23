@@ -25,7 +25,7 @@
 	
 	%>
 
-	<form class="w-75 mx-auto mt-5" onsubmit="return validarContraseñas()">
+	<form class="w-75 mx-auto mt-5" onsubmit="return validarContraseñas()" action="ServletUsuario" method="post">
 		    <div class="inicio">
           
 		        <h2 class="text-center pt-2 pb-2">Registrar Usuario</h2>    
@@ -55,7 +55,7 @@
 		        </div>
 		
 		        <div class="mt-3">
-		            <button type="submit" class="btn btn-primary w-100">Registrar</button>
+		            <button type="submit" class="btn btn-primary w-100" name="btnRegistrarUsuario">Registrar</button>
 		        </div>
 		    </div>
 		</form>
