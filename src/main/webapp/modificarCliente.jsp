@@ -12,23 +12,23 @@
 	</head>
 	<body>
 
-     <form class="w-75 mx-auto mt-5" onsubmit="return validarContraseñas()">
+     <form class="w-75 mx-auto mt-5"  action="ServletCliente" method="post" onsubmit="return validarContraseñas()">
 	    <div class="inicio">
 	        <h2 class="text-center">Modificar cliente</h2>
 	
 	        <div class="row">
 	            <div class="mb-3 col-md-6">
 	                <label for="nombre" class="form-label">Nombre</label>
-	                <input type="text" class="form-control" id="nombre" placeholder="Tu Nombre" required>
+	                <input type="text"  name="txtNombre" class="form-control" id="nombre" placeholder="Tu Nombre" required>
 	            </div>
 	            <div class="mb-3 col-md-6">
 	                <label for="apellido" class="form-label">Apellido</label>
-	                <input type="text" class="form-control" id="apellido" placeholder="Tu Apellido" required>
+	                <input type="text" name="txtApellido" class="form-control" id="apellido" placeholder="Tu Apellido" required>
 	            </div>
 	
 	            <div class="mb-3 col-md-6">
 	                <label for="sexo" class="form-label">Sexo</label>
-	                <select id="sexo" name="sexo" class="form-control">
+	                <select id="sexo" name="txtSexo" class="form-control">
 	                    <option value="femenino">Femenino</option>
 	                    <option value="masculino">Masculino</option>
 	                    <option value="otro">No contesta</option>
@@ -36,34 +36,34 @@
 	            </div>
 	            <div class="mb-3 col-md-6">
 	                <label for="nacionalidad" class="form-label">Nacionalidad</label>
-	                <input type="text" class="form-control" id="nacionalidad" placeholder="Nacionalidad" required>
+	                <input type="text" name="txtNacionalidad" class="form-control" id="nacionalidad" placeholder="Nacionalidad" required>
 	            </div>
 	
 	            <div class="mb-3 col-md-6">
 	                <label for="fechaNacimiento" class="form-label">Fecha Nacimiento</label>
-	                <input type="date" class="form-control" id="fechaNacimiento" required>
+	                <input type="date"  name="txtFechaNacimiento" class="form-control" id="fechaNacimiento" required>
 	            </div>
 	            <div class="mb-3 col-md-6">
 	                <label for="direccion" class="form-label">Dirección</label>
-	                <input type="text" class="form-control" id="direccion" placeholder="Tu Dirección" required>
+	                <input type="text" name="txtDireccion" class="form-control" id="direccion" placeholder="Tu Dirección" required>
 	            </div>
 	
 	            <div class="mb-3 col-md-6">
 	                <label for="localidad" class="form-label">Localidad</label>
-	                <input type="text" class="form-control" id="localidad" placeholder="Localidad" required>
+	                <input type="text" name="txtLocalidad" class="form-control" id="localidad" placeholder="Localidad" required>
 	            </div>
 	            <div class="mb-3 col-md-6">
 	                <label for="provincia" class="form-label">Provincia</label>
-	                <input type="text" class="form-control" id="provincia" placeholder="Provincia" required>
+	                <input type="text"name="txtProvincia" class="form-control" id="provincia" placeholder="Provincia" required>
 	            </div>
 	
 	            <div class="mb-3 col-md-6">
 	                <label for="correo" class="form-label">Email</label>
-	                <input type="email" class="form-control" id="correo" placeholder="Email" required>
+	                <input type="email" name="txtEmail" class="form-control" id="correo" placeholder="Email" required>
 	            </div>
 	            <div class="mb-3 col-md-6">
 	                <label for="telefono" class="form-label">Teléfono</label>
-	                <input type="number" class="form-control" id="telefono" placeholder="Teléfono"
+	                <input type="number" name="txtTelefono" class="form-control" id="telefono" placeholder="Teléfono"
 	                    oninput="this.value = this.value.slice(0, 11);" required>
 	            </div>
 	
@@ -74,7 +74,7 @@
 	        </div>
 	
 	        <div class="mt-3">
-	            <button type="submit" class="btn btn-primary w-100">Modificar</button>
+	            <button type="submit" name="btnModificarCliente" class="btn btn-primary w-100">Modificar</button>
 	        </div>
 	    </div>
 </form>

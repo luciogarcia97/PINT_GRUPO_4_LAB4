@@ -60,6 +60,27 @@ public class ServletCliente extends HttpServlet {
 			
 		}
 		
+		if(request.getParameter("btnModificarCliente")!= null) {
+			
+			
+			Cliente c = new Cliente();
+			Boolean resultado = false;
+			
+			c.setNombre(request.getParameter("txtNombre"));
+			c.setApellido(request.getParameter("txtApellido"));
+			c.setSexo(request.getParameter("txtSexo"));
+			c.setNacionalidad(request.getParameter("txtNacionalidad"));
+			c.setFechaNacimiento(request.getParameter("txtFechaNacimiento"));
+			c.setDireccion(request.getParameter("txtDireccion"));
+			c.setLocalidad(request.getParameter("txtLocalidad"));
+			c.setProvincia(request.getParameter("txtProvinicia"));
+			c.setCorreoElectronico(request.getParameter("txtEmail"));
+			
+			ClienteDao cDao = new ClienteDao();
+			resultado = cDao.insertarCliente(c);
+			
+		}
+		
 	}
 
 }
