@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import dao.ClienteDao;
 import negocio.ClienteNegocio;
 import entidades.Cliente;
+import entidades.TipoCuenta;
 import negocioImpl.ClienteNegociolmpl;
 
 @WebServlet("/ServletCliente")
@@ -30,7 +32,9 @@ public class ServletCliente extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 	
-		
+		if (request.getParameter("Param") != null) {
+        	cargarFormulario(request, response);
+        }
 	}
 
 	
@@ -86,4 +90,12 @@ public class ServletCliente extends HttpServlet {
 		
 	}
 
+	private void cargarFormulario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Recargar tipos de cuenta para el desplegable
+        List<Cliente> listadoClientes = 	clienteNegocio.obtenerClientes();
+        request.setAttribute("listaClientes", listadoClientes);
+        
+        RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
+        rd.forward(request, response);
+    }
 }

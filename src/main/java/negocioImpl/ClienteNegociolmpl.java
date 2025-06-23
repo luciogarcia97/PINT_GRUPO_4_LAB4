@@ -38,9 +38,8 @@ public class ClienteNegociolmpl implements ClienteNegocio {
 	}
 
 	@Override
-	public List<Cliente> listadoClientes() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Cliente> obtenerClientes() {
+		return clienteDao.obtenerClientes();
 	}
     
 }

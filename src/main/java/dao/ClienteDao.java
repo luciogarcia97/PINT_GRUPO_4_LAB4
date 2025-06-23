@@ -1,6 +1,9 @@
 package dao;
 
+import java.util.List;
+
 import entidades.Cliente;
+import entidades.TipoCuenta;
 
 public interface ClienteDao {
 
@@ -60,5 +63,9 @@ public interface ClienteDao {
 
     public boolean ModificarCliente(Cliente cliente);
 	
+    public List<Cliente> obtenerClientes();
+
 	
+
 }
+

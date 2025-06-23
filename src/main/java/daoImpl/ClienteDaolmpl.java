@@ -4,10 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import dao.Conexion;
 import dao.ClienteDao;
 import entidades.Cliente;
+import entidades.Cuenta;
 
 public class ClienteDaolmpl implements ClienteDao {
 
@@ -143,4 +146,51 @@ public class ClienteDaolmpl implements ClienteDao {
 		
 		
 	}
+	
+	public List<Cliente> obtenerClientes() {
+		List<Cliente> listaClientes = new ArrayList<>();
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+
+		try {
+			String query = "SELECT * FROM cliente WHERE activa = true";
+			pst = conexion.prepareStatement(query);
+			rs = pst.executeQuery();
+
+			while (rs.next()) {
+				
+				Cliente cliente = new Cliente();
+				  cliente.setDni(rs.getInt("dni"));
+		            cliente.setCuil(rs.getString("cuil"));
+		            cliente.setNombre(rs.getString("nombre"));
+		            cliente.setApellido(rs.getString("apellido"));
+		            cliente.setSexo(rs.getString("sexo"));
+		            cliente.setNacionalidad(rs.getString("nacionalidad"));
+		            cliente.setFechaNacimiento(rs.getString("fechaNacimiento")); // o rs.getDate() si es tipo Date
+		            cliente.setDireccion(rs.getString("direccion"));
+		            cliente.setLocalidad(rs.getString("localidad"));
+		            cliente.setProvincia(rs.getString("provincia"));
+		            cliente.setCorreoElectronico(rs.getString("correoElectronico"));
+		            cliente.setTelefono(rs.getInt("telefono"));
+				    listaClientes.add(cliente);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pst != null)
+					pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return listaClientes;
+	}
+	
+	
 }
