@@ -29,6 +29,11 @@
 	        <h2 class="text-center">Modificar cliente</h2>
 	
 	        <div class="row">
+	              <div class="mb-3 col-md-6">
+	                
+                    <input type="hidden"  name="idCliente" class="form-control" id="id"
+                     value="<%= cliente != null ? cliente.getIdCliente() : "" %>" required>
+	            </div>
 	             <div class="mb-3 col-md-6">
 	                <label for="cuil" class="form-label">Cuil</label>
                     <input type="text" name="txtCuil" class="form-control" id="cuil"
@@ -95,7 +100,7 @@
         </div>
 
         <div class="mt-3">
-            <button type="submit" name="btnModificarCliente" class="btn btn-primary w-100">Modificar</button>
+            <button type="submit" name="btnModificarCliente" value="btnModificarCliente" class="btn btn-primary w-100">Modificar</button>
         </div>
     </div>
 </form>

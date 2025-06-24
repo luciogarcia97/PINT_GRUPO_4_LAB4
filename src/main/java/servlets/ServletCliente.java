@@ -88,6 +88,7 @@ public class ServletCliente extends HttpServlet {
 			
 			
 			Cliente c = new Cliente();
+			System.out.println("Entre al modificar");
 			Boolean resultado = false;
 		    c.setIdCliente(Integer.parseInt(request.getParameter("idCliente"))); 
 			c.setCuil(request.getParameter("txtCuil"));
@@ -103,6 +104,8 @@ public class ServletCliente extends HttpServlet {
 			
 			resultado = clienteNegocio.modificarCliente(c);
 			
+			request.setAttribute("resultado", resultado);
+			RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
 		}
 		
 		if(request.getParameter("eliminar")!= null) 
