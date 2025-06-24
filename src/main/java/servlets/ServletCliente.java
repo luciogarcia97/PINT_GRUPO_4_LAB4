@@ -78,12 +78,10 @@ public class ServletCliente extends HttpServlet {
 			
 			resultado = clienteNegocio.insertarCliente(c);
 			if (resultado) System.out.println("Registre el cliente");
-			// request.setAttribute("resultado", resultado);
-			// RequestDispatcher rd = request.getRequestDispatcher("/registrarUsuario.jsp");
-			// rd.forward(request, response);
-			
-			cargarFormulario(request, response);
-			
+			request.setAttribute("resultado", resultado);
+			RequestDispatcher rd = request.getRequestDispatcher("/registrarUsuario.jsp");
+			rd.forward(request, response);
+      cargarFormulario(request, response);
 		}
 		
 		if(request.getParameter("btnModificarCliente")!= null) {
