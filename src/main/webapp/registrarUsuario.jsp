@@ -12,12 +12,15 @@
 	</head>
 <body>
 
+
 	<%
 	Boolean resultado = false;
 	if(request.getAttribute("resultado") != null){
 		resultado = Boolean.parseBoolean(request.getAttribute("resultado").toString());
 	} 
 	
+	
+	//
 	// Cuando este terminado el ABML Cliente en realidad lo que tenemos que traer aca es el Cliente antes de
 	// cargarlo a la DB, asi primero verificamos que el usuario tenga bien todos los valores.
 	// De otra forma podemos cargar un cliente a la DB y que despues el usuario sea rechazado, quedandonos el cliente
@@ -33,20 +36,20 @@
 				<div class="center row">
 					<div class="mb-3"> <%//Si viene desde registrarCliente.jsp este campo se autocompleta%>
 		                <label for="usuario" class="form-label">ID de cliente</label>
-		                <input type="text" class="form-control" id="usuario" placeholder="ID de cliente" required>
+		                <input type="text" class="form-control" id="usuario" name="txtIDCliente"placeholder="ID de cliente" required>
 		            </div>
 		            <div class="mb-3">
 		                <label for="usuario" class="form-label">Usuario</label>
-		                <input type="text" class="form-control" id="usuario" placeholder="Usuario" required>
+		                <input type="text" class="form-control" id="usuario" name="txtUsuario" placeholder="Usuario" required>
 		            </div>
 		            <div class="mb-3">
 		                <label for="clave" class="form-label">Contraseña</label>
-		                <input type="password" class="form-control" id="clave" placeholder="Tu contraseña" required>
+		                <input type="password" class="form-control" id="clave" name="txtContrasena" placeholder="Tu contraseña" required>
 		            </div>
 		
 		            <div class="mb-3">
 		                <label for="repetirClave" class="form-label">Repetir Contraseña</label>
-		                <input type="password" class="form-control" id="repetirClave" placeholder="Repetir Contraseña" required>
+		                <input type="password" class="form-control" id="repetirClave" name="txtContrasenaR" placeholder="Repetir Contraseña" required>
 		            </div>
 		        </div>
 		
@@ -59,6 +62,16 @@
 		        </div>
 		    </div>
 		</form>
+		<%
+		boolean exito = false;
+		  if(request.getAttribute("cargoUsuario")!=null)  
+			  exito= (boolean)request.getAttribute("cargoUsuario");
+		
+		%>
+		<%if(exito){ %>
+		<label for="clave" class="form-label">usuario agregado con exito</label>
+		
+		<%} %>
 
     <script>
         function validarContraseñas() {

@@ -37,21 +37,22 @@ public class ServletUsuario extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		
+		Boolean resultado = false;
 		if(request.getParameter("btnRegistrarUsuario") != null) {
 			Usuario usuario = new Usuario();
-			usuario.setId_usuario(9);
-			usuario.setId_cliente(6);
-			usuario.setUsuario("nombreNuevo");
-			usuario.setContrasena("000");
+			usuario.setId_usuario(Integer.parseInt(request.getParameter("txtIDCliente").toString()));
+			usuario.setId_cliente(Integer.parseInt(request.getParameter("txtIDCliente").toString()));
+			usuario.setUsuario(request.getParameter("txtUsuario"));
+			usuario.setContrasena(request.getParameter("txtContrasena"));
 			usuario.setTipo_usuario("cliente6");
 			usuario.setEliminado(0);
 			usuario.setFecha_creacion(LocalDate.now());
 			
-			if(usuarioNegocio.insertarUsuario(usuario)) {
-				System.out.println("usuario insertado");
-			}
-		}
+		resultado= usuarioNegocio.insertarUsuario(usuario);
+		
+		request.setAttribute("cargoUsuario", resultado);
+		RequestDispatcher rd = request.getRequestDispatcher("/registrarUsuario.jsp"); 
+		rd.forward(request, response);
 		
 		if(request.getParameter("eliminar")!= null) 
 		{
@@ -77,4 +78,5 @@ public class ServletUsuario extends HttpServlet {
 	        rd.forward(request, response);
 	    }
 
-}
+	}
+	}
