@@ -110,7 +110,8 @@ public class ClienteDaolmpl implements ClienteDao {
 	
 	
 	
-	public boolean ModificarCliente(Cliente cliente) {
+	public boolean ModificarCliente(Cliente cliente) 
+	{
 		 PreparedStatement pst = null;
 	     ResultSet rs = null;
 	     Connection conexion = Conexion.getConexion().getSQLConexion();
@@ -148,14 +149,15 @@ public class ClienteDaolmpl implements ClienteDao {
 		
 	}
 	
-	public List<Cliente> obtenerClientes() {
+	public List<Cliente> obtenerClientes() 
+	{
 		List<Cliente> listaClientes = new ArrayList<>();
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		Connection conexion = Conexion.getConexion().getSQLConexion();
 
 		try {
-			String query = "SELECT id_cliente, dni, cuil, nombre, apellido, sexo, nacionalidad, fecha_nacimiento, direccion, localidad, provincia, correo_electronico, eliminado FROM cliente WHERE eliminado = false";
+			String query = "SELECT id_cliente, dni, cuil, nombre, apellido, sexo, nacionalidad, fecha_nacimiento, direccion, localidad, provincia, correo_electronico, eliminado FROM cliente";
 			pst = conexion.prepareStatement(query);
 			rs = pst.executeQuery();
 
@@ -175,7 +177,7 @@ public class ClienteDaolmpl implements ClienteDao {
 				cliente.setProvincia(rs.getString("provincia"));
 				cliente.setCorreoElectronico(rs.getString("correo_electronico"));
 				cliente.setEliminado(rs.getBoolean("eliminado"));  
-				    listaClientes.add(cliente);
+				listaClientes.add(cliente);
 			}
 
 		} catch (SQLException e) {
@@ -195,4 +197,41 @@ public class ClienteDaolmpl implements ClienteDao {
 	}
 	
 	
+	public boolean eliminarCliente(int idCliente) //IMPORTANTE esta funcion tiene que luego verificar que
+												 //al cliente antes se le borre el usuario. (la funcion
+												//eliminarUsuario() tiene que hacer lo mismo con las cuentas)
+	{
+		System.out.println("Entre en el dao...." + idCliente);
+		PreparedStatement pst = null;
+	    Connection conexion = Conexion.getConexion().getSQLConexion();
+	    boolean resultado = false;
+	    
+	    try {
+	    	String query = "UPDATE cliente SET eliminado = 1 WHERE id_cliente = ?";
+			pst = conexion.prepareStatement(query);
+			pst.setInt(1, idCliente);
+			
+			if (pst.executeUpdate() > 0) { //Si borro algo...
+	            conexion.commit();
+	            resultado = true;
+	        }
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pst != null)
+					pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return resultado;
+	}
+	
+	    
 }
+	
+	
+

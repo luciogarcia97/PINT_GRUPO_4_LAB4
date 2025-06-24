@@ -34,5 +34,12 @@ public class UsuarioNegocioImpl implements UsuarioNegocio {
 		
 		return usuarioDao.modificarUsuario(usuario);
 	}
+	
+	@Override
+	public boolean eliminarUsuario(int idUsuario) {
+		
+		return usuarioDao.eliminarUsuario(idUsuario);
+		
+	}
 
 }

@@ -54,7 +54,27 @@ public class ServletUsuario extends HttpServlet {
 		RequestDispatcher rd = request.getRequestDispatcher("/registrarUsuario.jsp"); 
 		rd.forward(request, response);
 		
+		if(request.getParameter("eliminar")!= null) 
+		{
+			
+			int idUsuario = Integer.parseInt(request.getParameter("idEliminar"));
+			
+			resultado = usuarioNegocio.eliminarUsuario(idUsuario);
+			
+			cargarFormulario(request, response);
+		}
+		
 	}
+}
+	
+	private void cargarFormulario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+	       // List<Cliente> listadoClientes = 	clienteNegocio.obtenerClientes();
+	        //request.setAttribute("listaClientes", listadoClientes);
+	        
+	        RequestDispatcher rd = request.getRequestDispatcher("/administrarUsuarios.jsp");
+	        rd.forward(request, response);
+	    }
 
-	}
+	
 	}

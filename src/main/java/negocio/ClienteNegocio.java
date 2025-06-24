@@ -11,7 +11,7 @@ public interface ClienteNegocio {
 	
 	public boolean modificarCliente(Cliente cliente);
 	
-	public boolean elimiarCliente(Cliente cliente);
+	public boolean eliminarCliente(int idCliente);
 	
 	public List<Cliente> obtenerClientes();
 	

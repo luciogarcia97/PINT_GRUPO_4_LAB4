@@ -141,6 +141,38 @@ public class UsuarioDaoImpl implements UsuarioDao {
 		return resultado;		
 		
 	}
+	
+	public boolean eliminarUsuario(int idUsuario) //IMPORTANTE esta funcion tiene que luego verificar que
+	 											 //al usuario antes de eliminarle se borren todas sus cuentas
+	{
+		PreparedStatement pst = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+		boolean resultado = false;
+		
+		try {
+			String query = "UPDATE usuario SET eliminado = 1 WHERE id_usuario = ?";
+			pst = conexion.prepareStatement(query);
+			pst.setInt(1, idUsuario);
+			
+			if (pst.executeUpdate() > 0) { //Si borro algo...
+				conexion.commit();
+				resultado = true;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pst != null)
+				pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	
+		return resultado;
+	
+	}
 
 
 }

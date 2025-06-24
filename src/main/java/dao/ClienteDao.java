@@ -14,8 +14,8 @@ public interface ClienteDao {
     public boolean ModificarCliente(Cliente cliente);
 	
     public List<Cliente> obtenerClientes();
-
-	
+    
+    public boolean eliminarCliente(int idCliente);
 
 }
 

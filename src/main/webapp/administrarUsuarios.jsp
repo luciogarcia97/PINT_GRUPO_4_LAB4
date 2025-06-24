@@ -130,13 +130,16 @@
                                         <td>No</td>
                                         <td>20/02/2025</td>                    
                                         <td>
-                                            <div class="d-flex gap-1">
+                                            <div class="d-flex gap-1">                                      
                                                 <a href="modificarUsuario.jsp" class="btn btn-sm btn-outline-primary" title="Modificar Usuario">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
-                                                <button type="button" class="btn btn-sm btn-outline-danger" title="Eliminar Usuario">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
+                                                <form action="ServletUsuario?eliminar=1" method="post" class="d-inline">
+                                                <input type="hidden" name="idEliminar" value="getId_usuario()" />
+                                            		<button type="submit" class="btn btn-sm btn-outline-danger" name="btnEliminarUsuario" title="Eliminar Usuario">
+                                                    	<i class="bi bi-trash"></i>
+                                                	</button>
+                                            	</form>                                    
                                             </div>
                                         </td>                   
                                     </tr>
