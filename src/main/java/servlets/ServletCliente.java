@@ -81,27 +81,32 @@ public class ServletCliente extends HttpServlet {
 			request.setAttribute("resultado", resultado);
 			RequestDispatcher rd = request.getRequestDispatcher("/registrarUsuario.jsp");
 			rd.forward(request, response);
-      cargarFormulario(request, response);
+     
 		}
 		
 		if(request.getParameter("btnModificarCliente")!= null) {
 			
-			
-			Cliente c = new Cliente();
-			Boolean resultado = false;
-			
-			c.setNombre(request.getParameter("txtNombre"));
-			c.setApellido(request.getParameter("txtApellido"));
-			c.setSexo(request.getParameter("txtSexo"));
-			c.setNacionalidad(request.getParameter("txtNacionalidad"));
-			c.setFechaNacimiento(request.getParameter("txtFechaNacimiento"));
-			c.setDireccion(request.getParameter("txtDireccion"));
-			c.setLocalidad(request.getParameter("txtLocalidad"));
-			c.setProvincia(request.getParameter("txtProvinicia"));
-			c.setCorreoElectronico(request.getParameter("txtEmail"));
-			
-			resultado = clienteNegocio.insertarCliente(c);
-			
+			    Cliente c = new Cliente();
+			    
+			    c.setIdCliente(Integer.parseInt(request.getParameter("idCliente")));
+			    c.setDni(Integer.parseInt(request.getParameter("txtDni")));
+			    c.setCuil(request.getParameter("txtCuil"));
+			    c.setNombre(request.getParameter("txtNombre"));
+			    c.setApellido(request.getParameter("txtApellido"));
+			    c.setSexo(request.getParameter("txtSexo"));
+			    c.setNacionalidad(request.getParameter("txtNacionalidad"));
+			    c.setFechaNacimiento(request.getParameter("txtFechaNacimiento"));
+			    c.setDireccion(request.getParameter("txtDireccion"));
+			    c.setLocalidad(request.getParameter("txtLocalidad"));
+			    c.setProvincia(request.getParameter("txtProvincia"));
+			    c.setCorreoElectronico(request.getParameter("txtEmail"));
+			 
+
+			    boolean resultado = clienteNegocio.modificarCliente(c);
+			    request.setAttribute("resultado", resultado);
+			  
+			    RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
+			    rd.forward(request, response);
 		}
 		
 		if(request.getParameter("eliminar")!= null) 

@@ -127,11 +127,11 @@ public class ClienteDaolmpl implements ClienteDao {
 			pst.setString(5, cliente.getLocalidad());
 			pst.setString(6, cliente.getProvincia());
 			pst.setString(7, cliente.getCorreoElectronico());
-			pst.setInt(7, cliente.getIdCliente());
+			pst.setInt(8, cliente.getIdCliente());
 			
-			rs = pst.executeQuery();		
+			 int filasAfectadas = pst.executeUpdate();		
 			 
-			return true;
+			return filasAfectadas > 0;
 		}
 		catch(Exception e) {
           e.printStackTrace();
