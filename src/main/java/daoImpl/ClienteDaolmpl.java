@@ -37,7 +37,7 @@ public class ClienteDaolmpl implements ClienteDao {
             pst.setString(9, cliente.getLocalidad());
             pst.setString(10, cliente.getProvincia());
             pst.setString(11, cliente.getCorreoElectronico());
-            pst.setBoolean(12, false); // Cuando se crea un cliente, por defecto no esta eliminado.
+            pst.setBoolean(12, false); 
             
             if (pst.executeUpdate() > 0) {
                 conexion.commit();
@@ -126,6 +126,7 @@ public class ClienteDaolmpl implements ClienteDao {
 			pst.setString(5, cliente.getLocalidad());
 			pst.setString(6, cliente.getProvincia());
 			pst.setString(7, cliente.getCorreoElectronico());
+			pst.setInt(7, cliente.getIdCliente());
 			
 			rs = pst.executeQuery();		
 			 
@@ -154,25 +155,26 @@ public class ClienteDaolmpl implements ClienteDao {
 		Connection conexion = Conexion.getConexion().getSQLConexion();
 
 		try {
-			String query = "SELECT * FROM cliente WHERE activa = true";
+			String query = "SELECT id_cliente, dni, cuil, nombre, apellido, sexo, nacionalidad, fecha_nacimiento, direccion, localidad, provincia, correo_electronico, eliminado FROM cliente WHERE eliminado = false";
 			pst = conexion.prepareStatement(query);
 			rs = pst.executeQuery();
 
 			while (rs.next()) {
 				
 				Cliente cliente = new Cliente();
-				  cliente.setDni(rs.getInt("dni"));
-		            cliente.setCuil(rs.getString("cuil"));
-		            cliente.setNombre(rs.getString("nombre"));
-		            cliente.setApellido(rs.getString("apellido"));
-		            cliente.setSexo(rs.getString("sexo"));
-		            cliente.setNacionalidad(rs.getString("nacionalidad"));
-		            cliente.setFechaNacimiento(rs.getString("fechaNacimiento")); // o rs.getDate() si es tipo Date
-		            cliente.setDireccion(rs.getString("direccion"));
-		            cliente.setLocalidad(rs.getString("localidad"));
-		            cliente.setProvincia(rs.getString("provincia"));
-		            cliente.setCorreoElectronico(rs.getString("correoElectronico"));
-		            cliente.setTelefono(rs.getInt("telefono"));
+				cliente.setIdCliente(rs.getInt("id_cliente"));
+				cliente.setDni(rs.getInt("dni"));
+				cliente.setCuil(rs.getString("cuil"));
+				cliente.setNombre(rs.getString("nombre"));
+				cliente.setApellido(rs.getString("apellido"));
+				cliente.setSexo(rs.getString("sexo"));
+				cliente.setNacionalidad(rs.getString("nacionalidad"));
+				cliente.setFechaNacimiento(rs.getString("fecha_nacimiento")); 
+				cliente.setDireccion(rs.getString("direccion"));
+				cliente.setLocalidad(rs.getString("localidad"));
+				cliente.setProvincia(rs.getString("provincia"));
+				cliente.setCorreoElectronico(rs.getString("correo_electronico"));
+				cliente.setEliminado(rs.getBoolean("eliminado"));  
 				    listaClientes.add(cliente);
 			}
 
