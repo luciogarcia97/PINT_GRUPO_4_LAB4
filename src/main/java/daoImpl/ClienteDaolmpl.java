@@ -110,7 +110,8 @@ public class ClienteDaolmpl implements ClienteDao {
 	
 	
 	
-	public boolean ModificarCliente(Cliente cliente) {
+	public boolean ModificarCliente(Cliente cliente) 
+	{
 		 PreparedStatement pst = null;
 	     ResultSet rs = null;
 	     Connection conexion = Conexion.getConexion().getSQLConexion();
@@ -148,7 +149,8 @@ public class ClienteDaolmpl implements ClienteDao {
 		
 	}
 	
-	public List<Cliente> obtenerClientes() {
+	public List<Cliente> obtenerClientes() 
+	{
 		List<Cliente> listaClientes = new ArrayList<>();
 		PreparedStatement pst = null;
 		ResultSet rs = null;
@@ -175,7 +177,7 @@ public class ClienteDaolmpl implements ClienteDao {
 				cliente.setProvincia(rs.getString("provincia"));
 				cliente.setCorreoElectronico(rs.getString("correo_electronico"));
 				cliente.setEliminado(rs.getBoolean("eliminado"));  
-				    listaClientes.add(cliente);
+				listaClientes.add(cliente);
 			}
 
 		} catch (SQLException e) {
@@ -195,4 +197,40 @@ public class ClienteDaolmpl implements ClienteDao {
 	}
 	
 	
+	public boolean eliminarCliente(int idCliente) //IMPORTANTE esta funcion tiene que luego verificar que
+												 //al cliente antes se le borre el usuario. (la funcion
+												//eliminarUsuario() tiene que hacer lo mismo con las cuentas)
+	{
+		PreparedStatement pst = null;
+	    Connection conexion = Conexion.getConexion().getSQLConexion();
+	    boolean resultado = false;
+	    
+	    try {
+	    	String query = "DELETE FROM cliente WHERE id_cliente = ?";
+			pst = conexion.prepareStatement(query);
+			pst.setInt(1, idCliente);
+			
+			if (pst.executeUpdate() > 0) { //Si borro algo...
+	            conexion.commit();
+	            resultado = true;
+	        }
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pst != null)
+					pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return resultado;
+	}
+	
+	    
 }
+	
+	
+

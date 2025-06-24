@@ -11,5 +11,7 @@ public interface UsuarioNegocio {
     public List<Usuario> obtenerUsuarios();   	
     	    
     public boolean modificarUsuario(Usuario usuario);
+    
+    public boolean eliminarUsuario(int idUsuario);
 
 }

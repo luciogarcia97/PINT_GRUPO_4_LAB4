@@ -106,6 +106,18 @@ public class ServletCliente extends HttpServlet {
 			
 		}
 		
+		if(request.getParameter("eliminar")!= null) 
+		{
+			
+			Boolean resultado = false;
+			
+			int idCliente = Integer.parseInt(request.getParameter("idEliminar"));
+			
+			resultado = clienteNegocio.eliminarCliente(idCliente);
+			
+			cargarFormulario(request, response);
+		}
+		
 	}
 
 	private void cargarFormulario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

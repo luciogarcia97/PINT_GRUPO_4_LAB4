@@ -3,6 +3,7 @@ package servlets;
 import java.io.IOException;
 import java.time.LocalDate;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -52,7 +53,28 @@ public class ServletUsuario extends HttpServlet {
 			}
 		}
 		
+		if(request.getParameter("eliminar")!= null) 
+		{
+			
+			Boolean resultado = false;
+			
+			int idUsuario = Integer.parseInt(request.getParameter("idEliminar"));
+			
+			resultado = usuarioNegocio.eliminarUsuario(idUsuario);
+			
+			cargarFormulario(request, response);
+		}
+		
 		
 	}
+	
+	private void cargarFormulario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+	       // List<Cliente> listadoClientes = 	clienteNegocio.obtenerClientes();
+	        //request.setAttribute("listaClientes", listadoClientes);
+	        
+	        RequestDispatcher rd = request.getRequestDispatcher("/administrarUsuarios.jsp");
+	        rd.forward(request, response);
+	    }
 
 }

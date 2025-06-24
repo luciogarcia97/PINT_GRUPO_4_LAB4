@@ -24,9 +24,11 @@ public class ClienteNegociolmpl implements ClienteNegocio {
 	}
     
 	@Override
-	public boolean elimiarCliente(Cliente cliente) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean eliminarCliente(int idCliente) {
+	
+		boolean fila = clienteDao.eliminarCliente(idCliente);
+		
+		return fila;
 	}
     
 	@Override
