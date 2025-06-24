@@ -26,7 +26,7 @@ public class ServletCliente extends HttpServlet {
         super();
         this.clienteNegocio = new ClienteNegociolmpl();
         
-        // TODO Auto-generated constructor stub
+        
     }
 
 	
