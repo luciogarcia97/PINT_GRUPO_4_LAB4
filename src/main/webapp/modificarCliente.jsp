@@ -29,37 +29,20 @@
 	        <h2 class="text-center">Modificar cliente</h2>
 	
 	        <div class="row">
-	        
-	         <div class="mb-3 col-md-6">
-                    <label for="id" class="form-label">ID</label>
-                     <input type="text" name="txtIdCliente" class="form-control" id="id"
-                      value="<%= cliente != null ? cliente.getIdCliente() : "" %>" required>
-                  </div>
-	        
-	             
-	           <div class="mb-3 col-md-6">
-	           <label for="dni" class="form-label">DNI</label>
-                     <input type="text" name="txtDni" class="form-control" id="dni"
-                      value="<%= cliente != null ? cliente.getDni() : "" %>" required>
-	        
-           
-                </div>
-                
-                 <div class="mb-3 col-md-6">
-                    <label for="cuil" class="form-label">CUIL</label>
-                     <input type="text" name="txtCuil" class="form-control" id="cuil"
-                      value="<%= cliente != null ? cliente.getCuil() : "" %>" required>
-                  </div>
-	        
+	             <div class="mb-3 col-md-6">
+	                <label for="cuil" class="form-label">Cuil</label>
+                    <input type="text" name="txtCuil" class="form-control" id="cuil"
+                     value="<%= cliente != null ? cliente.getCuil() : "" %>" required>
+	            </div>
 	            <div class="mb-3 col-md-6">
 	                <label for="nombre" class="form-label">Nombre</label>
-                     <input type="text" name="txtNombre" class="form-control" id="nombre"
+                    <input type="text" name="txtNombre" class="form-control" id="nombre"
                      value="<%= cliente != null ? cliente.getNombre() : "" %>" required>
 	            </div>
 	            <div class="mb-3 col-md-6">
 	                <label for="apellido" class="form-label">Apellido</label>
-	                <input type="text" name="txtApellido" class="form-control" id="nombre"
-                    value="<%= cliente != null ? cliente.getApellido() : "" %>" required>
+	                <input type="text" name="txtApellido" class="form-control" id="apellido"
+                     value="<%= cliente != null ? cliente.getApellido() : "" %>" required>
 
 	            </div>
 	
@@ -138,3 +121,5 @@
 
 </body>
 </html>
+
+
