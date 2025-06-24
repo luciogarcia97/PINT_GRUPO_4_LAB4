@@ -36,7 +36,7 @@
             <div class="col-2 d-flex flex-column align-items-center justify-content-start pt-4">
                 <div class="d-grid gap-2 w-100">
                     
-                    <a href="ServletClientes?listar=1" class="btn btn-light">
+                    <a href="ServletCliente?listar=1" class="btn btn-light">
                         <i class="bi bi-people me-2"></i>
                         Administrar Clientes
                     </a>
