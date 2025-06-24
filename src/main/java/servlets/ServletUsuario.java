@@ -57,8 +57,6 @@ public class ServletUsuario extends HttpServlet {
 		if(request.getParameter("eliminar")!= null) 
 		{
 			
-			Boolean resultado = false;
-			
 			int idUsuario = Integer.parseInt(request.getParameter("idEliminar"));
 			
 			resultado = usuarioNegocio.eliminarUsuario(idUsuario);
@@ -66,8 +64,8 @@ public class ServletUsuario extends HttpServlet {
 			cargarFormulario(request, response);
 		}
 		
-		
 	}
+}
 	
 	private void cargarFormulario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
@@ -78,5 +76,5 @@ public class ServletUsuario extends HttpServlet {
 	        rd.forward(request, response);
 	    }
 
-	}
+	
 	}

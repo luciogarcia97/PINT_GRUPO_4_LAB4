@@ -157,7 +157,7 @@ public class ClienteDaolmpl implements ClienteDao {
 		Connection conexion = Conexion.getConexion().getSQLConexion();
 
 		try {
-			String query = "SELECT id_cliente, dni, cuil, nombre, apellido, sexo, nacionalidad, fecha_nacimiento, direccion, localidad, provincia, correo_electronico, eliminado FROM cliente WHERE eliminado = false";
+			String query = "SELECT id_cliente, dni, cuil, nombre, apellido, sexo, nacionalidad, fecha_nacimiento, direccion, localidad, provincia, correo_electronico, eliminado FROM cliente";
 			pst = conexion.prepareStatement(query);
 			rs = pst.executeQuery();
 
@@ -201,12 +201,13 @@ public class ClienteDaolmpl implements ClienteDao {
 												 //al cliente antes se le borre el usuario. (la funcion
 												//eliminarUsuario() tiene que hacer lo mismo con las cuentas)
 	{
+		System.out.println("Entre en el dao...." + idCliente);
 		PreparedStatement pst = null;
 	    Connection conexion = Conexion.getConexion().getSQLConexion();
 	    boolean resultado = false;
 	    
 	    try {
-	    	String query = "DELETE FROM cliente WHERE id_cliente = ?";
+	    	String query = "UPDATE cliente SET eliminado = 1 WHERE id_cliente = ?";
 			pst = conexion.prepareStatement(query);
 			pst.setInt(1, idCliente);
 			

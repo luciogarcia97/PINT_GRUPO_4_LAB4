@@ -150,7 +150,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
 		boolean resultado = false;
 		
 		try {
-			String query = "DELETE FROM usuario WHERE id_usuario = ?";
+			String query = "UPDATE usuario SET eliminado = 1 WHERE id_usuario = ?";
 			pst = conexion.prepareStatement(query);
 			pst.setInt(1, idUsuario);
 			
