@@ -12,32 +12,12 @@
 	</head>
 <body>
 
-
-	<%
-	Boolean resultado = false;
-	if(request.getAttribute("resultado") != null){
-		resultado = Boolean.parseBoolean(request.getAttribute("resultado").toString());
-	} 
-	
-	
-	//
-	// Cuando este terminado el ABML Cliente en realidad lo que tenemos que traer aca es el Cliente antes de
-	// cargarlo a la DB, asi primero verificamos que el usuario tenga bien todos los valores.
-	// De otra forma podemos cargar un cliente a la DB y que despues el usuario sea rechazado, quedandonos el cliente
-	// Sin usuario.
-	
-	%>
-
 	<form class="w-75 mx-auto mt-5" onsubmit="return validarContraseñas()" action="ServletUsuario" method="post">
 		    <div class="inicio">
           
 		        <h2 class="text-center pt-2 pb-2">Registrar Usuario</h2>    
 				
-				<div class="center row">
-					<div class="mb-3"> <%//Si viene desde registrarCliente.jsp este campo se autocompleta%>
-		                <label for="usuario" class="form-label">ID de cliente</label>
-		                <input type="text" class="form-control" id="usuario" name="txtIDCliente"placeholder="ID de cliente" required>
-		            </div>
+				<div class="center row">					
 		            <div class="mb-3">
 		                <label for="usuario" class="form-label">Usuario</label>
 		                <input type="text" class="form-control" id="usuario" name="txtUsuario" placeholder="Usuario" required>
@@ -52,6 +32,74 @@
 		                <input type="password" class="form-control" id="repetirClave" name="txtContrasenaR" placeholder="Repetir Contraseña" required>
 		            </div>
 		        </div>
+		        
+		        
+		        <div class="inicio">
+		        <h2 class="text-center">Registrar Cliente</h2>
+		
+		        <div class="row">
+		            <div class="mb-3 col-md-6">
+		                <label for="nombre" class="form-label">Nombre</label>
+		                <input type="text" class="form-control" id="nombre" name="txtNombre" placeholder="Tu Nombre" required>
+		            </div>
+		            <div class="mb-3 col-md-6">
+		                <label for="apellido" class="form-label">Apellido</label>
+		                <input type="text" class="form-control" id="apellido" name="txtApellido" placeholder="Tu Apellido" required>
+		            </div>
+		
+		            <div class="mb-3 col-md-6">
+		                <label for="sexo" class="form-label">Sexo</label>
+		                <select id="sexo" name="txtSexo" class="form-control">
+		                    <option value="femenino">Femenino</option>
+		                    <option value="masculino">Masculino</option>
+		                    <option value="otro">No contesta</option>
+		                </select>
+		            </div>
+		            <div class="mb-3 col-md-6">
+		                <label for="nacionalidad" class="form-label">Nacionalidad</label>
+		                <input type="text" class="form-control" id="nacionalidad" name="txtNacionalidad" placeholder="Nacionalidad" required>
+		            </div>
+		
+		            <div class="mb-3 col-md-6">
+		                <label for="fechaNacimiento" class="form-label">Fecha Nacimiento</label>
+		                <input type="date" class="form-control" id="fechaNacimiento" name="txtFechaNacimiento" required>
+		            </div>
+		            <div class="mb-3 col-md-6">
+		                <label for="direccion" class="form-label">Dirección</label>
+		                <input type="text" class="form-control" id="direccion" name="txtDireccion" placeholder="Tu Dirección" required>
+		            </div>
+		
+		            <div class="mb-3 col-md-6">
+		                <label for="localidad" class="form-label">Localidad</label>
+		                <input type="text" class="form-control" id="localidad" name="txtLocalidad" placeholder="Localidad" required>
+		            </div>
+		            <div class="mb-3 col-md-6">
+		                <label for="provincia" class="form-label">Provincia</label>
+		                <input type="text" class="form-control" id="provincia" name="txtProvincia" placeholder="Provincia" required>
+		            </div>
+		
+		            <div class="mb-3 col-md-6">
+		                <label for="correo" class="form-label">Email</label>
+		                <input type="email" class="form-control" id="correo" name="txtCorreo" placeholder="Email" required>
+		            </div>
+		            <div class="mb-3 col-md-6">
+		                <label for="telefono" class="form-label">Teléfono</label>
+		                <input type="number" class="form-control" id="telefono" name="txtTelefono" placeholder="Teléfono"
+		                    oninput="this.value = this.value.slice(0, 11);" required>
+		            </div>
+		
+		            <div class="mb-3 col-md-6">
+		                <label for="dni" class="form-label">DNI</label>
+		                <input type="number" class="form-control" id="dni" name="txtDni" placeholder="DNI"
+		                    oninput="this.value = this.value.slice(0, 8);" required>
+		            </div>
+		            <div class="mb-3 col-md-6">
+		                <label for="cuil" class="form-label">CUIL</label>
+		                <input type="number" class="form-control" id="cuil" name="txtCuil" placeholder="CUIL"
+		                    oninput="this.value = this.value.slice(0, 11);" required>
+		            </div>
+		         </div>    	         
+		        		        
 		
 		        <div class="text-center mt-3">
 		            <a href="administrarUsuarios.jsp">Cancelar</a>
@@ -62,16 +110,7 @@
 		        </div>
 		    </div>
 		</form>
-		<%
-		boolean exito = false;
-		  if(request.getAttribute("cargoUsuario")!=null)  
-			  exito= (boolean)request.getAttribute("cargoUsuario");
-		
-		%>
-		<%if(exito){ %>
-		<label for="clave" class="form-label">usuario agregado con exito</label>
-		
-		<%} %>
+	
 
     <script>
         function validarContraseñas() {

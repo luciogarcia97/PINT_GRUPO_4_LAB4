@@ -44,10 +44,32 @@ public class ServletUsuario extends HttpServlet {
 			throws ServletException, IOException {
 
 		Boolean resultado = false;
+		Boolean resultado1 = false;		
+		
 		if (request.getParameter("btnRegistrarUsuario") != null) {
+			
+			Cliente cliente = new Cliente();			
+			cliente.setDni(Integer.parseInt(request.getParameter("txtDni")));
+			cliente.setCuil(request.getParameter("txtCuil"));
+			cliente.setNombre(request.getParameter("txtNombre"));
+			cliente.setApellido(request.getParameter("txtApellido"));
+			cliente.setSexo(request.getParameter("txtSexo"));
+			cliente.setNacionalidad(request.getParameter("txtNacionalidad"));
+			cliente.setFechaNacimiento(request.getParameter("txtFechaNacimiento"));
+			cliente.setDireccion(request.getParameter("txtDireccion"));
+			cliente.setLocalidad(request.getParameter("txtLocalidad"));
+			cliente.setProvincia(request.getParameter("txtProvincia"));
+			cliente.setCorreoElectronico(request.getParameter("txtCorreo"));
+			cliente.setEliminado(true);
+			
+			System.out.println("Cargue el cliente");
+			
+			resultado1 = usuarioNegocio.insertarCliente(cliente);
+			int ultimoId = usuarioNegocio.ultimoIdCliente();
+			
 			Usuario usuario = new Usuario();
-			usuario.setId_usuario(Integer.parseInt(request.getParameter("txtIDCliente").toString()));
-			usuario.setId_cliente(Integer.parseInt(request.getParameter("txtIDCliente").toString()));
+			//usuario.setId_usuario(Integer.parseInt(request.getParameter("txtIDCliente").toString()));
+			usuario.setId_cliente(ultimoId);
 			usuario.setUsuario(request.getParameter("txtUsuario"));
 			usuario.setContrasena(request.getParameter("txtContrasena"));
 			usuario.setTipo_usuario("cliente");
@@ -56,9 +78,15 @@ public class ServletUsuario extends HttpServlet {
 
 			resultado = usuarioNegocio.insertarUsuario(usuario);
 
-			request.setAttribute("cargoUsuario", resultado);
-			RequestDispatcher rd = request.getRequestDispatcher("/registrarUsuario.jsp");
-			rd.forward(request, response);
+			if(resultado1 && ultimoId != -1 && resultado) {
+				
+				List<Usuario> listaUsuarios = usuarioNegocio.obtenerUsuarios();
+				request.setAttribute("listaUsuarios", listaUsuarios);
+
+				RequestDispatcher rd = request.getRequestDispatcher("/administrarUsuarios.jsp");
+				rd.forward(request, response);				
+				
+			} 
 
 		}
 		
@@ -105,19 +133,18 @@ public class ServletUsuario extends HttpServlet {
 						   
 			    RequestDispatcher rd = request.getRequestDispatcher("/administrarUsuarios.jsp");
 				rd.forward(request, response);
-			 } 
+			 } else {
+					
+					request.setAttribute("error", "No se pudo eliminar el usuario.");
+				    List<Usuario> listaUsuarios = usuarioNegocio.obtenerUsuarios();
+				    request.setAttribute("listaUsuarios", listaUsuarios);		
+				    RequestDispatcher rd = request.getRequestDispatcher("/administrarUsuarios.jsp");
+				    rd.forward(request, response);
+				}
 			
-		}
-		
+		}		
 		
 	}
-
-	private void cargarFormulario(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-
-		// List<Cliente> listadoClientes = clienteNegocio.obtenerClientes();
-		// request.setAttribute("listaClientes", listadoClientes);
-
-	}
+	
 
 }

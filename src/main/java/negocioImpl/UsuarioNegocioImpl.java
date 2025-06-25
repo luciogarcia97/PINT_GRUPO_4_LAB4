@@ -4,6 +4,7 @@ import java.util.List;
 
 import dao.UsuarioDao;
 import daoImpl.UsuarioDaoImpl;
+import entidades.Cliente;
 import entidades.Usuario;
 import negocio.UsuarioNegocio;
 
@@ -22,6 +23,19 @@ public class UsuarioNegocioImpl implements UsuarioNegocio {
 
 		return usuarioDao.insertarUsuario(usuario);
 	}
+	
+	@Override
+	public boolean insertarCliente(Cliente cliente) {
+
+		return usuarioDao.insertarCliente(cliente);
+	}
+	
+	@Override
+	public int ultimoIdCliente() {
+		
+		return usuarioDao.ultimoIdCliente();
+	}
+	
 
 	@Override
 	public List<Usuario> obtenerUsuarios() {
