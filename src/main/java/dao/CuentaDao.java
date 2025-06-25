@@ -20,5 +20,9 @@ public interface CuentaDao {
 	    public String generarCBU(String numeroCuenta);       
 	  	    
 	    public Cuenta mapearCuenta(ResultSet rs) throws SQLException;
+	    
+	    public boolean eliminarCuenta(int idCuenta);
+	    
+	    public List<Cuenta> obtenerCuentas();
 
 }

@@ -9,6 +9,7 @@ import java.util.List;
 
 import dao.Conexion;
 import dao.CuentaDao;
+import entidades.Cliente;
 import entidades.Cuenta;
 
 public class CuentaDaoImpl implements CuentaDao {
@@ -91,6 +92,7 @@ public class CuentaDaoImpl implements CuentaDao {
 		return listaCuentas;
 	}
 
+	
 	@Override
 	public String generarNumeroCuenta() {
 		String numeroCuenta = "";
@@ -189,6 +191,80 @@ public class CuentaDaoImpl implements CuentaDao {
 		cuenta.setSaldo(rs.getBigDecimal("saldo"));
 		cuenta.setActiva(rs.getBoolean("activa"));
 		return cuenta;
+	}
+	
+	
+	public boolean eliminarCuenta(int idCuenta) 											 
+	{
+		PreparedStatement pst = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+		boolean resultado = false;
+	
+		try {
+			String query = "UPDATE cuenta SET activa = 0 WHERE id_cuenta = ?";
+			pst = conexion.prepareStatement(query);
+			pst.setInt(1, idCuenta);
+		
+			if (pst.executeUpdate() > 0) { //Si borro algo...
+				conexion.commit();
+				resultado = true;
+			}
+		
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+			try {
+			if (pst != null)
+				pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return resultado;
+	}
+	
+	public List<Cuenta> obtenerCuentas() 
+	{	
+		
+		List<Cuenta> listaCuentas = new ArrayList<>();
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+
+		try {
+			String query = "SELECT id_cuenta, id_cliente, fecha_creacion, id_tipo_cuenta, numero_cuenta, cbu, saldo, activa FROM cuenta";
+			pst = conexion.prepareStatement(query);
+			rs = pst.executeQuery();
+
+			while (rs.next()) {
+				
+				Cuenta c = new Cuenta();
+				c.setIdCuenta(rs.getInt("id_cuenta"));
+				c.setIdCliente(rs.getInt("id_cliente"));
+				c.setFechaCreacion(rs.getDate("fecha_creacion").toLocalDate());
+				c.setIdTipoCuenta(rs.getInt("id_tipo_cuenta"));
+				c.setNumeroCuenta(rs.getString("numero_cuenta"));
+				c.setCbu(rs.getString("cbu"));
+				c.setSaldo(rs.getBigDecimal("saldo"));
+				c.setActiva(rs.getBoolean("activa")); 
+				listaCuentas.add(c);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pst != null)
+					pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return listaCuentas;
 	}
 
 }
