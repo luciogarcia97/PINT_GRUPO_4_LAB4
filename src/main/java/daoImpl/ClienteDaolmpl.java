@@ -201,7 +201,6 @@ public class ClienteDaolmpl implements ClienteDao {
 												 //al cliente antes se le borre el usuario. (la funcion
 												//eliminarUsuario() tiene que hacer lo mismo con las cuentas)
 	{
-		System.out.println("Entre en el dao...." + idCliente);
 		PreparedStatement pst = null;
 	    Connection conexion = Conexion.getConexion().getSQLConexion();
 	    boolean resultado = false;

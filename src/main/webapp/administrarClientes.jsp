@@ -52,7 +52,7 @@
                                     Administrar Usuarios
                                 </a>
 
-                                <a href="administrarCuentas.jsp" class="btn btn-light">
+                                <a href="ServletCuenta?listar=1" class="btn btn-light">
                                     <i class="bi bi-credit-card me-2"></i>
                                     Administrar Cuentas
                                 </a>
@@ -158,8 +158,7 @@
                                                                         title="Modificar Cliente">
                                                                         <i class="bi bi-pencil"></i>
                                                                     </a>
-                                                                    <form action="ServletCliente?eliminar=1" method="post"
-                                                                        class="d-inline">
+                                                                    <form action="ServletCliente?eliminar=1" method="post" class="d-inline">
                                                                         <input type="hidden" name="idEliminar" value="<%= c.getIdCliente() %>" />
                                                                         <button type="submit"
                                                                             class="btn btn-sm btn-outline-danger"
