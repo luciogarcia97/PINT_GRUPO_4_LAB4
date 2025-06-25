@@ -154,7 +154,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
 			pst = conexion.prepareStatement(query);
 			pst.setInt(1, idUsuario);
 			
-			if (pst.executeUpdate() > 0) { //Si borro algo...
+			if (pst.executeUpdate() > 0) { 
 				conexion.commit();
 				resultado = true;
 			}

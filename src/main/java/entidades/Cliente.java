@@ -11,24 +11,15 @@ public class Cliente {
 	private String nacionalidad;
 	private String fechaNacimiento;
 	private String direccion;
-	private String localidad;
-	private int telefono;
+	private String localidad;	
 	private String provincia;
 	private String correoElectronico;
 	private boolean eliminado;
 	
-	public int getTelefono() {
-		return telefono;
-	}
 
-	public void setTelefono(int telefono) {
-		this.telefono = telefono;
-	}
-
-	
 	
 	public Cliente(int idCliente, int dni, String cuil, String nombre, String apellido, String sexo,
-			String nacionalidad, String fechaNacimiento, String direccion, String localidad, String provincia,int telefono,
+			String nacionalidad, String fechaNacimiento, String direccion, String localidad, String provincia,
 			String correoElectronico, boolean eliminado) 
 	{
 		this.idCliente = idCliente;
@@ -40,8 +31,7 @@ public class Cliente {
 		this.nacionalidad = nacionalidad;
 		this.fechaNacimiento = fechaNacimiento;
 		this.direccion = direccion;
-		this.localidad = localidad;
-		this.telefono = telefono;
+		this.localidad = localidad;	
 		this.provincia = provincia;
 		this.correoElectronico = correoElectronico;
 		this.eliminado = eliminado;

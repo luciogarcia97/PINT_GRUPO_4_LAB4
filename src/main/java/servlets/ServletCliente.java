@@ -14,6 +14,7 @@ import dao.ClienteDao;
 import negocio.ClienteNegocio;
 import entidades.Cliente;
 import entidades.TipoCuenta;
+import entidades.Usuario;
 import negocioImpl.ClienteNegociolmpl;
 
 @WebServlet("/ServletCliente")
@@ -26,7 +27,7 @@ public class ServletCliente extends HttpServlet {
         super();
         this.clienteNegocio = new ClienteNegociolmpl();
         
-        // TODO Auto-generated constructor stub
+        
     }
 
 	
@@ -88,8 +89,10 @@ public class ServletCliente extends HttpServlet {
 			
 			
 			Cliente c = new Cliente();
+			System.out.println("Entre al modificar");
 			Boolean resultado = false;
-			
+		    c.setIdCliente(Integer.parseInt(request.getParameter("idCliente"))); 
+			c.setCuil(request.getParameter("txtCuil"));
 			c.setNombre(request.getParameter("txtNombre"));
 			c.setApellido(request.getParameter("txtApellido"));
 			c.setSexo(request.getParameter("txtSexo"));
@@ -97,11 +100,17 @@ public class ServletCliente extends HttpServlet {
 			c.setFechaNacimiento(request.getParameter("txtFechaNacimiento"));
 			c.setDireccion(request.getParameter("txtDireccion"));
 			c.setLocalidad(request.getParameter("txtLocalidad"));
-			c.setProvincia(request.getParameter("txtProvinicia"));
+			c.setProvincia(request.getParameter("txtProvincia"));
 			c.setCorreoElectronico(request.getParameter("txtEmail"));
 			
-			resultado = clienteNegocio.insertarCliente(c);
-			
+               if ( clienteNegocio.modificarCliente(c)) {			 
+				
+				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
+				request.setAttribute("listaClientes", listaClientes);		    
+			   
+			    RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
+			    rd.forward(request, response);
+			} 
 		}
 		
 		if(request.getParameter("eliminar")!= null) 
