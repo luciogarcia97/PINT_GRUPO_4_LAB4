@@ -3,6 +3,7 @@ import java.util.List;
 import dao.ClienteDao;
 import daoImpl.ClienteDaolmpl;
 import entidades.Cliente;
+import entidades.Usuario;
 import negocio.ClienteNegocio;
 
 
@@ -22,6 +23,18 @@ public class ClienteNegociolmpl implements ClienteNegocio {
 		
 		return fila;
 	}
+	
+	@Override
+	public int ultimoIdCliente() {
+		
+		return clienteDao.ultimoIdCliente();
+	}
+	
+	@Override
+	public boolean insertarUsuario(Usuario usuario) {
+		
+		return clienteDao.insertarUsuario(usuario);
+	}	
     
 	@Override
 	public boolean eliminarCliente(int idCliente) {

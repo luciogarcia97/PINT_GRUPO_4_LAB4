@@ -78,7 +78,28 @@
 		                <input type="number" class="form-control" id="cuil" name="txtCuil" placeholder="CUIL"
 		                    oninput="this.value = this.value.slice(0, 11);" required>
 		            </div>
-		         </div>   	    
+		         </div> 
+		         
+		       <div class="inicio">
+          
+		        <h2 class="text-center pt-2 pb-2">Registrar Usuario</h2>    
+				
+				<div class="center row">					
+		            <div class="mb-3">
+		                <label for="usuario" class="form-label">Usuario</label>
+		                <input type="text" class="form-control" id="usuario" name="txtUsuario" placeholder="Usuario" required>
+		            </div>
+		            <div class="mb-3">
+		                <label for="clave" class="form-label">Contraseña</label>
+		                <input type="password" class="form-control" id="clave" name="txtContrasena" placeholder="Tu contraseña" required>
+		            </div>
+		
+		            <div class="mb-3">
+		                <label for="repetirClave" class="form-label">Repetir Contraseña</label>
+		                <input type="password" class="form-control" id="repetirClave" name="txtContrasenaR" placeholder="Repetir Contraseña" required>
+		            </div>
+		        </div>     
+		           	    
 		
 		        <div class="text-center mt-3">
 		            <a href="administrarClientes.jsp">Cancelar</a>

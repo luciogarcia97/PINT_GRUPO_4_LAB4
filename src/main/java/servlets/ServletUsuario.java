@@ -67,8 +67,7 @@ public class ServletUsuario extends HttpServlet {
 			resultado1 = usuarioNegocio.insertarCliente(cliente);
 			int ultimoId = usuarioNegocio.ultimoIdCliente();
 			
-			Usuario usuario = new Usuario();
-			//usuario.setId_usuario(Integer.parseInt(request.getParameter("txtIDCliente").toString()));
+			Usuario usuario = new Usuario();			
 			usuario.setId_cliente(ultimoId);
 			usuario.setUsuario(request.getParameter("txtUsuario"));
 			usuario.setContrasena(request.getParameter("txtContrasena"));
@@ -86,7 +85,14 @@ public class ServletUsuario extends HttpServlet {
 				RequestDispatcher rd = request.getRequestDispatcher("/administrarUsuarios.jsp");
 				rd.forward(request, response);				
 				
-			} 
+			} else {
+				
+				request.setAttribute("error", "No se pudo registrar el usuario.");
+			    List<Usuario> listaUsuarios = usuarioNegocio.obtenerUsuarios();
+			    request.setAttribute("listaUsuarios", listaUsuarios);		
+			    RequestDispatcher rd = request.getRequestDispatcher("/administrarUsuarios.jsp");
+			    rd.forward(request, response);
+			}
 
 		}
 		
