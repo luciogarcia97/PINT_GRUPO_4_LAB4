@@ -44,10 +44,6 @@ public class ClienteNegociolmpl implements ClienteNegocio {
 		return clienteDao.obtenerClientes();
 	}
 
-	@Override
-	public int obtenerIDCliente(int dni) {
-		
-		return clienteDao.obtenerIDCliente(dni);
 	}
     
 }

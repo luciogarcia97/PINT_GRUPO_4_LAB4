@@ -15,6 +15,7 @@ import dao.CuentaDao;
 import dao.TipoCuentaDao;
 import daoImpl.CuentaDaoImpl;
 import daoImpl.TipoCuentaDaoImpl;
+import entidades.Cliente;
 import entidades.Cuenta;
 import entidades.TipoCuenta;
 import negocio.CuentaNegocio;
@@ -40,6 +41,17 @@ private static final long serialVersionUID = 1L;
         if (request.getParameter("Param") != null) {
         	cargarFormulario(request, response);
         }
+        
+        // Para listar todas las cuentas
+	    if (request.getParameter("listar") != null) {
+	    	
+	        List<Cuenta> listaCuentas = cuentaNegocio.obtenerCuentas();
+	        
+	        request.setAttribute("listaCuentas", listaCuentas);
+	        
+	        RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
+	        rd.forward(request, response);
+	    }
     }
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -107,6 +119,19 @@ private static final long serialVersionUID = 1L;
                 cargarFormulario(request, response);
             }
         }
+        
+        if(request.getParameter("eliminar")!= null) 
+		{		
+        	
+			Boolean resultado = false;
+			
+			int idCuenta = Integer.parseInt(request.getParameter("idEliminar"));
+			
+			resultado = cuentaNegocio.eliminarCuenta(idCuenta);
+			
+			RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
+	        rd.forward(request, response);
+		}
     }
     
     private void cargarFormulario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -58,5 +58,17 @@ public class CuentaNegocioImpl implements CuentaNegocio {
 		
 		return cuentaDao.mapearCuenta(rs);
 	}
+	
+	public boolean eliminarCuenta(int idCuenta) {
+	
+		return cuentaDao.eliminarCuenta(idCuenta);
+		
+	}
+	
+	public List<Cuenta> obtenerCuentas(){
+		
+		return cuentaDao.obtenerCuentas();
+		
+	}
 
 }
