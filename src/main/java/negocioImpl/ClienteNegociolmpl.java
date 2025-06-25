@@ -43,6 +43,11 @@ public class ClienteNegociolmpl implements ClienteNegocio {
 	public List<Cliente> obtenerClientes() {
 		return clienteDao.obtenerClientes();
 	}
+	
+	@Override
+	public Cliente BuscarPorID(int id) {
+		return clienteDao.BuscarPorID(id);
+	}
     
 }
 	
