@@ -64,7 +64,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
 		Connection conexion = Conexion.getConexion().getSQLConexion();
 
 		try {
-			String query = "SELECT * FROM usuario WHERE eliminado = 0";
+			String query = "SELECT * FROM usuario WHERE eliminado = 1";
 			pst = conexion.prepareStatement(query);			
 			rs = pst.executeQuery();
 
@@ -142,15 +142,14 @@ public class UsuarioDaoImpl implements UsuarioDao {
 		
 	}
 	
-	public boolean eliminarUsuario(int idUsuario) //IMPORTANTE esta funcion tiene que luego verificar que
-	 											 //al usuario antes de eliminarle se borren todas sus cuentas
-	{
+	@Override
+	public boolean eliminarUsuario(int idUsuario, int idCliente) {
 		PreparedStatement pst = null;
 		Connection conexion = Conexion.getConexion().getSQLConexion();
 		boolean resultado = false;
 		
 		try {
-			String query = "UPDATE usuario SET eliminado = 1 WHERE id_usuario = ?";
+			String query = "UPDATE usuario SET eliminado = 0 WHERE id_usuario = ?";
 			pst = conexion.prepareStatement(query);
 			pst.setInt(1, idUsuario);
 			
@@ -169,9 +168,73 @@ public class UsuarioDaoImpl implements UsuarioDao {
 				e.printStackTrace();
 			}
 		}
+		
+		if(eliminarClienteUsuario(idCliente) && eliminarCuentasUsuario(idCliente) && resultado) {
+			return true;
+		} else {
+			return false;
+		}	
+			
+	}
 	
-		return resultado;
+	@Override
+	public boolean eliminarClienteUsuario(int idCliente) {
+		PreparedStatement pst = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+		boolean resultado = false;
+		
+		try {
+			String query = "UPDATE cliente SET eliminado = 0 WHERE id_cliente = ?";
+			pst = conexion.prepareStatement(query);
+			pst.setInt(1, idCliente);
+			
+			if (pst.executeUpdate() > 0) { 
+				conexion.commit();
+				resultado = true;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pst != null)
+				pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	
+		return resultado;	
+	}
+	
+	@Override
+	public boolean eliminarCuentasUsuario(int idCliente) {
+		PreparedStatement pst = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+		boolean resultado = false;
+		
+		try {
+			String query = "UPDATE cuenta SET activa = 0 WHERE id_cliente = ?";
+			pst = conexion.prepareStatement(query);
+			pst.setInt(1, idCliente);
+			
+			if (pst.executeUpdate() > 0) { 
+				conexion.commit();
+				resultado = true;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pst != null)
+				pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	
+		return resultado;	
 	}
 
 

@@ -13,6 +13,10 @@ public interface UsuarioDao {
     	    
     public boolean modificarUsuario(Usuario usuario);  
     
-    public boolean eliminarUsuario(int idUsuario);
+    public boolean eliminarUsuario(int idUsuario, int idCliente);
+    
+    public boolean eliminarClienteUsuario(int idCliente);
+    
+    public boolean eliminarCuentasUsuario(int idCliente);
 
 }

@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List"%>
-<%@ page import="entidades.Usuario"%>
+<%@ page import="java.util.List" %>
+<%@ page import="entidades.Cuenta" %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Administrador - Usuarios</title>
+    <title>Administrador - Cuentas</title>
     <link rel="icon" type="image/x-icon" href="img/banco.png">
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,8 +16,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.3.2/js/dataTables.bootstrap5.min.js"></script>
-
-    <!-- -->
 </head>
 
 <body style="background-color: rgb(104, 109, 250); min-height: 100vh; display: flex; flex-direction: column;">    
@@ -26,11 +24,11 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
                 <i class="bi bi-bank2 me-2"></i>        
-                Administrador - Usuarios
+                Administrador - Cuentas
             </a>
              <form action="ServletLogin" method="get" class="d-inline">
             	<button class="btn btn-outline-dark" type="submit" name="btnCerrar">Cerrar Sesión</button>
-        	</form>       
+        	</form>        
         </div>
     </nav>
 
@@ -45,12 +43,12 @@
                         Administrar Clientes
                     </a>
                     
-                    <a href="ServletUsuario?listar=1" class="btn btn-primary fw-bold">
+                    <a href="ServletUsuario?listar=1" class="btn btn-light">
                         <i class="bi bi-person-gear me-2"></i>
                         Administrar Usuarios
                     </a>
                     
-                    <a href="administrarCuentas.jsp" class="btn btn-light">
+                    <a href="ServletCuenta?listar=1" class="btn btn-primary fw-bold">
                         <i class="bi bi-credit-card me-2"></i>
                         Administrar Cuentas
                     </a>
@@ -72,83 +70,75 @@
                 
                 <div class="d-flex justify-content-between align-items-center mb-4 pt-4">
                     <h3 class="text-white">
-                        <i class="bi bi-person-gear me-2"></i>
-                        Administrar Usuarios
+                        <i class="bi bi-credit-card me-2"></i>
+                        Administrar Cuentas
                     </h3>
-                    <a href="registrarUsuario.jsp" class="btn btn-success">
-                        <i class="bi bi-plus me-1"></i>
-                        Registrar Usuario
-                    </a>
+                    <a href="ServletCuenta?Param=1" class="btn btn-success">
+					    Registrar Cuenta
+					</a>
                 </div>
                 
                 <div class="card shadow">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">
                             <i class="bi bi-table me-2"></i>
-                            Lista de Usuarios
+                            Lista de Cuentas
                         </h5>
-                    </div>        
-                  
-                    
-                    
+                    </div>
                     <div class="card-body bg-white">
                         <div class="table-responsive">
                             <table id="example" class="table table-striped table-hover">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>IdUsuario</th>
+                                        <th>IdCuenta</th>
                                         <th>IdCliente</th>
-                                        <th>Usuario</th>
-                                        <th>Contraseña</th>
-                                        <th>Tipo Usuario</th>
-                                        <th>Eliminado</th>
-                                        <th>Fecha de Creación</th> 
+                                        <th>Fecha Creación</th>
+                                        <th>Tipo de Cuenta</th>
+                                        <th>Número de Cuenta</th>
+                                        <th>CBU</th>
+                                        <th>Saldo</th> 
+                                        <th>Activa</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                
-                                	  <%
-					                    	List<entidades.Usuario> lista = (List<entidades.Usuario>) request.getAttribute("listaUsuarios");
-					                    
-					                    	if (lista != null) {
-					                        	for (Usuario usuario : lista) {                  
-					                    
-					                   %>                               
-                                
+                                <% List<entidades.Cuenta> listaCuentas = (List<entidades.Cuenta>) request.getAttribute("listaCuentas");
+                                                        if (listaCuentas != null) {
+                                                        for (entidades.Cuenta c : listaCuentas) {
+                                                        %>
                                     <tr>
-                                        <td><%= usuario.getId_usuario() %></td>
-                                        <td><%= usuario.getId_cliente() %></td>
-                                        <td><%= usuario.getUsuario() %></td>
-                                        <td><%= usuario.getContrasena() %></td>
-                                        <td><%= usuario.getTipo_usuario() %></td>
-                                        <td><%= usuario.getEliminado() %></td>
-                                        <td> <%= usuario.getFecha_creacion() %></td>                   
+                                        <td><%= c.getIdCuenta() %></td>
+                                        <td><%= c.getIdCliente() %></td>
+                                        <td><%= c.getFechaCreacion() %></td>
+                                        <td><%= c.getIdTipoCuenta() %></td>
+                                        <td><%= c.getNumeroCuenta() %></td>
+                                        <td><%= c.getCbu() %></td>
+                                        <td><strong><%= c.getSaldo() %></strong></td>
+                                        <td><% if(c.isActiva()) { %> Activada <% } else { %> Desactivada <% } %></td>                   
+                                        
                                         <td>
-                                            <div class="d-flex gap-1">                                            
-                                                <a href="modificarUsuario.jsp?id=<%= usuario.getId_usuario()%>&idCliente=<%= usuario.getId_cliente()%>
-                                                		&fechaCreacion=<%= usuario.getFecha_creacion()%>
-                                                		&usuario=<%= usuario.getUsuario()%>" class="btn btn-sm btn-outline-primary" title="Modificar Usuario">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <form action="ServletUsuario?eliminar=1" method="post">
-                                                	<input type="hidden" name="idCliente" value="<%= usuario.getId_cliente()%>" />
-                                                	<input type="hidden" name="idEliminar" value="<%= usuario.getId_usuario()%>" />
-                                                	<button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar Usuario"
-                                                		onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?')">
-                                                    	<i class="bi bi-trash"></i>
+                                            <div class="d-flex gap-1">
+                                                <button type="button" class="btn btn-sm btn-success" title="Activar cuenta" disabled>
+                                                    <i class="bi bi-check-circle"></i>
+                                                    Activar
+                                                </button>
+                                                <form action="ServletCuenta?eliminar=1" method="post" class="d-inline">
+                                                	<input type="hidden" name="idEliminar" value="<%= c.getIdCuenta() %>" />                               
+                                                	<button type="submit" class="btn btn-sm btn-danger" name="btnEliminarCuenta" title="Desactivar cuenta">
+                                                    	<i class="bi bi-x-circle"></i>
+                                                    Desactivar
                                                 	</button>
-                                                
                                                 </form>
                                             </div>
                                         </td>                   
-                                    </tr>                                  
-                                <% } } %>
+                                    </tr>
+                                     
+                                    <% } } %>
+                                    
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                    
                 </div>
                 
             </div>

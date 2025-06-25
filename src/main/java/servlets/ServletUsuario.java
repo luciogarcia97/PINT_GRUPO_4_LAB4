@@ -50,8 +50,8 @@ public class ServletUsuario extends HttpServlet {
 			usuario.setId_cliente(Integer.parseInt(request.getParameter("txtIDCliente").toString()));
 			usuario.setUsuario(request.getParameter("txtUsuario"));
 			usuario.setContrasena(request.getParameter("txtContrasena"));
-			usuario.setTipo_usuario("cliente6");
-			usuario.setEliminado(0);
+			usuario.setTipo_usuario("cliente");
+			usuario.setEliminado(1);
 			usuario.setFecha_creacion(LocalDate.now());
 
 			resultado = usuarioNegocio.insertarUsuario(usuario);
@@ -60,25 +60,16 @@ public class ServletUsuario extends HttpServlet {
 			RequestDispatcher rd = request.getRequestDispatcher("/registrarUsuario.jsp");
 			rd.forward(request, response);
 
-			if (request.getParameter("eliminar") != null) {
-
-				int idUsuario = Integer.parseInt(request.getParameter("idEliminar"));
-
-				resultado = usuarioNegocio.eliminarUsuario(idUsuario);
-
-				cargarFormulario(request, response);
-			}
-
 		}
 		
 		
 		if(request.getParameter("btnModificar") != null) {
 									
-			int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
+			int idUsuario = Integer.parseInt(request.getParameter("idUsuario").trim());
 			String usuarioNuevo = request.getParameter("txtNombre");
 			String clave = request.getParameter("txtContrasena");
-			int idCliente = Integer.parseInt(request.getParameter("idCliente"));
-			String fechaCreacionStr = request.getParameter("fechaCreacion");
+			int idCliente = Integer.parseInt(request.getParameter("idCliente").trim());
+			String fechaCreacionStr = request.getParameter("fechaCreacion").trim();
 						
 			LocalDate fechaCreacion = LocalDate.parse(fechaCreacionStr);
 			
@@ -88,7 +79,7 @@ public class ServletUsuario extends HttpServlet {
 			usuario.setUsuario(usuarioNuevo);
 			usuario.setContrasena(clave);
 			usuario.setTipo_usuario("cliente");
-			usuario.setEliminado(0);
+			usuario.setEliminado(1);
 			usuario.setFecha_creacion(fechaCreacion);
 			
 			if (usuarioNegocio.modificarUsuario(usuario)) {			 
@@ -105,16 +96,16 @@ public class ServletUsuario extends HttpServlet {
 		if(request.getParameter("eliminar") != null) {
 			
 			int idEliminar = Integer.parseInt(request.getParameter("idEliminar"));			
-		
+			int idCliente = Integer.parseInt(request.getParameter("idCliente"));
 			
-			/*if (usuarioNegocio.eliminarUsuario(idEliminar)) {			 
+			if (usuarioNegocio.eliminarUsuario(idEliminar, idCliente)) {			 
 							
 				List<Usuario> listaUsuarios = usuarioNegocio.obtenerUsuarios();
 				request.setAttribute("listaUsuarios", listaUsuarios);		    
 						   
 			    RequestDispatcher rd = request.getRequestDispatcher("/administrarUsuarios.jsp");
 				rd.forward(request, response);
-			 } */
+			 } 
 			
 		}
 		

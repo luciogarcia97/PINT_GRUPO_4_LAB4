@@ -12,6 +12,6 @@ public interface UsuarioNegocio {
     	    
     public boolean modificarUsuario(Usuario usuario);
     
-    public boolean eliminarUsuario(int idUsuario);
+    public boolean eliminarUsuario(int idUsuario, int idCliente);
 
 }

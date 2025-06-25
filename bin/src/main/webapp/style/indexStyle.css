@@ -1,0 +1,21 @@
+@charset "UTF-8";
+
+* {    
+  margin: 0;
+  padding: 0;
+}
+
+body {	 
+  background-image: url("../img/inicio1.jpg");
+  background-size: cover;         
+  background-repeat: no-repeat;   
+  background-position: center;    
+  background-attachment: fixed;   
+} 
+
+.inicio{
+	background-color: rgb(252, 250, 250);
+	border: 1px solid;
+  	border-radius: 5px;
+  	padding: 20px;
+}

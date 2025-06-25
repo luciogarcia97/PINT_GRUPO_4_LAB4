@@ -17,7 +17,6 @@
     	String idUsuario = request.getParameter("id");
 	    String idCliente = request.getParameter("idCliente");
 	    String fechaCreacion = request.getParameter("fechaCreacion");
-	    String usuario = request.getParameter("usuario");
 	%>
 
 
@@ -32,7 +31,7 @@
 			<div class="center row">
 	            <div class="mb-3">
 	                <label for="usuario" class="form-label">Usuario</label>
-	                <input type="text" class="form-control" id="usuario" placeholder="Usuario" name="txtNombre" value="<%= usuario %>" required>
+	                <input type="text" class="form-control" id="usuario" placeholder="Usuario" name="txtNombre" required>
 	            </div>
 	            <div class="mb-3">
 	                <label for="clave" class="form-label">Contraseña</label>
@@ -50,8 +49,7 @@
 	        </div>
 	
 	        <div class="mt-3">
-	            <button type="submit" class="btn btn-primary w-100" name="btnModificar" 
-	            	onclick="return confirm('¿Estás seguro de que deseas modificar este usuario?')">Modificar</button>	            
+	            <button type="submit" class="btn btn-primary w-100" name="btnModificar" >Modificar</button>
 	        </div>
 	    </div>
 </form>

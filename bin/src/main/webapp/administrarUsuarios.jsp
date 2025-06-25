@@ -75,10 +75,10 @@
                         <i class="bi bi-person-gear me-2"></i>
                         Administrar Usuarios
                     </h3>
-                    <a href="registrarUsuario.jsp" class="btn btn-success">
+                   <!--  <a href="registrarUsuario.jsp" class="btn btn-success">
                         <i class="bi bi-plus me-1"></i>
                         Registrar Usuario
-                    </a>
+                    </a> -->
                 </div>
                 
                 <div class="card shadow">
@@ -126,16 +126,13 @@
                                         <td> <%= usuario.getFecha_creacion() %></td>                   
                                         <td>
                                             <div class="d-flex gap-1">                                            
-                                                <a href="modificarUsuario.jsp?id=<%= usuario.getId_usuario()%>&idCliente=<%= usuario.getId_cliente()%>
-                                                		&fechaCreacion=<%= usuario.getFecha_creacion()%>
-                                                		&usuario=<%= usuario.getUsuario()%>" class="btn btn-sm btn-outline-primary" title="Modificar Usuario">
+                                                <a href="modificarUsuario.jsp?id=<%= usuario.getId_usuario()%>&idCliente=<%= usuario.getId_cliente()%>&fechaCreacion=<%= usuario.getFecha_creacion()%>" class="btn btn-sm btn-outline-primary" title="Modificar Usuario">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
                                                 <form action="ServletUsuario?eliminar=1" method="post">
                                                 	<input type="hidden" name="idCliente" value="<%= usuario.getId_cliente()%>" />
                                                 	<input type="hidden" name="idEliminar" value="<%= usuario.getId_usuario()%>" />
-                                                	<button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar Usuario"
-                                                		onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?')">
+                                                	<button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar Usuario">
                                                     	<i class="bi bi-trash"></i>
                                                 	</button>
                                                 
@@ -148,10 +145,22 @@
                             </table>
                         </div>
                     </div>
-                    
+                   
                 </div>
                 
             </div>
+             <%
+		boolean exito = false;
+		  if(request.getAttribute("cargoUsuario")!=null)  
+			  exito= (boolean)request.getAttribute("cargoUsuario");
+		
+		%>
+		<%if(exito){ %>
+		<label for="clave" style="display: block; text-align: center; font-size: 24px; color: white;">
+  Usuario agregado con éxito
+</label>
+		
+		<%} %>
         </div>
     </div>
 
