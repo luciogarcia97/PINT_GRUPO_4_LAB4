@@ -75,10 +75,10 @@
                         <i class="bi bi-person-gear me-2"></i>
                         Administrar Usuarios
                     </h3>
-                    <a href="registrarUsuario.jsp" class="btn btn-success">
+                   <!--  <a href="registrarUsuario.jsp" class="btn btn-success">
                         <i class="bi bi-plus me-1"></i>
                         Registrar Usuario
-                    </a>
+                    </a> -->
                 </div>
                 
                 <div class="card shadow">
@@ -144,10 +144,22 @@
                             </table>
                         </div>
                     </div>
-                    
+                   
                 </div>
                 
             </div>
+             <%
+		boolean exito = false;
+		  if(request.getAttribute("cargoUsuario")!=null)  
+			  exito= (boolean)request.getAttribute("cargoUsuario");
+		
+		%>
+		<%if(exito){ %>
+		<label for="clave" style="display: block; text-align: center; font-size: 24px; color: white;">
+  Usuario agregado con éxito
+</label>
+		
+		<%} %>
         </div>
     </div>
 

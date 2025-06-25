@@ -77,7 +77,16 @@ public class ServletCliente extends HttpServlet {
 			System.out.println("Cargue el cliente");
 			
 			resultado = clienteNegocio.insertarCliente(c);
-			if (resultado) System.out.println("Registre el cliente");
+			
+			if (resultado) {
+				System.out.println("Registre el cliente");
+				 int dni = c.getDni();
+				 int idCliente = clienteNegocio.obtenerIDCliente(dni);
+				 System.out.println("ID del cliente registrado: " + idCliente);
+
+				 request.setAttribute("IDCliente", idCliente);
+			} 
+			
 			request.setAttribute("resultado", resultado);
 			RequestDispatcher rd = request.getRequestDispatcher("/registrarUsuario.jsp");
 			rd.forward(request, response);

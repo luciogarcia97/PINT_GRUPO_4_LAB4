@@ -15,4 +15,6 @@ public interface ClienteNegocio {
 	
 	public List<Cliente> obtenerClientes();
 	
+	public int obtenerIDCliente(int dni); 
+	
 }

@@ -45,9 +45,10 @@ public class ServletUsuario extends HttpServlet {
 
 		Boolean resultado = false;
 		if (request.getParameter("btnRegistrarUsuario") != null) {
+			int idCliente = Integer.parseInt(request.getParameter("txtIDCliente"));
 			Usuario usuario = new Usuario();
-			usuario.setId_usuario(Integer.parseInt(request.getParameter("txtIDCliente").toString()));
-			usuario.setId_cliente(Integer.parseInt(request.getParameter("txtIDCliente").toString()));
+			usuario.setId_usuario(idCliente);
+			usuario.setId_cliente(idCliente);
 			usuario.setUsuario(request.getParameter("txtUsuario"));
 			usuario.setContrasena(request.getParameter("txtContrasena"));
 			usuario.setTipo_usuario("cliente6");
@@ -57,7 +58,7 @@ public class ServletUsuario extends HttpServlet {
 			resultado = usuarioNegocio.insertarUsuario(usuario);
 
 			request.setAttribute("cargoUsuario", resultado);
-			RequestDispatcher rd = request.getRequestDispatcher("/registrarUsuario.jsp");
+			RequestDispatcher rd = request.getRequestDispatcher("/administrarUsuarios.jsp");
 			rd.forward(request, response);
 
 			if (request.getParameter("eliminar") != null) {

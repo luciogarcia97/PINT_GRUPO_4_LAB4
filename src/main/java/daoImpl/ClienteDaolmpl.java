@@ -229,6 +229,42 @@ public class ClienteDaolmpl implements ClienteDao {
 
 		return resultado;
 	}
+
+
+	@Override
+	public int obtenerIDCliente(int dni) {
+	    PreparedStatement pst = null;
+	    ResultSet rs = null;
+	    Connection conexion = Conexion.getConexion().getSQLConexion();
+	    int idCliente = 0; 
+
+	    try {
+	        String query = "SELECT id_cliente FROM cliente WHERE dni = ?";
+	        pst = conexion.prepareStatement(query);
+	        pst.setInt(1, dni);
+	        rs = pst.executeQuery();
+
+	        if (rs.next()) {
+	            idCliente = rs.getInt("id_cliente");
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pst != null) pst.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return idCliente;
+	}
+
+
+
+	
 	
 	    
 }

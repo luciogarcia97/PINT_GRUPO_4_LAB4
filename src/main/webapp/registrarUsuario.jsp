@@ -36,7 +36,8 @@
 				<div class="center row">
 					<div class="mb-3"> <%//Si viene desde registrarCliente.jsp este campo se autocompleta%>
 		                <label for="usuario" class="form-label">ID de cliente</label>
-		                <input type="text" class="form-control" id="usuario" name="txtIDCliente"placeholder="ID de cliente" required>
+		               <input type="text" class="form-control" id="usuario" name="txtIDCliente" placeholder="ID de cliente" value="<%= request.getAttribute("IDCliente") %>" required>
+
 		            </div>
 		            <div class="mb-3">
 		                <label for="usuario" class="form-label">Usuario</label>
@@ -62,16 +63,7 @@
 		        </div>
 		    </div>
 		</form>
-		<%
-		boolean exito = false;
-		  if(request.getAttribute("cargoUsuario")!=null)  
-			  exito= (boolean)request.getAttribute("cargoUsuario");
 		
-		%>
-		<%if(exito){ %>
-		<label for="clave" class="form-label">usuario agregado con exito</label>
-		
-		<%} %>
 
     <script>
         function validarContraseñas() {
