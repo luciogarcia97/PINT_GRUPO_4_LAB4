@@ -134,8 +134,8 @@
 												</a>
 												<form action="ServletCliente?eliminar=1" method="post"
 													class="d-inline">
-													<input type="hidden" name="idEliminar"
-														value="<%= c.getIdCliente() %>" />
+													<input type="hidden" name="idCliente"
+														value="<%= c.getIdCliente() %>" />														
 													<button type="submit" class="btn btn-sm btn-outline-danger"
 														title="Eliminar Cliente" name="btnEliminarCliente">
 														<i class="bi bi-trash"></i>

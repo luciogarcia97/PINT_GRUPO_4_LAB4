@@ -131,26 +131,30 @@ public class ServletCliente extends HttpServlet {
 			} 
 		}
 		
-		if(request.getParameter("eliminar")!= null) 
-		{
+		if(request.getParameter("btnEliminarCliente")!= null) {
+					
+			int idCliente = Integer.parseInt(request.getParameter("idCliente"));			
 			
-			Boolean resultado2 = false;
+			int idEliminar = clienteNegocio.buscarPorIDUsuario(idCliente);			
 			
-			int idCliente = Integer.parseInt(request.getParameter("idEliminar"));
-			
-			resultado = clienteNegocio.eliminarCliente(idCliente);
-			
-			cargarFormulario(request, response);
+			if (clienteNegocio.eliminarUsuario(idEliminar, idCliente)) {			 
+							
+				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
+				request.setAttribute("listaClientes", listaClientes);		    
+						   
+			    RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
+				rd.forward(request, response);
+			 } else {
+					
+					request.setAttribute("error", "No se pudo eliminar el usuario.");
+				    List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
+				    request.setAttribute("listaClientes", listaClientes);		
+				    RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
+				    rd.forward(request, response);
+				}			
 		}
 		
 	}
 
-	private void cargarFormulario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
-       // List<Cliente> listadoClientes = 	clienteNegocio.obtenerClientes();
-        //request.setAttribute("listaClientes", listadoClientes);
-        
-        RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
-        rd.forward(request, response);
-    }
+
 }

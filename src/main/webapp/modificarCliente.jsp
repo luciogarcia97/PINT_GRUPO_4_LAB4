@@ -25,15 +25,15 @@
     %>
 
      <form class="w-75 mx-auto mt-5"  action="ServletCliente" method="post" onsubmit="return validarContraseñas()">
+	   
 	    <div class="inicio">
 	        <h2 class="text-center">Modificar cliente</h2>
 	
-	        <div class="row">
-	              <div class="mb-3 col-md-6">
+	        <div class="row">         
 	                
                     <input type="hidden"  name="idCliente" class="form-control" id="id"
                      value="<%= cliente != null ? cliente.getIdCliente() : "" %>" required>
-	            </div>
+
 	             <div class="mb-3 col-md-6">
 	                <label for="cuil" class="form-label">Cuil</label>
                     <input type="text" name="txtCuil" class="form-control" id="cuil"
@@ -102,6 +102,7 @@
         <div class="mt-3">
             <button type="submit" name="btnModificarCliente" value="btnModificarCliente" class="btn btn-primary w-100">Modificar</button>
         </div>
+    
     </div>
 </form>
 

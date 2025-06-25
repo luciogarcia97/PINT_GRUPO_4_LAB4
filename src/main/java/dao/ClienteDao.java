@@ -13,14 +13,20 @@ public interface ClienteDao {
 	public int ultimoIdCliente();
 	
 	public boolean insertarUsuario(Usuario usuario);
+	
+	public Cliente BuscarPorID(int id);
 
-    public Cliente BuscarPorID(int id); 
+	public int buscarPorIDUsuario(int id);
 
     public boolean ModificarCliente(Cliente cliente);
 	
     public List<Cliente> obtenerClientes();
     
     public boolean eliminarCliente(int idCliente);
+    
+    public boolean eliminarCuentasUsuario(int idCliente);
+    
+    public boolean eliminarUsuario(int idUsuario, int idCliente);
 
 }
 
