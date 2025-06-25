@@ -14,6 +14,7 @@ import dao.ClienteDao;
 import negocio.ClienteNegocio;
 import entidades.Cliente;
 import entidades.TipoCuenta;
+import entidades.Usuario;
 import negocioImpl.ClienteNegociolmpl;
 
 @WebServlet("/ServletCliente")
@@ -102,10 +103,14 @@ public class ServletCliente extends HttpServlet {
 			c.setProvincia(request.getParameter("txtProvincia"));
 			c.setCorreoElectronico(request.getParameter("txtEmail"));
 			
-			resultado = clienteNegocio.modificarCliente(c);
-			
-			request.setAttribute("resultado", resultado);
-			RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
+               if ( clienteNegocio.modificarCliente(c)) {			 
+				
+				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
+				request.setAttribute("listaClientes", listaClientes);		    
+			   
+			    RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
+			    rd.forward(request, response);
+			} 
 		}
 		
 		if(request.getParameter("eliminar")!= null) 

@@ -111,40 +111,45 @@ public class ClienteDaolmpl implements ClienteDao {
 	
 	public boolean ModificarCliente(Cliente cliente) 
 	{
-		 PreparedStatement pst = null;
-	     ResultSet rs = null;
-	     Connection conexion = Conexion.getConexion().getSQLConexion();
+		PreparedStatement pst = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+		boolean resultado = false;
 		
-		try 
-		{
-			String query = "UPDATE  cliente SET nombre = ?, apellido = ?,sexo = ?, direccion = ?,  localidad = ?, provincia = ?, correo_electronico = ? WHERE id_cliente =  ? ";
+		try {
+			String query = "UPDATE  cliente SET nombre = ?, apellido = ?,sexo = ?, direccion = ?,  localidad = ?, provincia = ?, correo_electronico = ? WHERE id_cliente =  ?";
+
 			pst = conexion.prepareStatement(query);
 			pst.setString(1, cliente.getNombre());
-			pst.setString(2, cliente.getApellido());
-			pst.setString(3, cliente.getSexo());
-			pst.setString(4, cliente.getDireccion());
+			pst.setString(2, cliente.getApellido());			
+			pst.setString(3, cliente.getSexo());			
+			pst.setString(4, cliente.getDireccion());			
 			pst.setString(5, cliente.getLocalidad());
-			pst.setString(6, cliente.getProvincia());
+			pst.setString(6, cliente.getProvincia());  
 			pst.setString(7, cliente.getCorreoElectronico());
-			pst.setInt(8, cliente.getIdCliente());
+			pst.setInt(8, cliente.getIdCliente());	
 			
-			 int filasAfectadas = pst.executeUpdate();		
-			 
-			return filasAfectadas > 0;
-		}
-		catch(Exception e) {
-          e.printStackTrace();
-          return false;
-      }
-		finally {
-			try {
-				if(rs != null) rs.close();
-				if(pst != null) pst.close();
-			}catch(SQLException e){
-				 e.printStackTrace();
+			if (pst.executeUpdate() > 0) {
+				conexion.commit();
+				resultado = true;
 			}
-		}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			try {
+				conexion.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		} finally {
+			try {
+				if (pst != null)
+					pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}		
 		
+		return resultado;		
 		
 	}
 	
