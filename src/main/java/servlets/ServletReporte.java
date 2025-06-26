@@ -48,27 +48,27 @@ public class ServletReporte extends HttpServlet {
 				Date fechaFin = null;
 
 				try {
-				    fechaInicio = (Date) sdf.parse(fechaInicioStr);
-				    fechaFin = (Date) sdf.parse(fechaFinStr);
+				    java.util.Date utilFechaInicio = sdf.parse(fechaInicioStr);
+				    java.util.Date utilFechaFin = sdf.parse(fechaFinStr);
+
+				    fechaInicio = new java.sql.Date(utilFechaInicio.getTime());
+				    fechaFin = new java.sql.Date(utilFechaFin.getTime());
 				} catch (ParseException e) {
 				    e.printStackTrace();
-				}			
-				
-				Date sqlFechaInicio = new Date(fechaInicio.getTime());
-			    Date sqlFechaFin = new Date(fechaFin.getTime());
+				}				
 				
 				switch (tipoReporte) {					
 					case "depositos":						
-						 resultadoGeneral = reporteNegocio.sumaDepositos(sqlFechaInicio, sqlFechaFin);
+						 resultadoGeneral = reporteNegocio.sumaDepositos(fechaInicio, fechaFin);
 						 break;
 					case "transferencias":
-						 resultadoGeneral = reporteNegocio.transferenciasRealizadas(sqlFechaInicio, sqlFechaFin);
+						 resultadoGeneral = reporteNegocio.transferenciasRealizadas(fechaInicio, fechaFin);
 						 break;
 					case "prestamos":
-						resultadoGeneral = reporteNegocio.prestamosOtorgados(sqlFechaInicio, sqlFechaFin);
+						resultadoGeneral = reporteNegocio.prestamosOtorgados(fechaInicio, fechaFin);
 						break;
 					case "clientes":
-						resultadoGeneral = reporteNegocio.clientesActivos(sqlFechaInicio, sqlFechaFin);
+						resultadoGeneral = reporteNegocio.clientesActivos(fechaInicio, fechaFin);
 						break;
 					default:	
 						break;				
