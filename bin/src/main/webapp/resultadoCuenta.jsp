@@ -56,7 +56,7 @@
                 </div>
 
                 <div class="text-center mt-4">
-                    <a href="administrarCuentas.jsp" class="btn btn-primary me-2">
+                    <a href="ServletCuenta?listar=1" class="btn btn-primary me-2">
                         <i class="bi bi-arrow-left"></i> Volver a Administrar Cuentas
                     </a>
                     <a href="ServletCuenta?Param=1" class="btn btn-success">

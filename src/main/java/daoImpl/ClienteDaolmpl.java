@@ -397,5 +397,42 @@ public class ClienteDaolmpl implements ClienteDao {
 
 		return resultado;
 	}
+	
+	@Override
+	public boolean existeCliente(int idCliente) {
+	    PreparedStatement pst = null;
+	    ResultSet rs = null;
+	    Connection conexion = Conexion.getConexion().getSQLConexion();
+	    int cantidad = 0;
+	    boolean existe = false;
+
+	    try {
+	        String query = "SELECT COUNT(*) as cantidad FROM cliente WHERE id_cliente = ? AND eliminado = false";
+	        pst = conexion.prepareStatement(query);
+	        pst.setInt(1, idCliente);
+	        rs = pst.executeQuery();
+
+	        if (rs.next()) {
+	            cantidad += rs.getInt("cantidad");
+	        }
+	        
+	        if (cantidad > 0) {
+	        	existe = true;
+	        }
+	        
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pst != null) pst.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return existe;
+	}
 
 }

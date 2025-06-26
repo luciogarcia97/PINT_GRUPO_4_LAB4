@@ -9,14 +9,18 @@ import daoImpl.CuentaDaoImpl;
 import entidades.Cuenta;
 import negocio.CuentaNegocio;
 
+import dao.ClienteDao;
+import daoImpl.ClienteDaolmpl;
+
 public class CuentaNegocioImpl implements CuentaNegocio {
 	
 	private CuentaDao cuentaDao;	
-	
+	private ClienteDao clienteDao;
 
 	public CuentaNegocioImpl() {
 		super();
 		this.cuentaDao = new CuentaDaoImpl();
+		this.clienteDao = new ClienteDaolmpl();
 	}
 
 	public CuentaNegocioImpl(CuentaDao cuentaDao) {		
@@ -59,16 +63,40 @@ public class CuentaNegocioImpl implements CuentaNegocio {
 		return cuentaDao.mapearCuenta(rs);
 	}
 	
+	@Override
 	public boolean eliminarCuenta(int idCuenta) {
-	
-		return cuentaDao.eliminarCuenta(idCuenta);
-		
+		return cuentaDao.cambiarEstadoCuenta(idCuenta, false);
 	}
 	
+	@Override
 	public List<Cuenta> obtenerCuentas(){
 		
 		return cuentaDao.obtenerCuentas();
 		
+	}
+	
+	@Override
+	public boolean puedeCrearCuenta(int idCliente) {
+	    int cantidadCuentas = cuentaDao.contarCuentasActivasPorCliente(idCliente);
+	    if(cantidadCuentas < 3) {
+	    	return true;
+	    }
+	    return false;
+	}
+	
+	@Override
+	public boolean existeCliente(int idCliente) {
+	    return clienteDao.existeCliente(idCliente);
+	}
+	
+	@Override
+	public boolean reactivarCuenta(int idCuenta) {
+	    return cuentaDao.cambiarEstadoCuenta(idCuenta, true);
+	}
+	
+	@Override
+	public Cuenta obtenerCuentaPorId(int idCuenta) {
+	    return cuentaDao.obtenerCuentaPorId(idCuenta);
 	}
 
 }

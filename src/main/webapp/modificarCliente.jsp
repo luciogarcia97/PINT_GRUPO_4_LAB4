@@ -35,11 +35,11 @@
                      value="<%= cliente != null ? cliente.getIdCliente() : "" %>" required>
 
 	             <div class="mb-3 col-md-6">
-	                <label for="cuil" class="form-label">Cuil</label>
-                    <input type="text" name="txtCuil" class="form-control" id="cuil"
+	              
+                    <input type="hidden" name="txtCuil" class="form-control" id="cuil"
                      value="<%= cliente != null ? cliente.getCuil() : "" %>" required>
-	            </div>
-	            <div class="mb-3 col-md-6">
+	            
+	           
 	                <label for="nombre" class="form-label">Nombre</label>
                     <input type="text" name="txtNombre" class="form-control" id="nombre"
                      value="<%= cliente != null ? cliente.getNombre() : "" %>" required>
