@@ -24,11 +24,15 @@ public interface CuentaDao {
 	    public boolean eliminarCuenta(int idCuenta);
 	    
 	    public List<Cuenta> obtenerCuentas();
-	    
+	    	    
 	    public int contarCuentasActivasPorCliente(int idCliente);
 	    
 	    public boolean cambiarEstadoCuenta(int idCuenta, boolean activa);
 	    
 	    public Cuenta obtenerCuentaPorId(int idCuenta);
+
+	    public Cuenta buscarPorID(int idCuenta);
+	    
+	    public boolean modificarCuenta(Cuenta cuenta);
 
 }

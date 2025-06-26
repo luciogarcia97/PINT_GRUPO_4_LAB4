@@ -262,7 +262,7 @@ public class CuentaDaoImpl implements CuentaDao {
 				e.printStackTrace();
 			}
 		}
-
+		System.out.print(listaCuentas);
 		return listaCuentas;
 	}
 	
@@ -364,4 +364,79 @@ public class CuentaDaoImpl implements CuentaDao {
 
 	    return cuenta;
 	}
+	@Override
+	public Cuenta buscarPorID(int idCuenta) {
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+		Cuenta cuenta = null;
+
+		try {
+			String query = "SELECT * FROM cuenta WHERE id_cuenta = ?";
+			pst = conexion.prepareStatement(query);
+			pst.setInt(1, idCuenta);
+			rs = pst.executeQuery();
+
+			if (rs.next()) {
+				cuenta = mapearCuenta(rs);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pst != null)
+					pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return cuenta;
+	}
+
+	@Override
+	public boolean modificarCuenta(Cuenta cuenta) {
+		PreparedStatement pst = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+		boolean resultado = false;
+
+		try {
+			String query = "UPDATE cuenta SET id_cliente = ?, id_tipo_cuenta = ?, numero_cuenta = ?, cbu = ?, saldo = ?, activa = ? WHERE id_cuenta = ?";
+
+			pst = conexion.prepareStatement(query);
+			pst.setInt(1, cuenta.getIdCliente());
+			pst.setInt(2, cuenta.getIdTipoCuenta());
+			pst.setString(3, cuenta.getNumeroCuenta());
+			pst.setString(4, cuenta.getCbu());
+			pst.setBigDecimal(5, cuenta.getSaldo());
+			pst.setBoolean(6, cuenta.isActiva());
+			pst.setInt(7, cuenta.getIdCuenta());
+
+			if (pst.executeUpdate() > 0) {
+				conexion.commit();
+				resultado = true;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			try {
+				conexion.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		} finally {
+			try {
+				if (pst != null)
+					pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return resultado;
+	}
+
 }
