@@ -1,0 +1,59 @@
+package negocioImpl;
+
+import java.util.List;
+
+import dao.UsuarioDao;
+import daoImpl.UsuarioDaoImpl;
+import entidades.Cliente;
+import entidades.Usuario;
+import negocio.UsuarioNegocio;
+
+public class UsuarioNegocioImpl implements UsuarioNegocio {
+
+	private UsuarioDao usuarioDao;
+	
+	
+	public UsuarioNegocioImpl() {
+		super();
+		this.usuarioDao = new UsuarioDaoImpl();
+	}
+
+	@Override
+	public boolean insertarUsuario(Usuario usuario) {
+
+		return usuarioDao.insertarUsuario(usuario);
+	}
+	
+	@Override
+	public boolean insertarCliente(Cliente cliente) {
+
+		return usuarioDao.insertarCliente(cliente);
+	}
+	
+	@Override
+	public int ultimoIdCliente() {
+		
+		return usuarioDao.ultimoIdCliente();
+	}
+	
+
+	@Override
+	public List<Usuario> obtenerUsuarios() {
+		
+		return usuarioDao.obtenerUsuarios();
+	}
+
+	@Override
+	public boolean modificarUsuario(Usuario usuario) {
+		
+		return usuarioDao.modificarUsuario(usuario);
+	}
+	
+	@Override
+	public boolean eliminarUsuario(int idUsuario, int idCliente) {
+		
+		return usuarioDao.eliminarUsuario(idUsuario, idCliente);
+		
+	}
+
+}

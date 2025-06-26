@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="entidades.Cuenta" %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -24,7 +26,9 @@
                 <i class="bi bi-bank2 me-2"></i>        
                 Administrador - Cuentas
             </a>
-            <button class="btn btn-outline-dark">Cerrar Sesión</button>        
+             <form action="ServletLogin" method="get" class="d-inline">
+            	<button class="btn btn-outline-dark" type="submit" name="btnCerrar">Cerrar Sesión</button>
+        	</form>        
         </div>
     </nav>
 
@@ -34,17 +38,17 @@
             <div class="col-2 d-flex flex-column align-items-center justify-content-start pt-4">
                 <div class="d-grid gap-2 w-100">
                     
-                    <a href="administrarClientes.jsp" class="btn btn-light">
+                    <a href="ServletCliente?listar=1" class="btn btn-light">
                         <i class="bi bi-people me-2"></i>
                         Administrar Clientes
                     </a>
                     
-                    <a href="administrarUsuarios.jsp" class="btn btn-light">
+                    <a href="ServletUsuario?listar=1" class="btn btn-light">
                         <i class="bi bi-person-gear me-2"></i>
                         Administrar Usuarios
                     </a>
                     
-                    <a href="administrarCuentas.jsp" class="btn btn-primary fw-bold">
+                    <a href="ServletCuenta?listar=1" class="btn btn-primary fw-bold">
                         <i class="bi bi-credit-card me-2"></i>
                         Administrar Cuentas
                     </a>
@@ -69,11 +73,26 @@
                         <i class="bi bi-credit-card me-2"></i>
                         Administrar Cuentas
                     </h3>
-                    <a href="registrarCuenta.jsp" class="btn btn-success">
-                        <i class="bi bi-plus me-1"></i>
-                        Registrar Cuenta
-                    </a>
+                    <a href="ServletCuenta?Param=1" class="btn btn-success">
+					    Registrar Cuenta
+					</a>
                 </div>
+                
+                <% if (request.getAttribute("error") != null) { %>
+				    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+				        <i class="bi bi-exclamation-triangle me-2"></i>
+				        <%= request.getAttribute("error") %>
+				        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+				    </div>
+				<% } %>
+				
+				<% if (request.getAttribute("exito") != null) { %>
+				    <div class="alert alert-success alert-dismissible fade show" role="alert">
+				        <i class="bi bi-check-circle me-2"></i>
+				        <%= request.getAttribute("exito") %>
+				        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+				    </div>
+				<% } %>
                 
                 <div class="card shadow">
                     <div class="card-header bg-primary text-white">
@@ -99,72 +118,47 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                <% List<entidades.Cuenta> listaCuentas = (List<entidades.Cuenta>) request.getAttribute("listaCuentas");
+                                                        if (listaCuentas != null) {
+                                                        for (entidades.Cuenta c : listaCuentas) {
+                                                        %>
                                     <tr>
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>15/01/2025</td>
-                                        <td>Caja de Ahorro</td>
-                                        <td>12345678</td>
-                                        <td>1234567890123456789012</td>
-                                        <td><strong>$25,000.00</strong></td>
-                                        <td>Sí</td>                   
+                                        <td><%= c.getIdCuenta() %></td>
+                                        <td><%= c.getIdCliente() %></td>
+                                        <td><%= c.getFechaCreacion() %></td>
+                                        <td><%= c.getIdTipoCuenta() %></td>
+                                        <td><%= c.getNumeroCuenta() %></td>
+                                        <td><%= c.getCbu() %></td>
+                                        <td><strong><%= c.getSaldo() %></strong></td>
+                                        <td><% if(c.isActiva()) { %> Activada <% } else { %> Desactivada <% } %></td>                   
+                                        
                                         <td>
                                             <div class="d-flex gap-1">
-                                                <button type="button" class="btn btn-sm btn-success" title="Activar cuenta" disabled>
-                                                    <i class="bi bi-check-circle"></i>
-                                                    Activar
-                                                </button>                               
-                                                <button type="button" class="btn btn-sm btn-danger" title="Desactivar cuenta">
-                                                    <i class="bi bi-x-circle"></i>
-                                                    Desactivar
-                                                </button>
-                                            </div>
+											    <% if (c.isActiva()) { %>
+											        <form action="ServletCuenta?eliminar=1" method="post" class="d-inline">
+											            <input type="hidden" name="idEliminar" value="<%= c.getIdCuenta() %>" />
+											            <button type="submit" class="btn btn-sm btn-danger" name="btnEliminarCuenta" 
+											                    title="Desactivar cuenta" onclick="return confirm('¿Está seguro que desea desactivar esta cuenta?')">
+											                <i class="bi bi-x-circle"></i>
+											                Desactivar
+											            </button>
+											        </form>
+											    <% } else { %>
+											        <form action="ServletCuenta?reactivar=1" method="post" class="d-inline">
+											            <input type="hidden" name="idReactivar" value="<%= c.getIdCuenta() %>" />
+											            <button type="submit" class="btn btn-sm btn-success" name="btnReactivarCuenta" 
+											                    title="Reactivar cuenta" onclick="return confirm('¿Está seguro que desea reactivar esta cuenta?')">
+											                <i class="bi bi-check-circle"></i>
+											                Reactivar
+											            </button>
+											        </form>
+											    <% } %>
+											</div>
                                         </td>                   
                                     </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>1</td>
-                                        <td>10/03/2025</td>
-                                        <td>Cuenta Corriente</td>
-                                        <td>87654321</td>
-                                        <td>0987654321098765432109</td>
-                                        <td><strong>$15,500.50</strong></td>
-                                        <td>Sí</td>                   
-                                        <td>
-                                            <div class="d-flex gap-1">
-                                                <button type="button" class="btn btn-sm btn-success" title="Activar cuenta" disabled>
-                                                    <i class="bi bi-check-circle"></i>
-                                                    Activar
-                                                </button>                               
-                                                <button type="button" class="btn btn-sm btn-danger" title="Desactivar cuenta">
-                                                    <i class="bi bi-x-circle"></i>
-                                                    Desactivar
-                                                </button>
-                                            </div>
-                                        </td>                   
-                                    </tr>
-                                    <tr>
-                                        <td>3</td>
-                                        <td>2</td>
-                                        <td>20/02/2025</td>
-                                        <td>Caja de Ahorro</td>
-                                        <td>11223344</td>
-                                        <td>1122334455667788990011</td>
-                                        <td><strong>$30,750.25</strong></td>
-                                        <td>No</td>                   
-                                        <td>
-                                            <div class="d-flex gap-1">
-                                                <button type="button" class="btn btn-sm btn-success" title="Activar cuenta">
-                                                    <i class="bi bi-check-circle"></i>
-                                                    Activar
-                                                </button>                               
-                                                <button type="button" class="btn btn-sm btn-danger" title="Desactivar cuenta" disabled>
-                                                    <i class="bi bi-x-circle"></i>
-                                                    Desactivar
-                                                </button>
-                                            </div>
-                                        </td>                   
-                                    </tr>
+                                     
+                                    <% } } %>
+                                    
                                 </tbody>
                             </table>
                         </div>

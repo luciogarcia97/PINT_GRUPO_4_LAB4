@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List"%>
+<%@ page import="entidades.Usuario"%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -26,7 +28,9 @@
                 <i class="bi bi-bank2 me-2"></i>        
                 Administrador - Usuarios
             </a>
-            <button class="btn btn-outline-dark">Cerrar Sesión</button>        
+             <form action="ServletLogin" method="get" class="d-inline">
+            	<button class="btn btn-outline-dark" type="submit" name="btnCerrar">Cerrar Sesión</button>
+        	</form>       
         </div>
     </nav>
 
@@ -36,17 +40,17 @@
             <div class="col-2 d-flex flex-column align-items-center justify-content-start pt-4">
                 <div class="d-grid gap-2 w-100">
                     
-                    <a href="administrarClientes.jsp" class="btn btn-light">
+                    <a href="ServletCliente?listar=1" class="btn btn-light">
                         <i class="bi bi-people me-2"></i>
                         Administrar Clientes
                     </a>
                     
-                    <a href="administrarUsuarios.jsp" class="btn btn-primary fw-bold">
+                    <a href="ServletUsuario?listar=1" class="btn btn-primary fw-bold">
                         <i class="bi bi-person-gear me-2"></i>
                         Administrar Usuarios
                     </a>
                     
-                    <a href="administrarCuentas.jsp" class="btn btn-light">
+                    <a href="ServletCuenta?listar=1" class="btn btn-light">
                         <i class="bi bi-credit-card me-2"></i>
                         Administrar Cuentas
                     </a>
@@ -83,7 +87,10 @@
                             <i class="bi bi-table me-2"></i>
                             Lista de Usuarios
                         </h5>
-                    </div>
+                    </div>        
+                  
+                    
+                    
                     <div class="card-body bg-white">
                         <div class="table-responsive">
                             <table id="example" class="table table-striped table-hover">
@@ -100,67 +107,48 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                
+                                	  <%
+					                    	List<entidades.Usuario> lista = (List<entidades.Usuario>) request.getAttribute("listaUsuarios");
+					                    
+					                    	if (lista != null) {
+					                        	for (Usuario usuario : lista) {                  
+					                    
+					                   %>                               
+                                
                                     <tr>
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>lmessi</td>
-                                        <td>****</td>
-                                        <td>Cliente</td>
-                                        <td>No</td>
-                                        <td>15/01/2025</td>                   
+                                        <td><%= usuario.getId_usuario() %></td>
+                                        <td><%= usuario.getId_cliente() %></td>
+                                        <td><%= usuario.getUsuario() %></td>
+                                        <td><%= usuario.getContrasena() %></td>
+                                        <td><%= usuario.getTipo_usuario() %></td>
+                                        <td><%= usuario.getEliminado() %></td>
+                                        <td> <%= usuario.getFecha_creacion() %></td>                   
                                         <td>
-                                            <div class="d-flex gap-1">
-                                                <a href="modificarUsuario.jsp" class="btn btn-sm btn-outline-primary" title="Modificar Usuario">
+                                            <div class="d-flex gap-1">                                            
+                                                <a href="modificarUsuario.jsp?id=<%= usuario.getId_usuario()%>&idCliente=<%= usuario.getId_cliente()%>
+                                                		&fechaCreacion=<%= usuario.getFecha_creacion()%>
+                                                		&usuario=<%= usuario.getUsuario()%>" class="btn btn-sm btn-outline-primary" title="Modificar Usuario">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
-                                                <button type="button" class="btn btn-sm btn-outline-danger" title="Eliminar Usuario">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
+                                                <form action="ServletUsuario?eliminar=1" method="post">
+                                                	<input type="hidden" name="idCliente" value="<%= usuario.getId_cliente()%>" />
+                                                	<input type="hidden" name="idEliminar" value="<%= usuario.getId_usuario()%>" />
+                                                	<button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar Usuario"
+                                                		onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?')">
+                                                    	<i class="bi bi-trash"></i>
+                                                	</button>
+                                                
+                                                </form>
                                             </div>
                                         </td>                   
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>2</td>
-                                        <td>mcuadrado</td>
-                                        <td>****</td>
-                                        <td>Cliente</td>
-                                        <td>No</td>
-                                        <td>20/02/2025</td>                    
-                                        <td>
-                                            <div class="d-flex gap-1">
-                                                <a href="modificarUsuario.jsp" class="btn btn-sm btn-outline-primary" title="Modificar Usuario">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <button type="button" class="btn btn-sm btn-outline-danger" title="Eliminar Usuario">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>                   
-                                    </tr>
-                                    <tr>
-                                        <td>3</td>
-                                        <td>0</td>
-                                        <td>admin</td>
-                                        <td>****</td>
-                                        <td>Administrador</td>
-                                        <td>Si</td>
-                                        <td>01/01/2025</td>                    
-                                        <td>
-                                            <div class="d-flex gap-1">
-                                                <a href="modificarUsuario.jsp" class="btn btn-sm btn-outline-primary" title="Modificar Usuario">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <button type="button" class="btn btn-sm btn-outline-danger" title="Eliminar Usuario" disabled>
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>                   
-                                    </tr>
+                                    </tr>                                  
+                                <% } } %>
                                 </tbody>
                             </table>
                         </div>
                     </div>
+                    
                 </div>
                 
             </div>
