@@ -50,7 +50,7 @@
                         Administrar Usuarios
                     </a>
                     
-                    <a href="administrarCuentas.jsp" class="btn btn-light">
+                    <a href="ServletCuenta?listar=1" class="btn btn-light">
                         <i class="bi bi-credit-card me-2"></i>
                         Administrar Cuentas
                     </a>

@@ -1,16 +1,14 @@
 package daoImpl;
 
+import dao.Conexion;
+import dao.CuentaDao;
+import entidades.Cuenta;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import dao.Conexion;
-import dao.CuentaDao;
-import entidades.Cliente;
-import entidades.Cuenta;
 
 public class CuentaDaoImpl implements CuentaDao {
 
@@ -31,6 +29,7 @@ public class CuentaDaoImpl implements CuentaDao {
 			pst.setString(5, cuenta.getCbu());
 			pst.setBigDecimal(6, cuenta.getSaldo());
 			pst.setBoolean(7, cuenta.isActiva());
+			
 
 			if (pst.executeUpdate() > 0) {
 				conexion.commit();
@@ -144,7 +143,7 @@ public class CuentaDaoImpl implements CuentaDao {
 			if (rs.next()) {
 				existe = rs.getInt(1) > 0;
 			}
-
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -266,7 +265,105 @@ public class CuentaDaoImpl implements CuentaDao {
 		System.out.print(listaCuentas);
 		return listaCuentas;
 	}
+	
+	@Override
+	public int contarCuentasActivasPorCliente(int idCliente) {
+	    PreparedStatement pst = null;
+	    ResultSet rs = null;
+	    Connection conexion = Conexion.getConexion().getSQLConexion();
+	    int cantidadCuentas = 0;
 
+	    try {
+	        String query = "SELECT COUNT(*) as cantidad FROM cuenta WHERE id_cliente = ? AND activa = true";
+	        pst = conexion.prepareStatement(query);
+	        pst.setInt(1, idCliente);
+	        rs = pst.executeQuery();
+
+	        if (rs.next()) {
+	            cantidadCuentas = rs.getInt("cantidad");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pst != null) pst.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return cantidadCuentas;
+	}
+	
+	@Override
+	public boolean cambiarEstadoCuenta(int idCuenta, boolean activa) {
+	    PreparedStatement pst = null;
+	    Connection conexion = Conexion.getConexion().getSQLConexion();
+	    boolean resultado = false;
+	    
+	    try {
+	        String query = "UPDATE cuenta SET activa = ? WHERE id_cuenta = ?";
+	        pst = conexion.prepareStatement(query);
+	        pst.setBoolean(1, activa);
+	        pst.setInt(2, idCuenta);
+	        	        
+	        int filasAfectadas = pst.executeUpdate();
+	        if (filasAfectadas > 0) {
+	        	conexion.commit();
+	        	resultado = true;
+	        }
+	        
+	        	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        resultado = false;
+	    } finally {
+	        try {
+	            if (pst != null) pst.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    
+	    return resultado;
+	}
+	
+	@Override
+	public Cuenta obtenerCuentaPorId(int idCuenta) {
+	    PreparedStatement pst = null;
+	    ResultSet rs = null;
+	    Connection conexion = Conexion.getConexion().getSQLConexion();
+	    Cuenta cuenta = null;
+
+	    try {
+	        String query = "SELECT c.id_cuenta, c.id_cliente, c.fecha_creacion, c.id_tipo_cuenta, c.numero_cuenta, c.cbu, c.saldo, c.activa, ct.nombre as tipo_nombre " +
+	                      "FROM cuenta c " +
+	                      "INNER JOIN cuenta_tipo ct ON c.id_tipo_cuenta = ct.id " +
+	                      "WHERE c.id_cuenta = ?";
+	        
+	        pst = conexion.prepareStatement(query);
+	        pst.setInt(1, idCuenta);
+	        rs = pst.executeQuery();
+
+	        if (rs.next()) {
+	            cuenta = mapearCuenta(rs);
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pst != null) pst.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return cuenta;
+	}
 	@Override
 	public Cuenta buscarPorID(int idCuenta) {
 		PreparedStatement pst = null;

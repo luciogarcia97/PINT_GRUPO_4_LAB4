@@ -38,9 +38,7 @@ public class ServletLogin extends HttpServlet {
 			List<Usuario> lista = usuarioNegocio.obtenerUsuarios();				
 			
 			for(Usuario usuarioLog : lista) {
-				
-				System.out.println(usuarioLog.toString());
-				
+								
 				if(usuarioLog.getUsuario().equals(usuario) &&
 				   usuarioLog.getContrasena().equals(contrasena)) {					
 					

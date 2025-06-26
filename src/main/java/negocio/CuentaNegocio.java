@@ -28,4 +28,12 @@ public interface CuentaNegocio {
     
     public boolean modificarCuenta(Cuenta cuenta);
 
+    public boolean puedeCrearCuenta(int idCliente);
+    
+    public boolean existeCliente(int idCliente);
+    
+    public boolean reactivarCuenta(int idCuenta);
+    
+    public Cuenta obtenerCuentaPorId(int idCuenta);
+
 }

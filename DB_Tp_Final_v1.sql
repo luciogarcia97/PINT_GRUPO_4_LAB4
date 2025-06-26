@@ -175,8 +175,7 @@ ALTER TABLE movimiento
 -- Datos de prueba
 INSERT INTO cuenta_tipo (nombre) VALUES 
 ('Cuenta Corriente'),
-('Caja de Ahorro'),
-('Cuenta de Inversión');
+('Caja de Ahorro');
 
 INSERT INTO movimiento_tipo (descripcion) VALUES 
 ('Alta de cuenta'),

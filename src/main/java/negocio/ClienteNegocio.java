@@ -18,8 +18,18 @@ public interface ClienteNegocio {
 	
 	public boolean eliminarCliente(int idCliente);
 	
+	public boolean eliminarCuentasUsuario(int idCliente);
+	    
+	public boolean eliminarUsuario(int idUsuario, int idCliente);
+	
 	public List<Cliente> obtenerClientes();
     
+	public int buscarPorIDUsuario(int id);
+	
 	public Cliente BuscarPorID(int id);
+	
+	public boolean existeCuil(String cuil);
+    
+    public boolean existeDni(int dni);
 	
 }

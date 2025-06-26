@@ -81,7 +81,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
             pst.setString(9, cliente.getLocalidad());
             pst.setString(10, cliente.getProvincia());
             pst.setString(11, cliente.getCorreoElectronico());
-            pst.setBoolean(12, true); 
+            pst.setBoolean(12, false); 
             
             if (pst.executeUpdate() > 0) {
                 conexion.commit();
@@ -146,7 +146,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
 		Connection conexion = Conexion.getConexion().getSQLConexion();
 
 		try {
-			String query = "SELECT * FROM usuario WHERE eliminado = 1";
+			String query = "SELECT * FROM usuario WHERE eliminado = 0";
 			pst = conexion.prepareStatement(query);			
 			rs = pst.executeQuery();
 
@@ -231,7 +231,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
 		boolean resultado = false;
 		
 		try {
-			String query = "UPDATE usuario SET eliminado = 0 WHERE id_usuario = ?";
+			String query = "UPDATE usuario SET eliminado = 1 WHERE id_usuario = ?";
 			pst = conexion.prepareStatement(query);
 			pst.setInt(1, idUsuario);
 			
@@ -266,7 +266,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
 		boolean resultado = false;
 		
 		try {
-			String query = "UPDATE cliente SET eliminado = 0 WHERE id_cliente = ?";
+			String query = "UPDATE cliente SET eliminado = 1 WHERE id_cliente = ?";
 			pst = conexion.prepareStatement(query);
 			pst.setInt(1, idCliente);
 			
