@@ -23,5 +23,9 @@ public interface CuentaNegocio {
     public boolean eliminarCuenta(int idCuenta);
     
     public List<Cuenta> obtenerCuentas();
+    
+    public Cuenta buscarPorID(int idCuenta);
+    
+    public boolean modificarCuenta(Cuenta cuenta);
 
 }

@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -37,6 +38,17 @@ private static final long serialVersionUID = 1L;
     }
     
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Manejo de mensajes de éxito y error desde la sesión
+        Object exito = request.getSession().getAttribute("exito");
+        if (exito != null) {
+            request.setAttribute("exito", exito);
+            request.getSession().removeAttribute("exito");
+        }
+        Object error = request.getSession().getAttribute("error");
+        if (error != null) {
+            request.setAttribute("error", error);
+            request.getSession().removeAttribute("error");
+        }
         
         if (request.getParameter("Param") != null) {
         	cargarFormulario(request, response);
@@ -46,8 +58,10 @@ private static final long serialVersionUID = 1L;
 	    if (request.getParameter("listar") != null) {
 	    	
 	        List<Cuenta> listaCuentas = cuentaNegocio.obtenerCuentas();
+	        List<TipoCuenta> listaTipos = tipoCuentaNegocio.obtenerTiposCuenta();
 	        
 	        request.setAttribute("listaCuentas", listaCuentas);
+	        request.setAttribute("listaTipos", listaTipos);
 	        
 	        RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
 	        rd.forward(request, response);
@@ -117,6 +131,69 @@ private static final long serialVersionUID = 1L;
                 e.printStackTrace();
                 request.setAttribute("error", "Error interno del sistema");
                 cargarFormulario(request, response);
+            }
+        }
+        
+        if (request.getParameter("btnModificarCuenta") != null) {
+            try {
+                // Obtener datos del formulario
+                int idCuenta = Integer.parseInt(request.getParameter("idCuenta"));
+                int idCliente = Integer.parseInt(request.getParameter("txtIdCliente"));
+                int idTipoCuenta = Integer.parseInt(request.getParameter("ddlTipoCuenta")) ;
+                String numeroCuenta = request.getParameter("txtNumeroCuenta");
+                String cbu = request.getParameter("txtCbu");
+                BigDecimal saldo = new BigDecimal(request.getParameter("txtSaldo"));
+                boolean activa = Boolean.parseBoolean(request.getParameter("txtActiva"));
+                
+                // Validar que la cuenta existe
+                Cuenta cuentaExistente = cuentaNegocio.buscarPorID(idCuenta);
+                if (cuentaExistente == null) {
+                    request.setAttribute("error", "La cuenta no existe");
+                    RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
+                    rd.forward(request, response);
+                    return;
+                }
+                
+                // Validar que el tipo de cuenta existe
+                TipoCuenta tipoCuenta = tipoCuentaNegocio.obtenerTipoPorId(idTipoCuenta);
+                if (tipoCuenta == null) {
+                    request.setAttribute("error", "Tipo de cuenta no válido");
+                    RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
+                    rd.forward(request, response);
+                    return;
+                }
+                
+                // Crear objeto cuenta con los datos modificados
+                Cuenta cuentaModificada = new Cuenta();
+                cuentaModificada.setIdCuenta(idCuenta);
+                cuentaModificada.setIdCliente(idCliente);
+                cuentaModificada.setIdTipoCuenta(idTipoCuenta);
+                cuentaModificada.setNumeroCuenta(numeroCuenta);
+                cuentaModificada.setCbu(cbu);
+                cuentaModificada.setSaldo(saldo);
+                cuentaModificada.setActiva(activa);
+                cuentaModificada.setFechaCreacion(cuentaExistente.getFechaCreacion()); // Mantener fecha original
+                
+                // Modificar en base de datos
+                boolean resultado = cuentaNegocio.modificarCuenta(cuentaModificada);
+                
+                if (resultado) {
+                    request.getSession().setAttribute("exito", "Cuenta modificada exitosamente");
+                } else {
+                    request.getSession().setAttribute("error", "Error al modificar la cuenta. Intente nuevamente.");
+                }
+                
+                response.sendRedirect("ServletCuenta?listar=1");
+                
+            } catch (NumberFormatException e) {
+                request.setAttribute("error", "Datos numéricos inválidos");
+                RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
+                rd.forward(request, response);
+            } catch (Exception e) {
+                e.printStackTrace();
+                request.setAttribute("error", "Error interno del sistema");
+                RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
+                rd.forward(request, response);
             }
         }
         

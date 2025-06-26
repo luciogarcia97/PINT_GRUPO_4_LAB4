@@ -71,4 +71,14 @@ public class CuentaNegocioImpl implements CuentaNegocio {
 		
 	}
 
+	@Override
+	public Cuenta buscarPorID(int idCuenta) {
+		return cuentaDao.buscarPorID(idCuenta);
+	}
+
+	@Override
+	public boolean modificarCuenta(Cuenta cuenta) {
+		return cuentaDao.modificarCuenta(cuenta);
+	}
+
 }
