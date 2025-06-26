@@ -61,9 +61,7 @@ public class ServletUsuario extends HttpServlet {
 			cliente.setProvincia(request.getParameter("txtProvincia"));
 			cliente.setCorreoElectronico(request.getParameter("txtCorreo"));
 			cliente.setEliminado(true);
-			
-			System.out.println("Cargue el cliente");
-			
+						
 			resultado1 = usuarioNegocio.insertarCliente(cliente);
 			int ultimoId = usuarioNegocio.ultimoIdCliente();
 			

@@ -78,6 +78,22 @@
 					</a>
                 </div>
                 
+                <% if (request.getAttribute("error") != null) { %>
+				    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+				        <i class="bi bi-exclamation-triangle me-2"></i>
+				        <%= request.getAttribute("error") %>
+				        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+				    </div>
+				<% } %>
+				
+				<% if (request.getAttribute("exito") != null) { %>
+				    <div class="alert alert-success alert-dismissible fade show" role="alert">
+				        <i class="bi bi-check-circle me-2"></i>
+				        <%= request.getAttribute("exito") %>
+				        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+				    </div>
+				<% } %>
+                
                 <div class="card shadow">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">
@@ -118,18 +134,26 @@
                                         
                                         <td>
                                             <div class="d-flex gap-1">
-                                                <button type="button" class="btn btn-sm btn-success" title="Activar cuenta" disabled>
-                                                    <i class="bi bi-check-circle"></i>
-                                                    Activar
-                                                </button>
-                                                <form action="ServletCuenta?eliminar=1" method="post" class="d-inline">
-                                                	<input type="hidden" name="idEliminar" value="<%= c.getIdCuenta() %>" />                               
-                                                	<button type="submit" class="btn btn-sm btn-danger" name="btnEliminarCuenta" title="Desactivar cuenta">
-                                                    	<i class="bi bi-x-circle"></i>
-                                                    Desactivar
-                                                	</button>
-                                                </form>
-                                            </div>
+											    <% if (c.isActiva()) { %>
+											        <form action="ServletCuenta?eliminar=1" method="post" class="d-inline">
+											            <input type="hidden" name="idEliminar" value="<%= c.getIdCuenta() %>" />
+											            <button type="submit" class="btn btn-sm btn-danger" name="btnEliminarCuenta" 
+											                    title="Desactivar cuenta" onclick="return confirm('¿Está seguro que desea desactivar esta cuenta?')">
+											                <i class="bi bi-x-circle"></i>
+											                Desactivar
+											            </button>
+											        </form>
+											    <% } else { %>
+											        <form action="ServletCuenta?reactivar=1" method="post" class="d-inline">
+											            <input type="hidden" name="idReactivar" value="<%= c.getIdCuenta() %>" />
+											            <button type="submit" class="btn btn-sm btn-success" name="btnReactivarCuenta" 
+											                    title="Reactivar cuenta" onclick="return confirm('¿Está seguro que desea reactivar esta cuenta?')">
+											                <i class="bi bi-check-circle"></i>
+											                Reactivar
+											            </button>
+											        </form>
+											    <% } %>
+											</div>
                                         </td>                   
                                     </tr>
                                      

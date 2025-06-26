@@ -27,6 +27,8 @@ public interface ClienteDao {
     public boolean eliminarCuentasUsuario(int idCliente);
     
     public boolean eliminarUsuario(int idUsuario, int idCliente);
+    
+    public boolean existeCliente(int idCliente);
 
 }
 
