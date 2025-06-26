@@ -68,12 +68,7 @@ public class ServletCliente extends HttpServlet {
 			cliente.setLocalidad(request.getParameter("txtLocalidad"));
 			cliente.setProvincia(request.getParameter("txtProvincia"));
 			cliente.setCorreoElectronico(request.getParameter("txtCorreo"));
-			cliente.setEliminado(false);
-						
-			resultado1 = clienteNegocio.insertarCliente(cliente);
-			int ultimoId = clienteNegocio.ultimoIdCliente();
-			
-			cliente.setEliminado(true);
+			cliente.setEliminado(false);				
 			
 			if(clienteNegocio.existeDni(cliente.getDni())) 
 			{
@@ -82,6 +77,7 @@ public class ServletCliente extends HttpServlet {
 
 				RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
 				rd.forward(request, response);	
+				return;
 			}
 			if(clienteNegocio.existeCuil(cliente.getCuil()))
 			{
@@ -90,6 +86,7 @@ public class ServletCliente extends HttpServlet {
 
 				RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
 				rd.forward(request, response);
+				return;
 			}
 			
 			
@@ -106,13 +103,14 @@ public class ServletCliente extends HttpServlet {
 			
 			for(Usuario u : listaUsuario) // Chequea que ya exista ese nombre de usuario de un usuario activo
 			{
-				if(u.getUsuario().equals(usuario.getUsuario()) && u.getEliminado() == 1) 
+				if(u.getUsuario().equals(usuario.getUsuario())) 
 				{
 					// vuelve al registro con un cartel de que hubo un usuario repetido
 					request.setAttribute("usuario", 1);
 	
 					RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
 					rd.forward(request, response);
+					return;
 				}
 			}
 			
