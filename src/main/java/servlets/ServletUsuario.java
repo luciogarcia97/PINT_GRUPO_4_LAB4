@@ -60,7 +60,7 @@ public class ServletUsuario extends HttpServlet {
 			cliente.setLocalidad(request.getParameter("txtLocalidad"));
 			cliente.setProvincia(request.getParameter("txtProvincia"));
 			cliente.setCorreoElectronico(request.getParameter("txtCorreo"));
-			cliente.setEliminado(true);
+			cliente.setEliminado(false);
 			
 			System.out.println("Cargue el cliente");
 			
