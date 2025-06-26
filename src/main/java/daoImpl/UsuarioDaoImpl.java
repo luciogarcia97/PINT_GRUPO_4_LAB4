@@ -266,7 +266,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
 		boolean resultado = false;
 		
 		try {
-			String query = "UPDATE cliente SET eliminado = 0 WHERE id_cliente = ?";
+			String query = "UPDATE cliente SET eliminado = 1 WHERE id_cliente = ?";
 			pst = conexion.prepareStatement(query);
 			pst.setInt(1, idCliente);
 			
