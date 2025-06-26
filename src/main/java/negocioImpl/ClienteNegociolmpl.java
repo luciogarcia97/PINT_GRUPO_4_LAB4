@@ -79,6 +79,20 @@ public class ClienteNegociolmpl implements ClienteNegocio {
 		
 		return clienteDao.BuscarPorID(id);
 	}
+	
+	@Override
+	public boolean existeCuil(String cuil) {
+		
+		return clienteDao.existeCuil(cuil);
+		
+	}
+    
+	@Override
+    public boolean existeDni(int dni) {
+		
+		return clienteDao.existeDni(dni);
+		
+	}
     
 }
 	

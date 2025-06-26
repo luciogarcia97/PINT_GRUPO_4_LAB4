@@ -17,17 +17,19 @@ import entidades.Cliente;
 import entidades.TipoCuenta;
 import entidades.Usuario;
 import negocioImpl.ClienteNegociolmpl;
+import negocioImpl.UsuarioNegocioImpl;
 
 @WebServlet("/ServletCliente")
 public class ServletCliente extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private ClienteNegociolmpl clienteNegocio;
+	private UsuarioNegocioImpl usuarioNegocio;
        
    
     public ServletCliente() {
         super();
         this.clienteNegocio = new ClienteNegociolmpl();
-        
+        this.usuarioNegocio = new UsuarioNegocioImpl();
         
     }
 
@@ -67,38 +69,67 @@ public class ServletCliente extends HttpServlet {
 			cliente.setProvincia(request.getParameter("txtProvincia"));
 			cliente.setCorreoElectronico(request.getParameter("txtCorreo"));
 			cliente.setEliminado(true);
-						
-			resultado1 = clienteNegocio.insertarCliente(cliente);
-			int ultimoId = clienteNegocio.ultimoIdCliente();
 			
+			if(clienteNegocio.existeDni(cliente.getDni())) 
+			{
+				// vuelve al registro con un cartel de que hubo un dni repetido
+				request.setAttribute("dni", 1);
+
+				RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
+				rd.forward(request, response);	
+			}
+			if(clienteNegocio.existeCuil(cliente.getCuil()))
+			{
+				// vuelve al registro con un cartel de que hubo un cuil repetido
+				request.setAttribute("cuil", 1);
+
+				RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
+				rd.forward(request, response);
+			}
+			
+			
+			int ultimoId = clienteNegocio.ultimoIdCliente();	// Busca en DB el ultimo Id_cliente
+			List<Usuario> listaUsuario = usuarioNegocio.obtenerUsuarios();	
+		
 			Usuario usuario = new Usuario();			
-			usuario.setId_cliente(ultimoId);
+			usuario.setId_cliente(ultimoId + 1);
 			usuario.setUsuario(request.getParameter("txtUsuario"));
 			usuario.setContrasena(request.getParameter("txtContrasena"));
 			usuario.setTipo_usuario("cliente");
 			usuario.setEliminado(1);
 			usuario.setFecha_creacion(LocalDate.now());
-
-			resultado = clienteNegocio.insertarUsuario(usuario);
+			
+			for(Usuario u : listaUsuario) // Chequea que ya exista ese nombre de usuario de un usuario activo
+			{
+				if(u.getUsuario().equals(usuario.getUsuario()) && u.getEliminado() == 1) 
+				{
+					// vuelve al registro con un cartel de que hubo un usuario repetido
+					request.setAttribute("usuario", 1);
+	
+					RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
+					rd.forward(request, response);
+				}
+			}
+			
+			resultado1 = clienteNegocio.insertarCliente(cliente); // Guarda en DB al cliente
+			resultado = clienteNegocio.insertarUsuario(usuario); // Guarda en DB al usuario
 
 			if(resultado1 && ultimoId != -1 && resultado) {
-				
+					
 				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
 				request.setAttribute("listaClientes", listaClientes);
 
 				RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
 				rd.forward(request, response);				
-				
+					
 			} else {
-				
+					
 				request.setAttribute("error", "No se pudo eliminar el usuario.");
-			    List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
-			    request.setAttribute("listaUsuarios", listaClientes);		
-			    RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
-			    rd.forward(request, response);
-			}
-			
-			
+				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
+				request.setAttribute("listaUsuarios", listaClientes);		
+				RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
+				rd.forward(request, response);
+			}							
 		}
 		
 		if(request.getParameter("btnModificarCliente")!= null) {

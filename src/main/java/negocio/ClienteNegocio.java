@@ -28,4 +28,8 @@ public interface ClienteNegocio {
 	
 	public Cliente BuscarPorID(int id);
 	
+	public boolean existeCuil(String cuil);
+    
+    public boolean existeDni(int dni);
+	
 }

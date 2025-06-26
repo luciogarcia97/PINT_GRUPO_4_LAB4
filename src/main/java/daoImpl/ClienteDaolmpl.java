@@ -434,5 +434,83 @@ public class ClienteDaolmpl implements ClienteDao {
 
 	    return existe;
 	}
+	
+	
+	public boolean existeDni(int dni) {
+		
+		PreparedStatement pst = null;
+	    ResultSet rs = null;
+	    Connection conexion = Conexion.getConexion().getSQLConexion();
+	    int cantidad = 0;
+	    boolean existe = false;
+
+	    try {
+	        String query = "SELECT COUNT(*) as cantidad FROM cliente WHERE dni = ?";
+	        pst = conexion.prepareStatement(query);
+	        pst.setInt(1, dni);
+	        rs = pst.executeQuery();
+
+	        if (rs.next()) {
+	            cantidad += rs.getInt("cantidad");
+	        }
+	        
+	        if (cantidad > 0) {
+	        	existe = true;
+	        }
+	        
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pst != null) pst.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return existe;
+		
+	}
+	
+public boolean existeCuil(String cuil) {
+		
+		PreparedStatement pst = null;
+	    ResultSet rs = null;
+	    Connection conexion = Conexion.getConexion().getSQLConexion();
+	    int cantidad = 0;
+	    boolean existe = false;
+
+	    try {
+	        String query = "SELECT COUNT(*) as cantidad FROM cliente WHERE cuil = ?";
+	        pst = conexion.prepareStatement(query);
+	        pst.setString(1, cuil);
+	        rs = pst.executeQuery();
+
+	        if (rs.next()) {
+	            cantidad += rs.getInt("cantidad");
+	        }
+	        
+	        if (cantidad > 0) {
+	        	existe = true;
+	        }
+	        
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pst != null) pst.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return existe;
+		
+	}
+	
 
 }

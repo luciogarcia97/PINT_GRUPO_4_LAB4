@@ -29,6 +29,10 @@ public interface ClienteDao {
     public boolean eliminarUsuario(int idUsuario, int idCliente);
     
     public boolean existeCliente(int idCliente);
+    
+    public boolean existeCuil(String cuil);
+    
+    public boolean existeDni(int dni);
 
 }
 
