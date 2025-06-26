@@ -262,6 +262,8 @@ private static final long serialVersionUID = 1L;
     private void cargarListado(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         List<Cuenta> listaCuentas = cuentaNegocio.obtenerCuentas();
         request.setAttribute("listaCuentas", listaCuentas);
+        List<TipoCuenta> listaTipos = tipoCuentaNegocio.obtenerTiposCuenta();
+        request.setAttribute("listaTipos", listaTipos);
 	        
         RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
         rd.forward(request, response);
