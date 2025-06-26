@@ -404,16 +404,13 @@ public class CuentaDaoImpl implements CuentaDao {
 		boolean resultado = false;
 
 		try {
-			String query = "UPDATE cuenta SET id_cliente = ?, id_tipo_cuenta = ?, numero_cuenta = ?, cbu = ?, saldo = ?, activa = ? WHERE id_cuenta = ?";
+			String query = "UPDATE cuenta SET cbu = ?, saldo = ?, activa = ? WHERE id_cuenta = ?";
 
 			pst = conexion.prepareStatement(query);
-			pst.setInt(1, cuenta.getIdCliente());
-			pst.setInt(2, cuenta.getIdTipoCuenta());
-			pst.setString(3, cuenta.getNumeroCuenta());
-			pst.setString(4, cuenta.getCbu());
-			pst.setBigDecimal(5, cuenta.getSaldo());
-			pst.setBoolean(6, cuenta.isActiva());
-			pst.setInt(7, cuenta.getIdCuenta());
+			pst.setString(1, cuenta.getCbu());
+			pst.setBigDecimal(2, cuenta.getSaldo());
+			pst.setBoolean(3, cuenta.isActiva());
+			pst.setInt(4, cuenta.getIdCuenta());
 
 			if (pst.executeUpdate() > 0) {
 				conexion.commit();

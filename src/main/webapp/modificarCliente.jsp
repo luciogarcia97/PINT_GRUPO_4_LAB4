@@ -15,30 +15,58 @@
 	</head>
 	<body>
 	<%
+	
     String idStr = request.getParameter("id");
     Cliente cliente = null;
+    
     if (idStr != null) {
         int id = Integer.parseInt(idStr);
         ClienteNegocio negocio = new ClienteNegociolmpl();
         cliente = negocio.BuscarPorID(id);
     }
+    
+    int dni = 0; 
+    int cuil = 0;
+    
+    if(request.getAttribute("dni") != null)
+    {
+    	dni = Integer.parseInt(request.getAttribute("dni").toString());
+    }
+    
+    if(request.getAttribute("cuil") != null)
+    {
+    	cuil = Integer.parseInt(request.getAttribute("cuil").toString());
+    }
+    
     %>
 
      <form class="w-75 mx-auto mt-5"  action="ServletCliente" method="post" onsubmit="return validarContraseñas()">
 	   
 	    <div class="inicio">
 	        <h2 class="text-center">Modificar cliente</h2>
+	        
+	        	<%
+		        if(dni != 0){
+		        %>
+		        <div class="alert alert-danger" role="alert">
+  				¡Ya existe un cliente con ese DNI!
+				</div>
+		        <%
+		        }else if(cuil != 0){
+		        %>
+		        <div class="alert alert-danger" role="alert">
+  				¡Ya existe un cliente con ese CUIL!
+				</div>
+		        <%
+		        }
+		        %>	
 	
 	        <div class="row">         
 	                
                     <input type="hidden"  name="idCliente" class="form-control" id="id"
                      value="<%= cliente != null ? cliente.getIdCliente() : "" %>" required>
 
-	             <div class="mb-3 col-md-6">
-	              
-                    <input type="hidden" name="txtCuil" class="form-control" id="cuil"
-                     value="<%= cliente != null ? cliente.getCuil() : "" %>" required>
-	            
+	             <div class="mb-3 col-md-6">	            
 	           
 	                <label for="nombre" class="form-label">Nombre</label>
                     <input type="text" name="txtNombre" class="form-control" id="nombre"
@@ -91,8 +119,18 @@
                 <label for="correo" class="form-label">Email</label>
                 <input type="email" name="txtEmail" class="form-control" id="correo" placeholder="Email" 
                        value="<%= cliente != null ? cliente.getCorreoElectronico() : "" %>" required>
-            </div>
-            
+            </div>       	
+		    <div class="mb-3 col-md-6">
+		        <label for="dni" class="form-label">DNI</label>
+		        <input type="number" name="txtDni" class="form-control" id="dni" name="txtDni" placeholder="DNI"
+		               value="<%= cliente != null ? cliente.getDni() : "" %>" required>
+		    </div>
+		    <div class="mb-3 col-md-6">
+		        <label for="cuil" class="form-label">CUIL</label>
+		        <input type="number" name="txtCuil" class="form-control" id="cuil" name="txtCuil" placeholder="CUIL"
+		               value="<%= cliente != null ? cliente.getCuil() : "" %>" required>
+		    </div>
+           
         </div>   
 
         <div class="text-center mt-3">
