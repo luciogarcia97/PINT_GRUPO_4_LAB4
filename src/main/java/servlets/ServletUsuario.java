@@ -60,8 +60,8 @@ public class ServletUsuario extends HttpServlet {
 			cliente.setLocalidad(request.getParameter("txtLocalidad"));
 			cliente.setProvincia(request.getParameter("txtProvincia"));
 			cliente.setCorreoElectronico(request.getParameter("txtCorreo"));
-			cliente.setEliminado(true);
-						
+			cliente.setEliminado(false);			
+
 			resultado1 = usuarioNegocio.insertarCliente(cliente);
 			int ultimoId = usuarioNegocio.ultimoIdCliente();
 			
@@ -70,7 +70,7 @@ public class ServletUsuario extends HttpServlet {
 			usuario.setUsuario(request.getParameter("txtUsuario"));
 			usuario.setContrasena(request.getParameter("txtContrasena"));
 			usuario.setTipo_usuario("cliente");
-			usuario.setEliminado(1);
+			usuario.setEliminado(0);
 			usuario.setFecha_creacion(LocalDate.now());
 
 			resultado = usuarioNegocio.insertarUsuario(usuario);
@@ -111,7 +111,7 @@ public class ServletUsuario extends HttpServlet {
 			usuario.setUsuario(usuarioNuevo);
 			usuario.setContrasena(clave);
 			usuario.setTipo_usuario("cliente");
-			usuario.setEliminado(1);
+			usuario.setEliminado(0);
 			usuario.setFecha_creacion(fechaCreacion);
 			
 			if (usuarioNegocio.modificarUsuario(usuario)) {			 

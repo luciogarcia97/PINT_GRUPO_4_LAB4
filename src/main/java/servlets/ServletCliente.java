@@ -68,6 +68,11 @@ public class ServletCliente extends HttpServlet {
 			cliente.setLocalidad(request.getParameter("txtLocalidad"));
 			cliente.setProvincia(request.getParameter("txtProvincia"));
 			cliente.setCorreoElectronico(request.getParameter("txtCorreo"));
+			cliente.setEliminado(false);
+						
+			resultado1 = clienteNegocio.insertarCliente(cliente);
+			int ultimoId = clienteNegocio.ultimoIdCliente();
+			
 			cliente.setEliminado(true);
 			
 			if(clienteNegocio.existeDni(cliente.getDni())) 
@@ -96,7 +101,7 @@ public class ServletCliente extends HttpServlet {
 			usuario.setUsuario(request.getParameter("txtUsuario"));
 			usuario.setContrasena(request.getParameter("txtContrasena"));
 			usuario.setTipo_usuario("cliente");
-			usuario.setEliminado(1);
+			usuario.setEliminado(0);
 			usuario.setFecha_creacion(LocalDate.now());
 			
 			for(Usuario u : listaUsuario) // Chequea que ya exista ese nombre de usuario de un usuario activo
