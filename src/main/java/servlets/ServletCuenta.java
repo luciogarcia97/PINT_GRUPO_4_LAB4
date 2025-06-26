@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -39,18 +40,11 @@ private static final long serialVersionUID = 1L;
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
         if (request.getParameter("Param") != null) {
-        	cargarFormulario(request, response);
+        	cargarFormularioRegistrar(request, response);
         }
         
-        // Para listar todas las cuentas
 	    if (request.getParameter("listar") != null) {
-	    	
-	        List<Cuenta> listaCuentas = cuentaNegocio.obtenerCuentas();
-	        
-	        request.setAttribute("listaCuentas", listaCuentas);
-	        
-	        RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
-	        rd.forward(request, response);
+	    	cargarListado(request, response);
 	    }
     }
     
@@ -58,88 +52,148 @@ private static final long serialVersionUID = 1L;
         
         if (request.getParameter("btnCrearCuenta") != null) {
             try {
-                // Obtener datos del formulario
                 int idCliente = Integer.parseInt(request.getParameter("idCliente"));
                 int idTipoCuenta = Integer.parseInt(request.getParameter("ddlTipoCuenta"));
                 
-                // Validar que el cliente existe (por ahora solo validamos que no sea 0 porque no tengo la clase cliente)
-                // TODO : Cuando este la clase cliente debemos validar que el cliente exista
+
                 if (idCliente <= 0) {
-                    request.setAttribute("error", "Debe especificar un cliente válido");
-                    cargarFormulario(request, response);
+                    request.setAttribute("error", "Debe especificar un ID de cliente válido");
+                    cargarFormularioRegistrar(request, response);
+                    return;
+                }
+
+                if (!cuentaNegocio.existeCliente(idCliente)) {
+                    request.setAttribute("error", "El cliente con ID " + idCliente + " no existe o está eliminado");
+                    cargarFormularioRegistrar(request, response);
+                    return;
+                }
+
+                if (!cuentaNegocio.puedeCrearCuenta(idCliente)) {
+                    request.setAttribute("error", "El cliente ya tiene el máximo de 3 cuentas permitidas");
+                    cargarFormularioRegistrar(request, response);
                     return;
                 }
                 
-                // Validar que el tipo de cuenta existe
                 TipoCuenta tipoCuenta = tipoCuentaNegocio.obtenerTipoPorId(idTipoCuenta);
                 if (tipoCuenta == null) {
                     request.setAttribute("error", "Tipo de cuenta no válido");
-                    cargarFormulario(request, response);
+                    cargarFormularioRegistrar(request, response);
                     return;
                 }
                 
-                // Generar numero de cuenta unico
                 String numeroCuenta = cuentaNegocio.generarNumeroCuenta();
                 
-                // Verificar que el numero generado sea unico
                 while (cuentaNegocio.existeNumeroCuenta(numeroCuenta)) {
                     numeroCuenta = cuentaNegocio.generarNumeroCuenta();
                 }
-                
-                // Generar CBU
+
                 String cbu = cuentaNegocio.generarCBU(numeroCuenta);
-                
-                // Crear objeto cuenta
+
                 Cuenta nuevaCuenta = new Cuenta(idCliente, idTipoCuenta, numeroCuenta, cbu);
                 nuevaCuenta.setFechaCreacion(LocalDate.now());
-                
-                // Insertar en base de datos
+                                                
                 boolean resultado = cuentaNegocio.insertarCuenta(nuevaCuenta);
                 
                 if (resultado) {
-                    // Formulario registrado - mostramos los datos registrados
                     request.setAttribute("exito", "Cuenta creada exitosamente");
                     request.setAttribute("numeroCuenta", numeroCuenta);
                     request.setAttribute("cbu", cbu);
                     request.setAttribute("tipoCuenta", tipoCuenta.getNombre());
                     
-                    RequestDispatcher rd = request.getRequestDispatcher("/resultadoCuenta.jsp");
-                    rd.forward(request, response);
+                    cuentaCreada(request, response);
                 } else {
                     request.setAttribute("error", "Error al crear la cuenta. Intente nuevamente.");
-                    cargarFormulario(request, response);
+                    cargarFormularioRegistrar(request, response);
                 }
                 
             } catch (NumberFormatException e) {
                 request.setAttribute("error", "Datos numéricos inválidos");
-                cargarFormulario(request, response);
+                cargarFormularioRegistrar(request, response);
             } catch (Exception e) {
                 e.printStackTrace();
                 request.setAttribute("error", "Error interno del sistema");
-                cargarFormulario(request, response);
+                cargarFormularioRegistrar(request, response);
             }
         }
         
-        if(request.getParameter("eliminar")!= null) 
-		{		
-        	
-			Boolean resultado = false;
-			
-			int idCuenta = Integer.parseInt(request.getParameter("idEliminar"));
-			
-			resultado = cuentaNegocio.eliminarCuenta(idCuenta);
-			
-			RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
-	        rd.forward(request, response);
-		}
+        if(request.getParameter("eliminar")!= null) {
+            try {
+                int idCuenta = Integer.parseInt(request.getParameter("idEliminar"));
+                boolean resultado = cuentaNegocio.eliminarCuenta(idCuenta);
+
+                if(resultado){
+                    request.setAttribute("exito", "Cuenta eliminada exitosamente");
+                } else {
+                    request.setAttribute("error", "No se pudo eliminar la cuenta");
+                }
+
+                cargarListado(request, response);
+                
+            } catch (NumberFormatException e) {
+                request.setAttribute("error", "ID de cuenta inválido");
+                cargarListado(request, response);
+            } catch (Exception e) {
+                e.printStackTrace();
+                request.setAttribute("error", "Error interno al eliminar la cuenta");
+                cargarListado(request, response);
+            }
+        }
+        
+        if(request.getParameter("reactivar") != null) {
+            try {
+                int idCuenta = Integer.parseInt(request.getParameter("idReactivar"));
+                
+                Cuenta cuenta = cuentaNegocio.obtenerCuentaPorId(idCuenta);
+                if (cuenta == null) {
+                    request.setAttribute("error", "La cuenta no existe");
+                    cargarListado(request, response);
+                    return;
+                }
+                
+                if (!cuentaNegocio.puedeCrearCuenta(cuenta.getIdCliente())) {
+                    request.setAttribute("error", "No se puede reactivar: el cliente ya tiene 3 cuentas activas");
+                    cargarListado(request, response);
+                    return;
+                }
+                boolean resultado = cuentaNegocio.reactivarCuenta(idCuenta);
+
+                if(resultado){
+                	request.setAttribute("exito", "Cuenta reactivada correctamente");
+                } else {
+                    request.setAttribute("error", "No se pudo reactivar la cuenta");
+                }
+                
+                cargarListado(request, response);
+                
+            } catch (NumberFormatException e) {
+                request.setAttribute("error", "ID de cuenta inválido");
+                cargarListado(request, response);
+            } catch (Exception e) {
+                e.printStackTrace();
+                request.setAttribute("error", "Error interno al reactivar la cuenta");
+                cargarListado(request, response);
+            }
+        }
     }
     
-    private void cargarFormulario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Recargar tipos de cuenta para el desplegable
+    private void cargarFormularioRegistrar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<TipoCuenta> listaTipos = tipoCuentaNegocio.obtenerTiposCuenta();
         request.setAttribute("listaTipos", listaTipos);
         
         RequestDispatcher rd = request.getRequestDispatcher("/registrarCuenta.jsp");
+        rd.forward(request, response);
+    }
+
+    private void cargarListado(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        List<Cuenta> listaCuentas = cuentaNegocio.obtenerCuentas();
+        request.setAttribute("listaCuentas", listaCuentas);
+	        
+        RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
+        rd.forward(request, response);
+    }
+
+    private void cuentaCreada(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{	        
+        RequestDispatcher rd = request.getRequestDispatcher("/resultadoCuenta.jsp");
         rd.forward(request, response);
     }
 }

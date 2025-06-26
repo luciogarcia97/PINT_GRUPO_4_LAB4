@@ -28,7 +28,10 @@
                         <label for="idCliente" class="form-label">ID del Cliente</label>
                         <input type="number" class="form-control" id="idCliente" name="idCliente" 
                                placeholder="Ingrese ID del cliente" required min="1">
-                        <div class="form-text">Solo se pueden crear cuentas para clientes existentes</div>
+                        <div class="form-text">
+						    <i class="bi bi-info-circle me-1"></i>
+						    Máximo 3 cuentas por cliente. Solo se pueden crear cuentas para clientes existentes.
+						</div>
                     </div> 
                     
                     <div class="mb-3 col-md-6">
@@ -70,7 +73,7 @@
                     </div>
                     
                     <div class="text-center mt-3">
-                        <a href="administrarCuentas.jsp" class="btn btn-secondary me-2">Cancelar</a>
+                        <a href="ServletCuenta?listar=1" class="btn btn-secondary me-2">Cancelar</a>
                         <button type="submit" name="btnCrearCuenta" class="btn btn-primary">Crear Cuenta</button>
                     </div>
                 </div>

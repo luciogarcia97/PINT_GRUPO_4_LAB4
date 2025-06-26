@@ -70,7 +70,7 @@
                     </div>
                     
                     <div class="text-center mt-3">
-                        <a href="administrarCuentas.jsp" class="btn btn-secondary me-2">Cancelar</a>
+                        <a href="ServletCuenta?listar=1" class="btn btn-secondary me-2">Cancelar</a>
                         <button type="submit" name="btnCrearCuenta" class="btn btn-primary">Crear Cuenta</button>
                     </div>
                 </div>

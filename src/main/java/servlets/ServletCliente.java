@@ -67,9 +67,7 @@ public class ServletCliente extends HttpServlet {
 			cliente.setProvincia(request.getParameter("txtProvincia"));
 			cliente.setCorreoElectronico(request.getParameter("txtCorreo"));
 			cliente.setEliminado(true);
-			
-			System.out.println("Cargue el cliente");
-			
+						
 			resultado1 = clienteNegocio.insertarCliente(cliente);
 			int ultimoId = clienteNegocio.ultimoIdCliente();
 			
@@ -107,7 +105,6 @@ public class ServletCliente extends HttpServlet {
 			
 			
 			Cliente c = new Cliente();
-			System.out.println("Entre al modificar");
 			Boolean resultado2 = false;
 		    c.setIdCliente(Integer.parseInt(request.getParameter("idCliente"))); 
 			c.setCuil(request.getParameter("txtCuil"));
