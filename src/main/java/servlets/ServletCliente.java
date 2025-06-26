@@ -30,7 +30,6 @@ public class ServletCliente extends HttpServlet {
         super();
         this.clienteNegocio = new ClienteNegociolmpl();
         this.usuarioNegocio = new UsuarioNegocioImpl();
-        
     }
 
 	
@@ -72,7 +71,7 @@ public class ServletCliente extends HttpServlet {
 			
 			if(clienteNegocio.existeDni(cliente.getDni())) 
 			{
-				// vuelve al registro con un cartel de que hubo un dni repetido
+				// vuelve al registro con un cartel de que hubo un dni repetido	
 				request.setAttribute("dni", 1);
 
 				RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
@@ -141,7 +140,6 @@ public class ServletCliente extends HttpServlet {
 			Cliente c = new Cliente();
 			Boolean resultado2 = false;
 		    c.setIdCliente(Integer.parseInt(request.getParameter("idCliente"))); 
-			c.setCuil(request.getParameter("txtCuil"));
 			c.setNombre(request.getParameter("txtNombre"));
 			c.setApellido(request.getParameter("txtApellido"));
 			c.setSexo(request.getParameter("txtSexo"));
@@ -151,8 +149,36 @@ public class ServletCliente extends HttpServlet {
 			c.setLocalidad(request.getParameter("txtLocalidad"));
 			c.setProvincia(request.getParameter("txtProvincia"));
 			c.setCorreoElectronico(request.getParameter("txtEmail"));
+			c.setDni(Integer.parseInt(request.getParameter("txtDni")));
+			c.setCuil(request.getParameter("txtCuil"));
 			
-               if ( clienteNegocio.modificarCliente(c)) {			 
+			System.out.println(c.getCuil());
+			// Creo cliente con los atributos del ID que viene por parametro, es una replica ANTES de la modificacion
+			Cliente cliente = clienteNegocio.BuscarPorID(c.getIdCliente());
+			
+			
+			//Si el Dni existe y es distinto al del ID modificado
+			if(clienteNegocio.existeDni(c.getDni()) && cliente.getDni() != c.getDni())
+			{
+				// vuelve al registro con un cartel de que hubo un dni repetido	
+				request.setAttribute("dni", 1);
+
+				RequestDispatcher rd = request.getRequestDispatcher("/modificarCliente.jsp");
+				rd.forward(request, response);	
+				return;									
+			}
+			if(clienteNegocio.existeCuil(c.getCuil()) && !cliente.getCuil().equals(c.getCuil())) //Si el Cuil existe y es distinto al de este ID
+			{
+				// vuelve al registro con un cartel de que hubo un cuil repetido
+				System.out.println("entre al if cuil");
+				request.setAttribute("cuil", 1);
+
+				RequestDispatcher rd = request.getRequestDispatcher("/modificarCliente.jsp");
+				rd.forward(request, response);
+				return;
+			}
+					
+               if (clienteNegocio.modificarCliente(c)) {			 
 				
 				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
 				request.setAttribute("listaClientes", listaClientes);		    

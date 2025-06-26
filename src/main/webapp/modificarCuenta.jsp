@@ -22,6 +22,7 @@
     String idStr = request.getParameter("id");
     Cuenta cuenta = null;
     List<TipoCuenta> listaTipos = null;
+    
     if (idStr != null) {
         int id = Integer.parseInt(idStr);
         CuentaNegocio cuentaNegocio = new CuentaNegocioImpl();

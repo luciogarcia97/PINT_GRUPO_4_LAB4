@@ -182,22 +182,32 @@ public class ClienteDaolmpl implements ClienteDao {
 
 	@Override
 	public boolean ModificarCliente(Cliente cliente) {
+		
+		System.out.println("Entre al modificar");
+		
 		PreparedStatement pst = null;
 		Connection conexion = Conexion.getConexion().getSQLConexion();
 		boolean resultado = false;
-
+		
+		System.out.println(cliente.getCuil());
+		
 		try {
-			String query = "UPDATE  cliente SET nombre = ?, apellido = ?,sexo = ?, direccion = ?,  localidad = ?, provincia = ?, correo_electronico = ? WHERE id_cliente =  ?";
+			String query = "UPDATE cliente SET dni = ?, cuil= ?, nombre= ?, apellido= ?, sexo= ?, nacionalidad= ?, fecha_nacimiento= ?, direccion= ?, localidad= ?, provincia= ?, correo_electronico= ? WHERE id_cliente= ?";
 
 			pst = conexion.prepareStatement(query);
-			pst.setString(1, cliente.getNombre());
-			pst.setString(2, cliente.getApellido());
-			pst.setString(3, cliente.getSexo());
-			pst.setString(4, cliente.getDireccion());
-			pst.setString(5, cliente.getLocalidad());
-			pst.setString(6, cliente.getProvincia());
-			pst.setString(7, cliente.getCorreoElectronico());
-			pst.setInt(8, cliente.getIdCliente());
+			pst.setInt(1, cliente.getDni());
+			pst.setString(2, cliente.getCuil());
+			pst.setString(3, cliente.getNombre());
+			pst.setString(4, cliente.getApellido());
+			pst.setString(5, cliente.getSexo());
+			pst.setString(6, cliente.getNacionalidad());
+			pst.setDate(7, java.sql.Date.valueOf(cliente.getFechaNacimiento()));
+			pst.setString(8, cliente.getDireccion());
+			pst.setString(9, cliente.getLocalidad());
+			pst.setString(10, cliente.getProvincia());
+			pst.setString(11, cliente.getCorreoElectronico());
+			pst.setInt(12, cliente.getIdCliente());
+			
 
 			if (pst.executeUpdate() > 0) {
 				conexion.commit();
