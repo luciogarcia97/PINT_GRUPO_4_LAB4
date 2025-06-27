@@ -90,7 +90,8 @@
 	            <div class="mb-3 col-md-6">
 	                <label for="fechaCreacion" class="form-label">Fecha de Creación</label>
 	                <input type="date" name="txtFechaCreacion" class="form-control" id="fechaCreacion"
-	                 value="<%= cuenta != null ? cuenta.getFechaCreacion() : "" %>" readonly>
+	                 value="<%= cuenta != null ? cuenta.getFechaCreacion() : "" %>"
+	                 max="<%= java.time.LocalDate.now() %>" required>
 	            </div>
         </div>   
 
