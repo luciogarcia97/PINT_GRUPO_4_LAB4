@@ -91,7 +91,6 @@
 					</a>
                 </div>
                 
-                <!-- Mensajes de éxito y error -->
                 <% if (request.getAttribute("exito") != null) { %>
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         <i class="bi bi-check-circle me-2"></i>

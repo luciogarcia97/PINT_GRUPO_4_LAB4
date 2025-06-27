@@ -99,7 +99,6 @@
                                         <th>IdUsuario</th>
                                         <th>IdCliente</th>
                                         <th>Usuario</th>
-                                        <th>Contraseña</th>
                                         <th>Tipo Usuario</th>
                                         <th>Eliminado</th>
                                         <th>Fecha de Creación</th> 
@@ -120,7 +119,6 @@
                                         <td><%= usuario.getId_usuario() %></td>
                                         <td><%= usuario.getId_cliente() %></td>
                                         <td><%= usuario.getUsuario() %></td>
-                                        <td><%= usuario.getContrasena() %></td>
                                         <td><%= usuario.getTipo_usuario() %></td>
                                         <td><%= usuario.getEliminado() %></td>
                                         <td> <%= usuario.getFecha_creacion() %></td>                   

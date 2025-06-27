@@ -19,9 +19,15 @@
 		
 		<div class="inicio">
             <h2 class="text-center">Home Banking UTN</h2>
+            <% if (request.getAttribute("error") != null) { %>
+				<div class="alert alert-danger" role="alert">
+					<i class="bi bi-exclamation-triangle me-2"></i>
+					<%= request.getAttribute("error") %>
+				</div>
+			<% } %>
 		<div class="mb-3">
-			<label for="usuario" class="form-label" >Usuario</label> <input
-				type="text" class="form-control" id="usuario" name="usuario"
+			<label for="usuario" class="form-label">Usuario</label>
+				<input type="text" class="form-control" id="usuario" name="usuario"
 				placeholder="Tu usuario">
 		</div>		
 		<div class="mb-3">
