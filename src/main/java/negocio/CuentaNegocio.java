@@ -36,4 +36,8 @@ public interface CuentaNegocio {
     
     public Cuenta obtenerCuentaPorId(int idCuenta);
 
+    public boolean existeCBU(String cbu);
+
+    public boolean puedeCrearCuenta(int idCliente, int idCuentaExcluir);
+
 }

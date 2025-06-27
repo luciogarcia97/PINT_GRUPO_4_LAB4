@@ -35,4 +35,8 @@ public interface CuentaDao {
 	    
 	    public boolean modificarCuenta(Cuenta cuenta);
 
+	    public boolean existeCBU(String cbu);
+
+	    public int contarCuentasActivasPorClienteExcepto(int idCliente, int idCuentaExcluir);
+
 }

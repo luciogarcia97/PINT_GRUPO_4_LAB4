@@ -2,6 +2,18 @@
 <%@ page import="java.util.List" %>
 <%@ page import="entidades.Cuenta" %>
 <%@ page import="entidades.TipoCuenta" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
+<%@ page import="entidades.Usuario" %>
+<%
+    // Verificar autenticación de admin
+    Usuario adminLogueado = (Usuario) session.getAttribute("adminLogueado");
+    if (adminLogueado == null) {
+        response.sendRedirect("index.jsp");
+        return;
+    }
+%>
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -128,7 +140,7 @@
                                     <tr>
                                         <td><%= c.getIdCuenta() %></td>
                                         <td><%= c.getIdCliente() %></td>
-                                        <td><%= c.getFechaCreacion() %></td>
+                                        <td><%= c.getFechaCreacion() != null ? c.getFechaCreacion().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "" %></td>
                                         <td>
                                             <% 
                                             String nombreTipo = "N/A";

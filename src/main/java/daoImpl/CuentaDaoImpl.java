@@ -404,13 +404,17 @@ public class CuentaDaoImpl implements CuentaDao {
 		boolean resultado = false;
 
 		try {
-			String query = "UPDATE cuenta SET cbu = ?, saldo = ?, activa = ? WHERE id_cuenta = ?";
+			String query = "UPDATE cuenta SET id_cliente = ?, id_tipo_cuenta = ?, numero_cuenta = ?, cbu = ?, saldo = ?, activa = ?, fecha_creacion = ? WHERE id_cuenta = ?";
 
 			pst = conexion.prepareStatement(query);
-			pst.setString(1, cuenta.getCbu());
-			pst.setBigDecimal(2, cuenta.getSaldo());
-			pst.setBoolean(3, cuenta.isActiva());
-			pst.setInt(4, cuenta.getIdCuenta());
+			pst.setInt(1, cuenta.getIdCliente());
+			pst.setInt(2, cuenta.getIdTipoCuenta());
+			pst.setString(3, cuenta.getNumeroCuenta());
+			pst.setString(4, cuenta.getCbu());
+			pst.setBigDecimal(5, cuenta.getSaldo());
+			pst.setBoolean(6, cuenta.isActiva());
+			pst.setDate(7, java.sql.Date.valueOf(cuenta.getFechaCreacion()));
+			pst.setInt(8, cuenta.getIdCuenta());
 
 			if (pst.executeUpdate() > 0) {
 				conexion.commit();
@@ -434,6 +438,67 @@ public class CuentaDaoImpl implements CuentaDao {
 		}
 
 		return resultado;
+	}
+
+	@Override
+	public boolean existeCBU(String cbu) {
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+		boolean existe = false;
+
+		try {
+			String query = "SELECT COUNT(*) as cantidad FROM cuenta WHERE cbu = ?";
+			pst = conexion.prepareStatement(query);
+			pst.setString(1, cbu);
+			rs = pst.executeQuery();
+
+			if (rs.next()) {
+				existe = rs.getInt("cantidad") > 0;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) rs.close();
+				if (pst != null) pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return existe;
+	}
+
+	@Override
+	public int contarCuentasActivasPorClienteExcepto(int idCliente, int idCuentaExcluir) {
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+		int cantidadCuentas = 0;
+
+		try {
+			String query = "SELECT COUNT(*) as cantidad FROM cuenta WHERE id_cliente = ? AND activa = true AND id_cuenta <> ?";
+			pst = conexion.prepareStatement(query);
+			pst.setInt(1, idCliente);
+			pst.setInt(2, idCuentaExcluir);
+			rs = pst.executeQuery();
+
+			if (rs.next()) {
+				cantidadCuentas = rs.getInt("cantidad");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) rs.close();
+				if (pst != null) pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return cantidadCuentas;
 	}
 
 }
