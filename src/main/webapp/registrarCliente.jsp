@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,14 +11,12 @@
 		
     </head>
     <body>
-    
-    <% 
+     
+    <%
     int dni = 0; 
     int cuil = 0;
     int usuario = 0;
-    %>
     
-    <%
     if(request.getAttribute("dni") != null)
     {
     	dni = Integer.parseInt(request.getAttribute("dni").toString());
