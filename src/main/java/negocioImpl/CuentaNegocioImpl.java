@@ -76,18 +76,15 @@ public class CuentaNegocioImpl implements CuentaNegocio {
 	}
 	
 	@Override
-	public boolean puedeCrearCuenta(int idCliente) {
-	    int cantidadCuentas = cuentaDao.contarCuentasActivasPorCliente(idCliente);
-	    if(cantidadCuentas < 3) {
-	    	return true;
-	    }
-	    return false;
+	public boolean puedeCrearCuenta(int idCliente, int idCuentaExcluir) {
+		int cantidadCuentas = cuentaDao.contarCuentasActivasPorClienteExcepto(idCliente, idCuentaExcluir);
+		return cantidadCuentas < 3;
 	}
 	
-	@Override
-	public boolean existeCliente(int idCliente) {
-	    return clienteDao.existeCliente(idCliente);
-	}
+//	@Override
+//	public boolean existeCliente(int idCliente) {
+//	    return clienteDao.existeCliente(idCliente);
+//	}
 	
 	@Override
 	public boolean reactivarCuenta(int idCuenta) {
@@ -97,6 +94,35 @@ public class CuentaNegocioImpl implements CuentaNegocio {
 	@Override
 	public Cuenta obtenerCuentaPorId(int idCuenta) {
 	    return cuentaDao.obtenerCuentaPorId(idCuenta);
+	}
+	
+	@Override
+	public boolean eliminarCuentasUsuario(int idCliente)
+	{
+		
+		return cuentaDao.eliminarCuentasUsuario(idCliente);
+		
+	}
+
+	@Override
+	public Cuenta buscarPorID(int idCuenta) {
+		return cuentaDao.buscarPorID(idCuenta);
+	}
+
+	@Override
+	public boolean modificarCuenta(Cuenta cuenta) {
+		return cuentaDao.modificarCuenta(cuenta);
+	}
+
+	@Override
+	public boolean existeCBU(String cbu) {
+		return cuentaDao.existeCBU(cbu);
+	}
+
+	@Override
+	public boolean puedeCrearCuenta(int idCliente) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

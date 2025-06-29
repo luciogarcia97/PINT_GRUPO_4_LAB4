@@ -2,7 +2,18 @@
 	pageEncoding="UTF-8"%>
 <%@ page import="java.util.List"%>
 <%@ page import="entidades.Cliente"%>
+<%@ page import="entidades.Usuario" %>
+<%
+    // Verificar autenticación de admin
+    Usuario adminLogueado = (Usuario) session.getAttribute("adminLogueado");
+    if (adminLogueado == null) {
+        response.sendRedirect("index.jsp");
+        return;
+    }
+%>
+
 <!DOCTYPE html>
+
 <html lang="es">
 
 <head>
@@ -122,8 +133,8 @@
 										<td><%= c.getProvincia() %></td>
 										<td><%= c.getCorreoElectronico() %></td>
 										<td>
-											<span class="badge <%= c.getEliminado() ? "bg-success" : "bg-danger" %>">
-													<%= c.getEliminado() ? "Activo" : "Inactivo" %>
+											<span class="badge <%= c.getEliminado() ? "bg-danger" : "bg-success" %>">
+													<%= c.getEliminado() ? "Inactivo" : "Activo" %>
 											</span>
 										</td>
 										<td>

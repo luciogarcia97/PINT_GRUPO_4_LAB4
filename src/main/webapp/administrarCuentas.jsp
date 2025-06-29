@@ -1,6 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
 <%@ page import="entidades.Cuenta" %>
+<%@ page import="entidades.TipoCuenta" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
+<%@ page import="entidades.Usuario" %>
+<%
+    // Verificar autenticación de admin
+    Usuario adminLogueado = (Usuario) session.getAttribute("adminLogueado");
+    if (adminLogueado == null) {
+        response.sendRedirect("index.jsp");
+        return;
+    }
+%>
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -78,21 +91,21 @@
 					</a>
                 </div>
                 
+                <% if (request.getAttribute("exito") != null) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle me-2"></i>
+                        <%= request.getAttribute("exito") %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <% } %>
+                
                 <% if (request.getAttribute("error") != null) { %>
-				    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-				        <i class="bi bi-exclamation-triangle me-2"></i>
-				        <%= request.getAttribute("error") %>
-				        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-				    </div>
-				<% } %>
-				
-				<% if (request.getAttribute("exito") != null) { %>
-				    <div class="alert alert-success alert-dismissible fade show" role="alert">
-				        <i class="bi bi-check-circle me-2"></i>
-				        <%= request.getAttribute("exito") %>
-				        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-				    </div>
-				<% } %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <%= request.getAttribute("error") %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <% } %>
                 
                 <div class="card shadow">
                     <div class="card-header bg-primary text-white">
@@ -119,14 +132,28 @@
                                 </thead>
                                 <tbody>
                                 <% List<entidades.Cuenta> listaCuentas = (List<entidades.Cuenta>) request.getAttribute("listaCuentas");
-                                                        if (listaCuentas != null) {
-                                                        for (entidades.Cuenta c : listaCuentas) {
-                                                        %>
+                                   List<entidades.TipoCuenta> listaTipos = (List<entidades.TipoCuenta>) request.getAttribute("listaTipos");
+                                   if (listaCuentas != null) {
+                                   for (entidades.Cuenta c : listaCuentas) {
+                                   %>
                                     <tr>
                                         <td><%= c.getIdCuenta() %></td>
                                         <td><%= c.getIdCliente() %></td>
-                                        <td><%= c.getFechaCreacion() %></td>
-                                        <td><%= c.getIdTipoCuenta() %></td>
+                                        <td><%= c.getFechaCreacion() != null ? c.getFechaCreacion().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "" %></td>
+                                        <td>
+                                            <% 
+                                            String nombreTipo = "N/A";
+                                            if (listaTipos != null) {
+                                                for (TipoCuenta tipo : listaTipos) {
+                                                    if (tipo.getId() == c.getIdTipoCuenta()) {
+                                                        nombreTipo = tipo.getNombre();
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            %>
+                                            <%= nombreTipo %>
+                                        </td>
                                         <td><%= c.getNumeroCuenta() %></td>
                                         <td><%= c.getCbu() %></td>
                                         <td><strong><%= c.getSaldo() %></strong></td>
@@ -134,26 +161,22 @@
                                         
                                         <td>
                                             <div class="d-flex gap-1">
-											    <% if (c.isActiva()) { %>
-											        <form action="ServletCuenta?eliminar=1" method="post" class="d-inline">
-											            <input type="hidden" name="idEliminar" value="<%= c.getIdCuenta() %>" />
-											            <button type="submit" class="btn btn-sm btn-danger" name="btnEliminarCuenta" 
-											                    title="Desactivar cuenta" onclick="return confirm('¿Está seguro que desea desactivar esta cuenta?')">
-											                <i class="bi bi-x-circle"></i>
-											                Desactivar
-											            </button>
-											        </form>
-											    <% } else { %>
-											        <form action="ServletCuenta?reactivar=1" method="post" class="d-inline">
-											            <input type="hidden" name="idReactivar" value="<%= c.getIdCuenta() %>" />
-											            <button type="submit" class="btn btn-sm btn-success" name="btnReactivarCuenta" 
-											                    title="Reactivar cuenta" onclick="return confirm('¿Está seguro que desea reactivar esta cuenta?')">
-											                <i class="bi bi-check-circle"></i>
-											                Reactivar
-											            </button>
-											        </form>
-											    <% } %>
-											</div>
+                                                <a href="modificarCuenta.jsp?id=<%= c.getIdCuenta() %>" class="btn btn-sm btn-warning" title="Modificar cuenta">
+                                                    <i class="bi bi-pencil"></i>
+                                                    Modificar
+                                                </a>
+                                                <button type="button" class="btn btn-sm btn-success" title="Activar cuenta" disabled>
+                                                    <i class="bi bi-check-circle"></i>
+                                                    Activar
+                                                </button>
+                                                <form action="ServletCuenta?eliminar=1" method="post" class="d-inline">
+                                                	<input type="hidden" name="idEliminar" value="<%= c.getIdCuenta() %>" />                               
+                                                	<button type="submit" class="btn btn-sm btn-danger" name="btnEliminarCuenta" title="Desactivar cuenta">
+                                                    	<i class="bi bi-x-circle"></i>
+                                                    Desactivar
+                                                	</button>
+                                                </form>
+                                            </div>
                                         </td>                   
                                     </tr>
                                      

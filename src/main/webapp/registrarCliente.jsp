@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,10 +11,47 @@
 		
     </head>
     <body>
+     
+    <%
+    int dni = 0; 
+    int cuil = 0;
+    int usuario = 0;
+    
+    if(request.getAttribute("dni") != null)
+    {
+    	dni = Integer.parseInt(request.getAttribute("dni").toString());
+    }
+    
+    if(request.getAttribute("cuil") != null)
+    {
+    	cuil = Integer.parseInt(request.getAttribute("cuil").toString());
+    }
+    
+    if(request.getAttribute("usuario") != null)
+    {
+    	usuario = Integer.parseInt(request.getAttribute("usuario").toString());
+    }
+    %>
 
 	    <form class="w-75 mx-auto mt-5" action="ServletCliente" method="post" onsubmit="return validarContraseñas()">
 		    <div class="inicio">
 		        <h2 class="text-center">Registrar Cliente</h2>
+		        	   
+		        <%
+		        if(dni != 0){
+		        %>
+		        <div class="alert alert-danger" role="alert">
+  				¡Ya existe un cliente con ese DNI!
+				</div>
+		        <%
+		        }else if(cuil != 0){
+		        %>
+		        <div class="alert alert-danger" role="alert">
+  				¡Ya existe un cliente con ese CUIL!
+				</div>
+		        <%
+		        }
+		        %>			       
 		
 		        <div class="row">
 		            <div class="mb-3 col-md-6">
@@ -83,6 +119,16 @@
 		       <div class="inicio">
           
 		        <h2 class="text-center pt-2 pb-2">Registrar Usuario</h2>    
+				
+				<%
+		        if(usuario != 0){
+		        %>
+		        <div class="alert alert-danger" role="alert">
+  				¡Ya existe un usuario con ese nombre!
+				</div>
+		        <%
+		        }
+		        %>
 				
 				<div class="center row">					
 		            <div class="mb-3">

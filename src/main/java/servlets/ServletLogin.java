@@ -44,9 +44,9 @@ public class ServletLogin extends HttpServlet {
 					
 					  loginExitoso = true;						  
 					  			      
-				      if (usuario.equals("admin") && contrasena.equals("123")) {
+					  if (usuarioLog.getTipo_usuario().equals("admin") && usuarioLog.getEliminado() == 0){
 		                    request.getSession().setAttribute("adminLogueado", usuarioLog);
-		                    request.getRequestDispatcher("administrarClientes.jsp").forward(request, response);
+		                    request.getRequestDispatcher("ServletCliente?listar=1").forward(request, response);
 		                } else {
 		                    request.getSession().setAttribute("usuarioLogueado", usuarioLog);
 		                    request.getRequestDispatcher("usuarioCliente.jsp").forward(request, response); 
