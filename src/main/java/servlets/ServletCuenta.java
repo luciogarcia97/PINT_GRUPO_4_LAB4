@@ -25,6 +25,7 @@ import negocio.CuentaNegocio;
 import negocio.TipoCuentaNegocio;
 import negocioImpl.CuentaNegocioImpl;
 import negocioImpl.TipoCuentaNegocioImpl;
+import negocioImpl.ClienteNegociolmpl;
 
 @WebServlet("/ServletCuenta")
 public class ServletCuenta extends HttpServlet {
@@ -32,11 +33,13 @@ private static final long serialVersionUID = 1L;
     
     private CuentaNegocioImpl cuentaNegocio;
     private TipoCuentaNegocioImpl tipoCuentaNegocio;
+    private ClienteNegociolmpl clienteNegocio;
     
     public ServletCuenta() {
         super();
         this.cuentaNegocio = new CuentaNegocioImpl();
         this.tipoCuentaNegocio = new TipoCuentaNegocioImpl();
+        this.clienteNegocio = new ClienteNegociolmpl();
     }
     
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -63,7 +66,12 @@ private static final long serialVersionUID = 1L;
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
+    	System.out.println("Servlet cuenta");
+    	
         if (request.getParameter("btnCrearCuenta") != null) {
+        	
+        	
+        	
             try {
                 int idCliente = Integer.parseInt(request.getParameter("idCliente"));
                 int idTipoCuenta = Integer.parseInt(request.getParameter("ddlTipoCuenta"));
@@ -75,7 +83,7 @@ private static final long serialVersionUID = 1L;
                     return;
                 }
 
-                if (!cuentaNegocio.existeCliente(idCliente)) {
+                if (!clienteNegocio.existeCliente(idCliente)) {
                     request.setAttribute("error", "El cliente con ID " + idCliente + " no existe o está eliminado");
                     cargarFormularioRegistrar(request, response);
                     return;

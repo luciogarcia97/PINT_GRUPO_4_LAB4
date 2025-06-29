@@ -30,11 +30,13 @@ public interface CuentaNegocio {
 
     public boolean puedeCrearCuenta(int idCliente);
     
-    public boolean existeCliente(int idCliente);
+    //public boolean existeCliente(int idCliente);
     
     public boolean reactivarCuenta(int idCuenta);
     
     public Cuenta obtenerCuentaPorId(int idCuenta);
+    
+    public boolean eliminarCuentasUsuario(int idCliente);
 
     public boolean existeCBU(String cbu);
 

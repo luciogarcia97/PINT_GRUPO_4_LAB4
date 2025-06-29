@@ -14,16 +14,20 @@ import javax.servlet.http.HttpServletResponse;
 import entidades.Cliente;
 import entidades.Usuario;
 import negocio.UsuarioNegocio;
+import negocio.ClienteNegocio;
 import negocioImpl.UsuarioNegocioImpl;
+import negocioImpl.ClienteNegociolmpl;
 
 @WebServlet("/ServletUsuario")
 public class ServletUsuario extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private UsuarioNegocio usuarioNegocio;
+	private UsuarioNegocioImpl usuarioNegocio;
+	private ClienteNegociolmpl clienteNegocio;
 
 	public ServletUsuario() {
 		super();
 		this.usuarioNegocio = new UsuarioNegocioImpl();
+		this.clienteNegocio = new ClienteNegociolmpl();
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -60,10 +64,10 @@ public class ServletUsuario extends HttpServlet {
 			cliente.setLocalidad(request.getParameter("txtLocalidad"));
 			cliente.setProvincia(request.getParameter("txtProvincia"));
 			cliente.setCorreoElectronico(request.getParameter("txtCorreo"));
-			cliente.setEliminado(false);			
-
-			resultado1 = usuarioNegocio.insertarCliente(cliente);
-			int ultimoId = usuarioNegocio.ultimoIdCliente();
+			cliente.setEliminado(true);
+						
+			
+			int ultimoId = clienteNegocio.ultimoIdCliente() + 1;
 			
 			Usuario usuario = new Usuario();			
 			usuario.setId_cliente(ultimoId);
@@ -73,6 +77,8 @@ public class ServletUsuario extends HttpServlet {
 			usuario.setEliminado(0);
 			usuario.setFecha_creacion(LocalDate.now());
 
+		
+			resultado1 = clienteNegocio.insertarCliente(cliente);
 			resultado = usuarioNegocio.insertarUsuario(usuario);
 
 			if(resultado1 && ultimoId != -1 && resultado) {

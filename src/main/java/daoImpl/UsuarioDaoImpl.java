@@ -11,6 +11,8 @@ import dao.Conexion;
 import dao.UsuarioDao;
 import entidades.Cliente;
 import entidades.Usuario;
+import negocioImpl.ClienteNegociolmpl;
+import negocioImpl.CuentaNegocioImpl;
 
 public class UsuarioDaoImpl implements UsuarioDao {	
 	
@@ -55,86 +57,6 @@ public class UsuarioDaoImpl implements UsuarioDao {
 		}		
 		
 		return resultado;
-	}
-	
-	@Override
-	public boolean insertarCliente(Cliente cliente) 
-	{
-		
-		PreparedStatement pst = null;
-	    Connection conexion = Conexion.getConexion().getSQLConexion();
-	    boolean resultado = false;
-	    
-	    try {
-	    	
-            String query = "INSERT INTO cliente (dni, cuil, nombre, apellido, sexo, nacionalidad, fecha_nacimiento, direccion, localidad, provincia, correo_electronico, eliminado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            
-            pst = conexion.prepareStatement(query);
-            pst.setInt(1, cliente.getDni());
-            pst.setString(2, cliente.getCuil());
-            pst.setString(3, cliente.getNombre());
-            pst.setString(4, cliente.getApellido());
-            pst.setString(5, cliente.getSexo());
-            pst.setString(6, cliente.getNacionalidad());
-            pst.setDate(7, java.sql.Date.valueOf(cliente.getFechaNacimiento()));
-            pst.setString(8, cliente.getDireccion());
-            pst.setString(9, cliente.getLocalidad());
-            pst.setString(10, cliente.getProvincia());
-            pst.setString(11, cliente.getCorreoElectronico());
-            pst.setBoolean(12, false); 
-            
-            if (pst.executeUpdate() > 0) {
-                conexion.commit();
-                resultado = true;
-            }
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-            try {
-                conexion.rollback();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
-        } finally {
-            try {
-                if (pst != null) pst.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }        
-        return resultado;		
-	}
-	
-	@Override
-	public int ultimoIdCliente() {			
-		PreparedStatement pst = null;
-		ResultSet rs = null;
-		Connection conexion = Conexion.getConexion().getSQLConexion();
-		int ultimoIdCliente = -1;
-		
-		try {
-			String query = "SELECT MAX(id_cliente) AS ultimo_id FROM cliente";
-			pst = conexion.prepareStatement(query);			
-			rs = pst.executeQuery();
-			
-			if (rs.next()) {
-			    ultimoIdCliente = rs.getInt("ultimo_id");
-			}				
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (pst != null)
-					pst.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return ultimoIdCliente;			
 	}
 	
 
@@ -230,6 +152,9 @@ public class UsuarioDaoImpl implements UsuarioDao {
 		Connection conexion = Conexion.getConexion().getSQLConexion();
 		boolean resultado = false;
 		
+		ClienteNegociolmpl clienteNegocio = new ClienteNegociolmpl();
+		CuentaNegocioImpl cuentaNegocio = new CuentaNegocioImpl(); 
+		
 		try {
 			String query = "UPDATE usuario SET eliminado = 1 WHERE id_usuario = ?";
 			pst = conexion.prepareStatement(query);
@@ -251,7 +176,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
 			}
 		}
 		
-		if(eliminarClienteUsuario(idCliente) && eliminarCuentasUsuario(idCliente) && resultado) {
+		if(resultado) {
 			return true;
 		} else {
 			return false;
@@ -259,65 +184,37 @@ public class UsuarioDaoImpl implements UsuarioDao {
 			
 	}
 	
-	@Override
-	public boolean eliminarClienteUsuario(int idCliente) {
-		PreparedStatement pst = null;
-		Connection conexion = Conexion.getConexion().getSQLConexion();
-		boolean resultado = false;
-		
-		try {
-			String query = "UPDATE cliente SET eliminado = 1 WHERE id_cliente = ?";
-			pst = conexion.prepareStatement(query);
-			pst.setInt(1, idCliente);
-			
-			if (pst.executeUpdate() > 0) { 
-				conexion.commit();
-				resultado = true;
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (pst != null)
-				pst.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	
-		return resultado;	
-	}
-	
-	@Override
-	public boolean eliminarCuentasUsuario(int idCliente) {
-		PreparedStatement pst = null;
-		Connection conexion = Conexion.getConexion().getSQLConexion();
-		boolean resultado = false;
-		
-		try {
-			String query = "UPDATE cuenta SET activa = 0 WHERE id_cliente = ?";
-			pst = conexion.prepareStatement(query);
-			pst.setInt(1, idCliente);
-			
-			if (pst.executeUpdate() > 0) { 
-				conexion.commit();
-				resultado = true;
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (pst != null)
-				pst.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	
-		return resultado;	
-	}
 
+	@Override
+	public int buscarPorIDUsuario(int id) {
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+		int resultado = -1;
+
+		try {
+			String query = "SELECT id_cliente FROM usuario WHERE id_cliente = ?";
+			pst = conexion.prepareStatement(query);
+			pst.setInt(1, id);
+			rs = pst.executeQuery();
+
+			if (rs.next()) {
+				resultado = rs.getInt("id_cliente");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pst != null)
+					pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return resultado;
+	}
 
 }

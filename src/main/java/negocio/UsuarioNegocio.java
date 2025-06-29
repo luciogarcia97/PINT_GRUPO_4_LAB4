@@ -7,16 +7,14 @@ import entidades.Usuario;
 
 public interface UsuarioNegocio {
 	
-	public boolean insertarUsuario(Usuario usuario);
-	
-	public boolean insertarCliente(Cliente cliente);
-	
-	public int ultimoIdCliente();
+	public boolean insertarUsuario(Usuario usuario);	
 
     public List<Usuario> obtenerUsuarios();   	
     	    
     public boolean modificarUsuario(Usuario usuario);
     
     public boolean eliminarUsuario(int idUsuario, int idCliente);
+    
+    public int buscarPorIDUsuario(int idCliente);
 
 }

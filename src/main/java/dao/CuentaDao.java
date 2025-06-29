@@ -30,6 +30,8 @@ public interface CuentaDao {
 	    public boolean cambiarEstadoCuenta(int idCuenta, boolean activa);
 	    
 	    public Cuenta obtenerCuentaPorId(int idCuenta);
+	    
+	    public boolean eliminarCuentasUsuario(int idCliente);
 
 	    public Cuenta buscarPorID(int idCuenta);
 	    

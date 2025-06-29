@@ -81,10 +81,10 @@ public class CuentaNegocioImpl implements CuentaNegocio {
 		return cantidadCuentas < 3;
 	}
 	
-	@Override
-	public boolean existeCliente(int idCliente) {
-	    return clienteDao.existeCliente(idCliente);
-	}
+//	@Override
+//	public boolean existeCliente(int idCliente) {
+//	    return clienteDao.existeCliente(idCliente);
+//	}
 	
 	@Override
 	public boolean reactivarCuenta(int idCuenta) {
@@ -94,6 +94,14 @@ public class CuentaNegocioImpl implements CuentaNegocio {
 	@Override
 	public Cuenta obtenerCuentaPorId(int idCuenta) {
 	    return cuentaDao.obtenerCuentaPorId(idCuenta);
+	}
+	
+	@Override
+	public boolean eliminarCuentasUsuario(int idCliente)
+	{
+		
+		return cuentaDao.eliminarCuentasUsuario(idCliente);
+		
 	}
 
 	@Override

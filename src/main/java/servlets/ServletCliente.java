@@ -13,9 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import dao.ClienteDao;
 import negocio.ClienteNegocio;
+import negocio.UsuarioNegocio;
 import entidades.Cliente;
-import entidades.TipoCuenta;
 import entidades.Usuario;
+import entidades.TipoCuenta;
 import negocioImpl.ClienteNegociolmpl;
 import negocioImpl.UsuarioNegocioImpl;
 
@@ -30,6 +31,7 @@ public class ServletCliente extends HttpServlet {
         super();
         this.clienteNegocio = new ClienteNegociolmpl();
         this.usuarioNegocio = new UsuarioNegocioImpl();
+        
     }
 
 	
@@ -97,6 +99,7 @@ public class ServletCliente extends HttpServlet {
 			usuario.setUsuario(request.getParameter("txtUsuario"));
 			usuario.setContrasena(request.getParameter("txtContrasena"));
 			usuario.setTipo_usuario("cliente");
+			usuario.setEliminado(0);
 			usuario.setEliminado(0);
 			usuario.setFecha_creacion(LocalDate.now());
 			
@@ -192,9 +195,9 @@ public class ServletCliente extends HttpServlet {
 					
 			int idCliente = Integer.parseInt(request.getParameter("idCliente"));			
 			
-			int idEliminar = clienteNegocio.buscarPorIDUsuario(idCliente);			
+			int idEliminar = usuarioNegocio.buscarPorIDUsuario(idCliente);			
 			
-			if (clienteNegocio.eliminarUsuario(idEliminar, idCliente)) {			 
+			if (usuarioNegocio.eliminarUsuario(idEliminar, idCliente)) {			 
 							
 				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
 				request.setAttribute("listaClientes", listaClientes);		    

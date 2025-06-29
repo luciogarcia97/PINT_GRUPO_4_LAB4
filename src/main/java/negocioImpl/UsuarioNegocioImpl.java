@@ -3,14 +3,19 @@ package negocioImpl;
 import java.util.List;
 
 import dao.UsuarioDao;
+import dao.ClienteDao;
+import dao.CuentaDao;
 import daoImpl.UsuarioDaoImpl;
 import entidades.Cliente;
 import entidades.Usuario;
 import negocio.UsuarioNegocio;
+import negocio.ClienteNegocio;
 
 public class UsuarioNegocioImpl implements UsuarioNegocio {
 
 	private UsuarioDao usuarioDao;
+	private ClienteDao clienteDao;
+	private CuentaDao cuentaNegocio;
 	
 	
 	public UsuarioNegocioImpl() {
@@ -22,18 +27,6 @@ public class UsuarioNegocioImpl implements UsuarioNegocio {
 	public boolean insertarUsuario(Usuario usuario) {
 
 		return usuarioDao.insertarUsuario(usuario);
-	}
-	
-	@Override
-	public boolean insertarCliente(Cliente cliente) {
-
-		return usuarioDao.insertarCliente(cliente);
-	}
-	
-	@Override
-	public int ultimoIdCliente() {
-		
-		return usuarioDao.ultimoIdCliente();
 	}
 	
 
@@ -52,8 +45,18 @@ public class UsuarioNegocioImpl implements UsuarioNegocio {
 	@Override
 	public boolean eliminarUsuario(int idUsuario, int idCliente) {
 		
-		return usuarioDao.eliminarUsuario(idUsuario, idCliente);
+		if(usuarioDao.eliminarUsuario(idUsuario, idCliente) && clienteDao.eliminarCliente(idCliente) && cuentaNegocio.eliminarCuentasUsuario(idCliente))
+		{
+			return true;
+		}
 		
+		return false;
+	}
+	
+	@Override
+	public int buscarPorIDUsuario(int idCliente)
+	{
+		return usuarioDao.buscarPorIDUsuario(idCliente);
 	}
 
 }

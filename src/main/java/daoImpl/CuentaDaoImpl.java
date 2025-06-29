@@ -501,4 +501,36 @@ public class CuentaDaoImpl implements CuentaDao {
 		return cantidadCuentas;
 	}
 
+	
+	
+	@Override
+	public boolean eliminarCuentasUsuario(int idCliente) {
+		PreparedStatement pst = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+		boolean resultado = false;
+		
+		try {
+			String query = "UPDATE cuenta SET activa = 0 WHERE id_cliente = ?";
+			pst = conexion.prepareStatement(query);
+			pst.setInt(1, idCliente);
+			
+			if (pst.executeUpdate() > 0) { 
+				conexion.commit();
+				resultado = true;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pst != null)
+				pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	
+		return resultado;	
+	}
+	
 }
