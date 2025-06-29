@@ -117,7 +117,7 @@ public class ServletCliente extends HttpServlet {
 			}
 			
 			resultado1 = clienteNegocio.insertarCliente(cliente); // Guarda en DB al cliente
-			resultado = clienteNegocio.insertarUsuario(usuario); // Guarda en DB al usuario
+			resultado = usuarioNegocio.insertarUsuario(usuario); // Guarda en DB al usuario
 
 			if(resultado1 && ultimoId != -1 && resultado) {
 					

@@ -188,7 +188,7 @@ private static final long serialVersionUID = 1L;
                 }
                 
                 // Verifica que el cliente existe
-                if (!cuentaNegocio.existeCliente(idCliente)) {
+                if (!clienteNegocio.existeCliente(idCliente)) {
                     request.setAttribute("error", "El cliente con ID " + idCliente + " no existe o está eliminado");
                     RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
                     rd.forward(request, response);

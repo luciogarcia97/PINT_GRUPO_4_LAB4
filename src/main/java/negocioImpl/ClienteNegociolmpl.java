@@ -64,32 +64,17 @@ public class ClienteNegociolmpl implements ClienteNegocio {
 	}
 	
 	@Override
-	public boolean existeCuil(String cuil) {
-		
+	public boolean existeCuil(String cuil)
+	{
 		return clienteDao.existeCuil(cuil);
-		
 	}
     
-	@Override
-    public boolean existeDni(int dni) {
-		
-		return clienteDao.existeDni(dni);
-		
-	}
 	
 	@Override
-	public boolean existeCuil(String cuil) {
-		
-		return clienteDao.existeCuil(cuil);
-		
-	}
-    
-	@Override
-    public boolean existeDni(int dni) {
-		
+    public boolean existeDni(int dni)
+    {
 		return clienteDao.existeDni(dni);
-		
-	}
+    }
     
 }
 	
