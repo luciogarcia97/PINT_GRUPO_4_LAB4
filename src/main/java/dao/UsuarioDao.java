@@ -15,5 +15,7 @@ public interface UsuarioDao {
     public boolean eliminarUsuario(int idUsuario, int idCliente);
     
     public int buscarPorIDUsuario(int idCliente);
+    
+    public Usuario buscarPorNombre(String nombre, int id);
 
 }

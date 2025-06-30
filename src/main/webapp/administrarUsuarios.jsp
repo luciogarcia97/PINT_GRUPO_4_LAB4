@@ -124,11 +124,11 @@
                                         <td> <%= usuario.getFecha_creacion() %></td>                   
                                         <td>
                                             <div class="d-flex gap-1">                                            
-                                                <a href="modificarUsuario.jsp?id=<%= usuario.getId_usuario()%>&idCliente=<%= usuario.getId_cliente()%>
-                                                		&fechaCreacion=<%= usuario.getFecha_creacion()%>
-                                                		&usuario=<%= usuario.getUsuario()%>" class="btn btn-sm btn-outline-primary" title="Modificar Usuario">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
+                                               <a href="modificarUsuario.jsp?idUsuario=<%= usuario.getId_usuario()%>&idCliente=<%= usuario.getId_cliente()%>&fechaCreacion=<%= usuario.getFecha_creacion()%>&usuario=<%= usuario.getUsuario()%>" 
+                                               class="btn btn-sm btn-outline-primary" title="Modificar Usuario">
+                                               <i class="bi bi-pencil"></i>
+                                               </a>
+
                                                 <form action="ServletUsuario?eliminar=1" method="post">
                                                 	<input type="hidden" name="idCliente" value="<%= usuario.getId_cliente()%>" />
                                                 	<input type="hidden" name="idEliminar" value="<%= usuario.getId_usuario()%>" />
