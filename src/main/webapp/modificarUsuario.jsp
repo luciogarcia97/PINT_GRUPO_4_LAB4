@@ -3,7 +3,7 @@
     
     <%@ page import="entidades.Usuario" %>
 	<%
-    // Verificar autenticación de admin
+  
     Usuario adminLogueado = (Usuario) session.getAttribute("adminLogueado");
     if (adminLogueado == null) {
         response.sendRedirect("index.jsp");
@@ -25,11 +25,19 @@
 <body>	
 
 	<%
-    	String idUsuario = request.getParameter("id");
-	    String idCliente = request.getParameter("idCliente");
-	    String fechaCreacion = request.getParameter("fechaCreacion");
-	    String usuario = request.getParameter("usuario");
-	%>
+    String idUsuario = request.getParameter("idUsuario");
+    if (idUsuario == null) idUsuario = (String) request.getAttribute("id");
+
+    String idCliente = request.getParameter("idCliente");
+    if (idCliente == null) idCliente = (String) request.getAttribute("idCliente");
+
+    String fechaCreacion = request.getParameter("fechaCreacion");
+    if (fechaCreacion == null) fechaCreacion = (String) request.getAttribute("fechaCreacion");
+
+    String usuario = request.getParameter("usuario");
+    if (usuario == null) usuario = (String) request.getAttribute("usuario");
+%>
+
 
 
      <form class="w-75 mx-auto mt-5" onsubmit="return validarContraseñas()" action="ServletUsuario" method="post">
@@ -39,7 +47,16 @@
 	    <div class="inicio">
 	         
 	        <h2 class="text-center pt-2 pb-2"> Modificar usuario</h2>    
-			
+<%
+    String errorNombre = (String) request.getAttribute("errorNombre");
+    if (errorNombre != null) {
+%>
+    <div class="alert alert-danger" role="alert">
+        <%= errorNombre %>
+    </div>
+<%
+    }
+%>
 			<div class="center row">
 	            <div class="mb-3">
 	                <label for="usuario" class="form-label">Usuario</label>
