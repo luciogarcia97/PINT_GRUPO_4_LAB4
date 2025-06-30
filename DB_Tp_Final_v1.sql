@@ -186,3 +186,73 @@ INSERT INTO movimiento_tipo (descripcion) VALUES
 ('Extracción'),
 ('Débito automático'),
 ('Acreditación de sueldo');
+
+-- CORRECCIONES 
+/* CREACIÓN DE TABLAS PROVINCIA Y LOCALIDADES*/
+use `banco_db`;
+create table transferencia (
+id_transferencia int auto_increment primary key,
+id_tipo_movimiento int,
+cuenta_origen int ,
+cuenta_destino int,
+foreign key (id_tipo_movimiento) references movimiento_tipo(id_tipo_movimiento)
+);
+Create table provincias (
+id_provincia int AUTO_INCREMENT PRIMARY KEY,
+nombre_provincia varchar(100) not null unique
+);
+
+CREATE TABLE localidades (
+    id_localidad INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_localidad VARCHAR(100) NOT NULL,
+    id_provincia INT NOT NULL,
+    FOREIGN KEY (id_provincia) REFERENCES provincias(id_provincia)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+/*INSERT DE DATOS*/
+INSERT INTO provincias (nombre_provincia) VALUES
+('Buenos Aires'),
+('Córdoba'),
+('Santa Fe'),
+('Mendoza'),
+('Salta');
+
+-- Localidades de Buenos Aires (id_provincia = 1)
+INSERT INTO localidades (nombre_localidad, id_provincia) VALUES
+('La Plata', 1),
+('Mar del Plata', 1),
+('Bahía Blanca', 1),
+('Quilmes', 1);
+
+-- Localidades de Córdoba (id_provincia = 2)
+INSERT INTO localidades (nombre_localidad, id_provincia) VALUES
+('Córdoba Capital', 2),
+('Villa Carlos Paz', 2),
+('Río Cuarto', 2);
+
+-- Localidades de Santa Fe (id_provincia = 3)
+INSERT INTO localidades (nombre_localidad, id_provincia) VALUES
+('Rosario', 3),
+('Santa Fe Capital', 3),
+('Venado Tuerto', 3);
+
+-- Localidades de Mendoza (id_provincia = 4)
+INSERT INTO localidades (nombre_localidad, id_provincia) VALUES
+('Mendoza Capital', 4),
+('San Rafael', 4),
+('Godoy Cruz', 4);
+
+-- Localidades de Salta (id_provincia = 5)
+INSERT INTO localidades (nombre_localidad, id_provincia) VALUES
+('Salta Capital', 5),
+('Orán', 5),
+('Tartagal', 5);
+
+-- ELIMINO COLUMNA ID_CUENTA_DESTINO 
+alter table movimiento
+drop foreign key  `fk_movimiento_cuenta_destino` ;
+
+
+ALTER TABLE movimiento
+DROP COLUMN id_cuenta_destino;
