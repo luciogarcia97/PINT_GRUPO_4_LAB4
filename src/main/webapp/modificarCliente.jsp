@@ -16,14 +16,16 @@
 	<body>
 	<%
 	
-    String idStr = request.getParameter("id");
-    Cliente cliente = null;
-    
-    if (idStr != null) {
-        int id = Integer.parseInt(idStr);
-        ClienteNegocio negocio = new ClienteNegociolmpl();
-        cliente = negocio.BuscarPorID(id);
-    }
+	Cliente cliente = (Cliente) request.getAttribute("clienteEditado");
+
+	if (cliente == null) {
+	    String idStr = request.getParameter("id");
+	    if (idStr != null) {
+	        int id = Integer.parseInt(idStr);
+	        ClienteNegocio negocio = new ClienteNegociolmpl();
+	        cliente = negocio.BuscarPorID(id);
+	    }
+	}
     
     int dni = 0; 
     int cuil = 0;
