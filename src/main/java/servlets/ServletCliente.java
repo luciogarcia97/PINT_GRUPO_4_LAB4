@@ -75,7 +75,7 @@ public class ServletCliente extends HttpServlet {
 			{
 				// vuelve al registro con un cartel de que hubo un dni repetido	
 				request.setAttribute("dni", 1);
-
+				request.setAttribute("clienteEditado", cliente);
 				RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
 				rd.forward(request, response);	
 				return;
@@ -84,7 +84,7 @@ public class ServletCliente extends HttpServlet {
 			{
 				// vuelve al registro con un cartel de que hubo un cuil repetido
 				request.setAttribute("cuil", 1);
-
+				request.setAttribute("clienteEditado", cliente);
 				RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
 				rd.forward(request, response);
 				return;
@@ -165,7 +165,7 @@ public class ServletCliente extends HttpServlet {
 			{
 				// vuelve al registro con un cartel de que hubo un dni repetido	
 				request.setAttribute("dni", 1);
-
+				request.setAttribute("clienteEditado", c);
 				RequestDispatcher rd = request.getRequestDispatcher("/modificarCliente.jsp");
 				rd.forward(request, response);	
 				return;									
@@ -175,7 +175,8 @@ public class ServletCliente extends HttpServlet {
 				// vuelve al registro con un cartel de que hubo un cuil repetido
 				System.out.println("entre al if cuil");
 				request.setAttribute("cuil", 1);
-
+					
+				request.setAttribute("clienteEditado", c);
 				RequestDispatcher rd = request.getRequestDispatcher("/modificarCliente.jsp");
 				rd.forward(request, response);
 				return;
