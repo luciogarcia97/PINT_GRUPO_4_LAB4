@@ -120,6 +120,22 @@ public class ServletUsuario extends HttpServlet {
 			usuario.setEliminado(0);
 			usuario.setFecha_creacion(fechaCreacion);
 			
+			Usuario existente = usuarioNegocio.buscarPorNombre(usuarioNuevo,idUsuario);
+
+			
+			
+			if (existente != null) {
+			    request.setAttribute("errorNombre", "Ya existe un usuario con ese nombre.");
+			    request.setAttribute("id", idUsuario);
+			    request.setAttribute("idCliente", idCliente);
+			    request.setAttribute("fechaCreacion", fechaCreacion);
+			    request.setAttribute("usuario", usuarioNuevo);
+			    
+			    RequestDispatcher rd = request.getRequestDispatcher("/modificarUsuario.jsp");
+			    rd.forward(request, response);
+			    return;
+			}
+			
 			if (usuarioNegocio.modificarUsuario(usuario)) {			 
 				
 				List<Usuario> listaUsuarios = usuarioNegocio.obtenerUsuarios();
