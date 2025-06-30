@@ -1,15 +1,14 @@
 package daoImpl;
 
+import dao.ClienteDao;
+import dao.Conexion;
+import entidades.Cliente;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import dao.Conexion;
-import dao.ClienteDao;
-import entidades.Cliente;
 
 public class ClienteDaolmpl implements ClienteDao {
 
@@ -139,16 +138,10 @@ public class ClienteDaolmpl implements ClienteDao {
 	}
 
 	@Override
-	public boolean ModificarCliente(Cliente cliente) {
-		
-		System.out.println("Entre al modificar");
-		
+	public boolean ModificarCliente(Cliente cliente) {		
 		PreparedStatement pst = null;
 		Connection conexion = Conexion.getConexion().getSQLConexion();
-		boolean resultado = false;
-		
-		System.out.println(cliente.getCuil());
-		
+		boolean resultado = false;		
 		try {
 			String query = "UPDATE cliente SET dni = ?, cuil= ?, nombre= ?, apellido= ?, sexo= ?, nacionalidad= ?, fecha_nacimiento= ?, direccion= ?, localidad= ?, provincia= ?, correo_electronico= ? WHERE id_cliente= ?";
 
@@ -278,8 +271,6 @@ public class ClienteDaolmpl implements ClienteDao {
 	    int cantidad = 0;
 	    boolean existe = false;
 	    
-	    System.out.println("Entre al existe");
-	    
 	    try {
 	        String query = "SELECT COUNT(*) as cantidad FROM cliente WHERE id_cliente = ? AND eliminado = 0";
 	        pst = conexion.prepareStatement(query);
@@ -305,7 +296,6 @@ public class ClienteDaolmpl implements ClienteDao {
 	            e.printStackTrace();
 	        }
 	    }
-	    System.out.println(existe);
 	    return existe;
 	}
 	

@@ -155,7 +155,6 @@ public class ServletCliente extends HttpServlet {
 			c.setDni(Integer.parseInt(request.getParameter("txtDni")));
 			c.setCuil(request.getParameter("txtCuil"));
 			
-			System.out.println(c.getCuil());
 			// Creo cliente con los atributos del ID que viene por parametro, es una replica ANTES de la modificacion
 			Cliente cliente = clienteNegocio.BuscarPorID(c.getIdCliente());
 			
@@ -173,7 +172,6 @@ public class ServletCliente extends HttpServlet {
 			if(clienteNegocio.existeCuil(c.getCuil()) && !cliente.getCuil().equals(c.getCuil())) //Si el Cuil existe y es distinto al de este ID
 			{
 				// vuelve al registro con un cartel de que hubo un cuil repetido
-				System.out.println("entre al if cuil");
 				request.setAttribute("cuil", 1);
 					
 				request.setAttribute("clienteEditado", c);
