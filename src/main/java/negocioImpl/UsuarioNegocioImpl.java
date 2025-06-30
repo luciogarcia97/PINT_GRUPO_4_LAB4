@@ -6,6 +6,8 @@ import dao.UsuarioDao;
 import dao.ClienteDao;
 import dao.CuentaDao;
 import daoImpl.UsuarioDaoImpl;
+import daoImpl.ClienteDaolmpl;
+import daoImpl.CuentaDaoImpl;
 import entidades.Cliente;
 import entidades.Usuario;
 import negocio.UsuarioNegocio;
@@ -21,6 +23,8 @@ public class UsuarioNegocioImpl implements UsuarioNegocio {
 	public UsuarioNegocioImpl() {
 		super();
 		this.usuarioDao = new UsuarioDaoImpl();
+		this.clienteDao = new ClienteDaolmpl();
+		this.cuentaNegocio = new CuentaDaoImpl();
 	}
 
 	@Override
