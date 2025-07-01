@@ -1,4 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="entidades.Movimiento" %>
+<%@ page import="entidades.Cuenta" %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -40,65 +43,155 @@
 
 <div class="container mt-4">
     <div class="d-flex justify-content-center gap-3">
-        <button class="btn btn-primary" onclick="togglePanel('movimientos', this)">Ver Movimientos</button>
+		<button class="btn btn-primary" onclick="togglePanel('movimientos', this); cargarCuentasAlAbrir();">Ver Movimientos</button>
         <button class="btn btn-primary" onclick="togglePanel('transferencias', this)">Transferencias</button>
         <button class="btn btn-primary" onclick="togglePanel('prestamos', this)">Préstamos</button>
         <button class="btn btn-primary" onclick="togglePanel('pagoPrestamos', this)">Pago de prestamos</button>
         <button class="btn btn-primary" onclick="togglePanel('datos', this)">Mis Datos</button>
     </div>
     
-    <div id="movimientos" class="panel">
-    <h4>Movimientos</h4>
+<div id="movimientos" class="panel">
+    <h4><i class="bi bi-wallet2 me-2"></i>Consultar Movimientos</h4>
     
-    <form action="">
-    		
-    		 <div class="mb-3">
-                <label for="cuentaOrigen" class="form-label">Cuenta Origen</label>
-               
-                <select class="form-select" id="cuentaOrigen"  onchange="mostrarSaldo()">
-                    <option selected disabled>Seleccione una cuenta</option>
-                    <option value="1">Caja de Ahorro - 12345678</option>
-                    <option value="2">Cuenta Corriente - 87654321</option>
+    <!-- Mensajes -->
+    <% if (request.getAttribute("error") != null) { %>
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle me-2"></i><%= request.getAttribute("error") %>
+        </div>
+    <% } %>
+    
+    <!-- Formulario para seleccionar cuenta -->
+    <form action="ServletMovimiento" method="get">
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <label for="selectCuenta" class="form-label">Seleccionar Cuenta</label>
+                <select class="form-select" id="selectCuenta" name="idCuenta" onchange="mostrarInfoCuenta()" required>
+                    <option value="" disabled selected>Seleccione una cuenta para ver movimientos</option>
+                    <%
+                        // Cargar cuentas al abrir el panel
+                        if (request.getAttribute("cuentasCliente") == null) {
+                            // Primera vez - cargar cuentas via JavaScript
+                    %>
+                        <option disabled>Cargando cuentas...</option>
+                    <%
+                        } else {
+                            java.util.List<entidades.Cuenta> cuentasCliente = 
+                                (java.util.List<entidades.Cuenta>) request.getAttribute("cuentasCliente");
+                            
+                            if (cuentasCliente != null && !cuentasCliente.isEmpty()) {
+                                for (entidades.Cuenta cuenta : cuentasCliente) {
+                    %>
+                                    <option value="<%= cuenta.getIdCuenta() %>" 
+                                            data-numero="<%= cuenta.getNumeroCuenta() %>"
+                                            data-tipo="<%= cuenta.getIdTipoCuenta() == 1 ? "Cuenta Corriente" : "Caja de Ahorro" %>"
+                                            data-saldo="<%= String.format("%,.2f", cuenta.getSaldo()) %>"
+                                            data-cbu="<%= cuenta.getCbu() %>">
+                                        <%= cuenta.getNumeroCuenta() %> - 
+                                        <%= cuenta.getIdTipoCuenta() == 1 ? "Cuenta Corriente" : "Caja de Ahorro" %>
+                                    </option>
+                    <%
+                                }
+                            } else {
+                    %>
+                                <option disabled>No tienes cuentas activas</option>
+                    <%
+                            }
+                        }
+                    %>
                 </select>
             </div>
-            
-             <div id="saldoVisor" class="alert alert-info d-none">
-		        Saldo disponible: <strong id="saldoValor">$0.00</strong>
-		    </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" name="consultar" class="btn btn-primary">
+                    <i class="bi bi-search me-2"></i>Ver Movimientos
+                </button>
+            </div>
+        </div>
+    </form>
     
-    
-	        <div class="col-11">	
-		      <div class="table-responsive">
-		          <table id="example" class="table table-striped">
-		            <thead>
-		                <tr>
-		                    <th >Tipo de movimiento</th>
-		                    <th >Fecha</th>
-		                    <th >Monto</th>                                    
-		                </tr>
-		            </thead>
-		            <tbody>
-		                <tr>
-		                    <td>Desposito</td>
-		                    <td>01/01/2025</td>
-		                    <td>$10.000</td>            
-		                    <td>
-		                                        
-		                </tr>
-		                <tr>
-		                    <td>Pago de prestamo</td>
-		                    <td>05/03/2025</td>
-		                    <td>$30.000</td>            
-		                                       
-		                </tr>	
-		                </tbody>
-		           
-		        </table>
-		      </div>	
-		    </div>
-	 </form>  
-	    
+    <!-- Información de la cuenta seleccionada -->
+    <div id="infoCuenta" class="card mb-4" style="display: none;">
+        <div class="card-header bg-primary text-white">
+            <h6 class="mb-0" id="tituloCuenta"></h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <strong>Tipo:</strong> <span id="tipoCuenta"></span>
+                </div>
+                <div class="col-md-3">
+                    <strong>Saldo:</strong> <span id="saldoCuenta" class="text-success"></span>
+                </div>
+                <div class="col-md-6">
+                    <strong>CBU:</strong> <span id="cbuCuenta" class="text-muted"></span>
+                </div>
+            </div>
+        </div>
     </div>
+    
+    <!-- Tabla de movimientos -->
+    <% if (request.getAttribute("movimientos") != null) { %>
+        <%
+            entidades.Cuenta cuentaSeleccionada = (entidades.Cuenta) request.getAttribute("cuentaSeleccionada");
+            java.util.List<entidades.Movimiento> movimientos = 
+                (java.util.List<entidades.Movimiento>) request.getAttribute("movimientos");
+        %>
+        
+        <hr>
+        <h5>
+            <i class="bi bi-clock-history me-2"></i>
+            Movimientos - Cuenta <%= cuentaSeleccionada.getNumeroCuenta() %>
+        </h5>
+        
+        <% if (movimientos.isEmpty()) { %>
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i>
+                Esta cuenta no tiene movimientos registrados.
+            </div>
+        <% } else { %>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Detalle</th>
+                            <th class="text-end">Importe</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (entidades.Movimiento mov : movimientos) { %>
+                            <tr>
+                                <td><%= mov.getFecha() %></td>
+                                <td>
+                                    <% if (mov.getIdTipoMovimiento() == 1) { %>
+                                        <span class="badge bg-success">Alta de cuenta</span>
+                                    <% } else if (mov.getIdTipoMovimiento() == 4) { %>
+                                        <span class="badge bg-primary">Transferencia</span>
+                                    <% } else if (mov.getIdTipoMovimiento() == 5) { %>
+                                        <span class="badge bg-info">Depósito</span>
+                                    <% } else { %>
+                                        <span class="badge bg-secondary">Otro</span>
+                                    <% } %>
+                                </td>
+                                <td><%= mov.getDetalle() %></td>
+                                <td class="text-end">
+                                    <strong>$<%= String.format("%,.2f", mov.getImporte()) %></strong>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+                
+                <div class="mt-3">
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Se encontraron <%= movimientos.size() %> movimientos
+                    </small>
+                </div>
+            </div>
+        <% } %>
+    <% } %>
+</div>
     
     <div id="transferencias" class="panel">
         <h4>Transferencias</h4>
@@ -249,6 +342,29 @@
 </div>
 
 <script>
+	function mostrarInfoCuenta() {
+	    const select = document.getElementById('selectCuenta');
+	    const selectedOption = select.options[select.selectedIndex];
+	    const infoCuenta = document.getElementById('infoCuenta');
+	    
+	    if (selectedOption.value) {
+	        document.getElementById('tituloCuenta').textContent = 'Cuenta N° ' + selectedOption.dataset.numero;
+	        document.getElementById('tipoCuenta').textContent = selectedOption.dataset.tipo;
+	        document.getElementById('saldoCuenta').textContent = '$' + selectedOption.dataset.saldo;
+	        document.getElementById('cbuCuenta').textContent = selectedOption.dataset.cbu;
+	        
+	        infoCuenta.style.display = 'block';
+	    } else {
+	        infoCuenta.style.display = 'none';
+	    }
+	}
+	
+	function cargarCuentasAlAbrir() {
+	    const select = document.getElementById('selectCuenta');
+	    if (select && select.options.length <= 2) {
+	        window.location.href = 'ServletMovimiento';
+	    }
+	}
     let panelActual = null;
 
     function togglePanel(panelId, button) {
@@ -289,8 +405,7 @@
         } else {
             visor.classList.add("d-none");
         }
-    }    
-    
+    }
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
