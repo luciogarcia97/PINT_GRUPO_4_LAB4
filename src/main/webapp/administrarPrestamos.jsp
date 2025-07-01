@@ -1,4 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List"%>
+<%@ page import="entidades.Cliente"%>
+<%@ page import="entidades.Usuario" %>
+<%@ page import="entidades.Prestamo" %>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -95,92 +100,47 @@
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>15/05/2025</td>
-                                        <td>12 meses</td>
-                                        <td><strong>$30,000.00</strong></td>
-                                        <td>$2,750.00</td>
-                                        <td>12</td>
-                                        <td>Pendiente</td>                   
-                                        <td>
-                                            <div class="d-flex gap-1">
-                                                <button type="button" class="btn btn-sm btn-success" title="Aceptar Préstamo">
-                                                    <i class="bi bi-check"></i>
-                                                    Aprobar
-                                                </button>
-                                                <button type="button" class="btn btn-sm btn-danger" title="Rechazar Préstamo">
-                                                    <i class="bi bi-x"></i>
-                                                    Rechazar
-                                                </button>
-                                            </div>
-                                        </td>                   
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>2</td>
-                                        <td>3</td>
-                                        <td>01/06/2025</td>
-                                        <td>6 meses</td>
-                                        <td><strong>$15,000.00</strong></td>
-                                        <td>$2,750.00</td>
-                                        <td>6</td>
-                                        <td>Pendiente</td>                   
-                                        <td>
-                                            <div class="d-flex gap-1">
-                                                <button type="button" class="btn btn-sm btn-success" title="Aceptar Préstamo">
-                                                    <i class="bi bi-check"></i>
-                                                    Aprobar
-                                                </button>
-                                                <button type="button" class="btn btn-sm btn-danger" title="Rechazar Préstamo">
-                                                    <i class="bi bi-x"></i>
-                                                    Rechazar
-                                                </button>
-                                            </div>
-                                        </td>                   
-                                    </tr>
-                                    <tr>
-                                        <td>3</td>
-                                        <td>1</td>
-                                        <td>2</td>
-                                        <td>28/05/2025</td>
-                                        <td>24 meses</td>
-                                        <td><strong>$50,000.00</strong></td>
-                                        <td>$2,458.33</td>
-                                        <td>24</td>
-                                        <td>Aprobado</td>                   
-                                        <td>
-                                            <div class="d-flex gap-1">
-                                                <button type="button" class="btn btn-sm btn-outline-secondary" disabled>
-                                                    <i class="bi bi-check"></i>
-                                                    Aprobado
-                                                </button>
-                                            </div>
-                                        </td>                   
-                                    </tr>
-                                    <tr>
-                                        <td>4</td>
-                                        <td>2</td>
-                                        <td>3</td>
-                                        <td>10/05/2025</td>
-                                        <td>18 meses</td>
-                                        <td><strong>$25,000.00</strong></td>
-                                        <td>$1,555.56</td>
-                                        <td>18</td>
-                                        <td>Rechazado</td>                   
-                                        <td>
-                                            <div class="d-flex gap-1">
-                                                <button type="button" class="btn btn-sm btn-outline-secondary" disabled>
-                                                    <i class="bi bi-x"></i>
-                                                    Rechazado
-                                                </button>
-                                            </div>
-                                        </td>                   
-                                    </tr>
-                                </tbody>
+                               <tbody>
+									<% List<entidades.Prestamo> listaPrestamos = (List<entidades.Prestamo>) request.getAttribute("listaPrestamos");
+                                                        if (listaPrestamos != null) {
+                                                        for (entidades.Prestamo p : listaPrestamos) {
+                                                        %>
+									<tr>
+										<td><%= p.getId_prestamo() %></td>
+										<td><%= p.getId_cliente() %></td>
+										<td><%= p.getId_cuenta() %></td>
+										<td><%= p.getApellido() %></td>
+										<td><%= p.getSexo() %></td>
+										<td><%= p.getFechaNacimiento() %></td>
+										<td><%= p.getDireccion() %></td>
+										<td><%= p.getLocalidad() %></td>
+										<td><%= p.getProvincia() %></td>
+										<td><%= p.getCorreoElectronico() %></td>
+										<td>
+											<span class="badge <%= c.getEliminado() ? "bg-danger" : "bg-success" %>">
+													<%= c.getEliminado() ? "Inactivo" : "Activo" %>
+											</span>
+										</td>
+										<td>
+											<div class="d-flex gap-1">
+												<a href="modificarCliente.jsp?id=<%= c.getIdCliente() %>"
+													class="btn btn-sm btn-outline-primary"
+													title="Modificar Cliente"> <i class="bi bi-pencil"></i>
+												</a>
+												<form action="ServletCliente?eliminar=1" method="post"
+													class="d-inline">
+													<input type="hidden" name="idCliente"
+														value="<%= c.getIdCliente() %>" />														
+													<button type="submit" class="btn btn-sm btn-outline-danger"
+														title="Eliminar Cliente" name="btnEliminarCliente">
+														<i class="bi bi-trash"></i>
+													</button>
+												</form>
+											</div>
+										</td>
+									</tr>
+									<% } } %>
+								</tbody>
                             </table>
                         </div>
                     </div>

@@ -39,7 +39,7 @@ public class ServletCliente extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	
-		//para listar las provincias
+		
 		  if (request.getParameter("cargarFormulario") != null) {
 		        List<Provincia> listaProvincia = clienteNegocio.listarProvincias();
 		        request.setAttribute("listaProvincias", listaProvincia);
@@ -51,7 +51,7 @@ public class ServletCliente extends HttpServlet {
 		        return;
 		    }
 		
-	    // Para listar todos los clientes
+	    
 	    if (request.getParameter("listar") != null) {
 	        List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
 	        
