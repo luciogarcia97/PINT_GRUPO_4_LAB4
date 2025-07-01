@@ -200,36 +200,31 @@
     
     <div id="prestamos" class="panel">
         <h4>Solicitar Préstamo</h4>
-        <form>
-            <div class="mb-3">
-                <label for="cuentaPrestamo" class="form-label">Cuenta Destino</label>
-                <select class="form-select" id="cuentaPrestamo">
-                    <option selected disabled>Seleccione una cuenta</option>
-                    <% 
-                    if (cuentas != null) {
-                        for (Cuenta cuenta : cuentas) {
-                    %>
-                        <option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %> - <%= cuenta.getSaldo() %></option>
-                    <%
-                        }
-                    }
-                    %>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="montoPrestamo" class="form-label">Monto solicitado</label>
-                <input type="number" class="form-control" id="montoPrestamo">
-            </div>
-            <div class="mb-3">
-                <label for="cuotasPrestamo" class="form-label">Cantidad de cuotas</label>
-                <select class="form-select" id="cuotasPrestamo">
-                    <option>3</option>
-                    <option>6</option>
-                    <option>12</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-success">Pedir Préstamo</button>
-        </form>
+       <form action="ServletPrestamo" method="post">
+    <div class="mb-3">
+        <label for="cuentaPrestamo" class="form-label">Cuenta Destino</label>
+        <select class="form-select" id="cuentaPrestamo" name="cuentaPrestamo">
+            <% if (cuentas != null) {
+                for (Cuenta cuenta : cuentas) { %>
+                <option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %> - <%= cuenta.getSaldo() %></option>
+            <% }
+            } %>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="montoPrestamo" class="form-label">Monto solicitado</label>
+        <input type="number" class="form-control" id="montoPrestamo" name="montoPrestamo">
+    </div>
+    <div class="mb-3">
+        <label for="cuotasPrestamo" class="form-label">Cantidad de cuotas</label>
+        <select class="form-select" id="cuotasPrestamo" name="cuotasPrestamo">
+            <option>3</option>
+            <option>6</option>
+            <option>12</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success" name="btnSolicitarPrestamo">Pedir Préstamo</button>
+</form>
     </div>
 
     <div id="pagoPrestamos" class="panel">
