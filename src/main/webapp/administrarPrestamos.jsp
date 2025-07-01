@@ -54,7 +54,7 @@
                         Administrar Cuentas
                     </a>
                     
-                    <a href="prestamos.jsp" class="btn btn-primary fw-bold">
+                    <a href="ServletPrestamo?listar=1" class="btn btn-primary fw-bold">
                         <i class="bi bi-cash-coin me-2"></i>
                         Autorizar Préstamos
                     </a>
@@ -109,34 +109,20 @@
 										<td><%= p.getId_prestamo() %></td>
 										<td><%= p.getId_cliente() %></td>
 										<td><%= p.getId_cuenta() %></td>
-										<td><%= p.getApellido() %></td>
-										<td><%= p.getSexo() %></td>
-										<td><%= p.getFechaNacimiento() %></td>
-										<td><%= p.getDireccion() %></td>
-										<td><%= p.getLocalidad() %></td>
-										<td><%= p.getProvincia() %></td>
-										<td><%= p.getCorreoElectronico() %></td>
+										<td><%= p.getFecha_solicitud() %></td>
+										<td><%= p.getPlazo_pago_mes() %></td>
+										<td><%= p.getImporte_solicitado() %></td>
+										<td><%= p.getImporte_por_cuota() %></td>
+										<td><%= p.getCantidad_cuotas() %></td>
+										<td><%= p.getEstado() %></td>
+										
 										<td>
-											<span class="badge <%= c.getEliminado() ? "bg-danger" : "bg-success" %>">
-													<%= c.getEliminado() ? "Inactivo" : "Activo" %>
+											<span class="badge <%= p.isEliminado() ? "bg-danger" : "bg-success" %>">
+													<%= p.isEliminado() ? "Inactivo" : "Activo" %>
 											</span>
 										</td>
 										<td>
-											<div class="d-flex gap-1">
-												<a href="modificarCliente.jsp?id=<%= c.getIdCliente() %>"
-													class="btn btn-sm btn-outline-primary"
-													title="Modificar Cliente"> <i class="bi bi-pencil"></i>
-												</a>
-												<form action="ServletCliente?eliminar=1" method="post"
-													class="d-inline">
-													<input type="hidden" name="idCliente"
-														value="<%= c.getIdCliente() %>" />														
-													<button type="submit" class="btn btn-sm btn-outline-danger"
-														title="Eliminar Cliente" name="btnEliminarCliente">
-														<i class="bi bi-trash"></i>
-													</button>
-												</form>
-											</div>
+											
 										</td>
 									</tr>
 									<% } } %>

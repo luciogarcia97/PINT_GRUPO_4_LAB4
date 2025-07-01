@@ -11,21 +11,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import entidades.Cliente;
-import entidades.Localidad;
+
 import entidades.Prestamo;
-import entidades.Provincia;
+
 import entidades.Usuario;
-import negocioImpl.ClienteNegociolmpl;
-import negocioImpl.CuentaNegocioImpl;
+
 import negocioImpl.PrestamoNegocioImpl;
-import negocioImpl.UsuarioNegocioImpl;
 
 @WebServlet("/ServletPrestamo")
 public class ServletPrestamo extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private PrestamoNegocioImpl prestamoNegocio;
-	private CuentaNegocioImpl cuentaNegocio;
+
 	
 	
 	

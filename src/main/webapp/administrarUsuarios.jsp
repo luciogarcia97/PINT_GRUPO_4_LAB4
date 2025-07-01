@@ -55,7 +55,7 @@
                         Administrar Cuentas
                     </a>
                     
-                    <a href="prestamos.jsp" class="btn btn-light">
+                    <a href="ServletPrestamo?listar=1" class="btn btn-light">
                         <i class="bi bi-cash-coin me-2"></i>
                         Autorizar Préstamos
                     </a>
