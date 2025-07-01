@@ -121,9 +121,7 @@
 													<%= p.isEliminado() ? "Inactivo" : "Activo" %>
 											</span>
 										</td>
-										<td>
-											
-										</td>
+									
 									</tr>
 									<% } } %>
 								</tbody>
