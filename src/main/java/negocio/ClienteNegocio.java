@@ -3,6 +3,8 @@ package negocio;
 import java.util.List;
 
 import entidades.Cliente;
+import entidades.Localidad;
+import entidades.Provincia;
 
 
 public interface ClienteNegocio {
@@ -24,5 +26,10 @@ public interface ClienteNegocio {
 	public boolean existeCuil(String cuil);
     
     public boolean existeDni(int dni);
-	
+    
+    public List<Provincia> listarProvincias();
+    
+    public List<Localidad> listarLocalidades();
+
+    
 }

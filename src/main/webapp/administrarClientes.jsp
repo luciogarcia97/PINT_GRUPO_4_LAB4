@@ -86,7 +86,7 @@
 					<h3 class="text-white">
 						<i class="bi bi-people me-2"></i> Administrar Clientes
 					</h3>
-					<a href="registrarCliente.jsp" class="btn btn-success"> <i
+					<a href="ServletCliente?cargarFormulario=1" class="btn btn-success"> <i
 						class="bi bi-plus me-1"></i> Registrar Cliente
 					</a>
 				</div>

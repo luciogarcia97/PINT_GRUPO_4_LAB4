@@ -3,6 +3,8 @@ import java.util.List;
 import dao.ClienteDao;
 import daoImpl.ClienteDaolmpl;
 import entidades.Cliente;
+import entidades.Localidad;
+import entidades.Provincia;
 import negocio.ClienteNegocio;
 
 
@@ -75,6 +77,19 @@ public class ClienteNegociolmpl implements ClienteNegocio {
     {
 		return clienteDao.existeDni(dni);
     }
+
+	@Override
+	public List<Provincia> listarProvincias() {
+
+		return clienteDao.listarProvincias();
+	}
+
+	public List<Localidad> listarLocalidades() {
+		
+		return clienteDao.listarLocalidades();
+	}
+
+	
     
 }
 	

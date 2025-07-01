@@ -10,6 +10,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+
+import dao.Conexion;
+import dao.ClienteDao;
+import entidades.Cliente;
+import entidades.Localidad;
+import entidades.Provincia;
+
+
 public class ClienteDaolmpl implements ClienteDao {
 
 	@Override
@@ -375,6 +383,90 @@ public boolean existeCuil(String cuil) {
 	    return existe;
 		
 	}
+
+@Override
+public List<Provincia> listarProvincias() {
+	
+	
+		List<Provincia> listaProvincia = new ArrayList<>();
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+
+		try {
+			String query = "SELECT id_provincia,nombre_provincia FROM provincias;";
+			pst = conexion.prepareStatement(query);
+			rs = pst.executeQuery();
+
+			while (rs.next()) {
+
+				Provincia provincia = new Provincia();
+				provincia.setId(rs.getInt("id_provincia"));
+				provincia.setNombre(rs.getString("nombre_provincia"));
+				
+				listaProvincia.add(provincia);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pst != null)
+					pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return listaProvincia;
+	}
+
+@Override
+public List<Localidad> listarLocalidades() {
+	List<Localidad> listaLocalidades = new ArrayList<>();
+	PreparedStatement pst = null;
+	ResultSet rs = null;
+	Connection conexion = Conexion.getConexion().getSQLConexion();
+
+	try {
+		String query = "SELECT id_localidad,nombre_localidad,id_provincia FROM localidades;";
+		pst = conexion.prepareStatement(query);
+		rs = pst.executeQuery();
+
+		while (rs.next()) {
+
+			Localidad localidad = new Localidad();
+			localidad.setId(rs.getInt("id_localidad"));
+			localidad.setNombre(rs.getString("nombre_localidad"));
+			localidad.setId_provincia(rs.getInt("id_provincia"));
+			
+			listaLocalidades.add(localidad);
+		}
+
+	} catch (SQLException e) {
+		e.printStackTrace();
+	} finally {
+		try {
+			if (rs != null)
+				rs.close();
+			if (pst != null)
+				pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	return listaLocalidades;
+	
+}
+
+
+	
+	
+	
+}
 	
 
-}
+
