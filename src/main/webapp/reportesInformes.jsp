@@ -170,7 +170,8 @@
 	    }
 
 	    function limpiarFormulario() {
-	        document.getElementById('formReporte').reset();
+	    	  document.getElementById('formReporte').reset();		   
+			  window.location.href = 'reportesInformes.jsp'
 	    }   
        
     </script>
