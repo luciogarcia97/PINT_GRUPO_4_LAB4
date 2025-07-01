@@ -1,16 +1,14 @@
 package negocioImpl;
 
+import dao.ClienteDao;
+import dao.CuentaDao;
+import daoImpl.ClienteDaolmpl;
+import daoImpl.CuentaDaoImpl;
+import entidades.Cuenta;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
-import dao.CuentaDao;
-import daoImpl.CuentaDaoImpl;
-import entidades.Cuenta;
 import negocio.CuentaNegocio;
-
-import dao.ClienteDao;
-import daoImpl.ClienteDaolmpl;
 
 public class CuentaNegocioImpl implements CuentaNegocio {
 	
@@ -121,7 +119,10 @@ public class CuentaNegocioImpl implements CuentaNegocio {
 
 	@Override
 	public boolean puedeCrearCuenta(int idCliente) {
-		// TODO Auto-generated method stub
+		int cantidadCuentas = cuentaDao.contarCuentasActivasPorCliente(idCliente);
+		if (cantidadCuentas < 3) {
+			return true;
+		}
 		return false;
 	}
 

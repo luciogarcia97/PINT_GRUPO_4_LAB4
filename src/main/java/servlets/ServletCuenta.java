@@ -65,9 +65,7 @@ private static final long serialVersionUID = 1L;
     }
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
-    	System.out.println("Servlet cuenta");
-    	
+            	
         if (request.getParameter("btnCrearCuenta") != null) {
         	
         	
@@ -95,7 +93,7 @@ private static final long serialVersionUID = 1L;
                     return;
                 }
                 
-                TipoCuenta tipoCuenta = tipoCuentaNegocio.obtenerTipoPorId(idTipoCuenta);
+                TipoCuenta tipoCuenta = tipoCuentaNegocio.obtenerTipoPorId(idTipoCuenta);                
                 if (tipoCuenta == null) {
                     request.setAttribute("error", "Tipo de cuenta no válido");
                     cargarFormularioRegistrar(request, response);
@@ -112,7 +110,6 @@ private static final long serialVersionUID = 1L;
 
                 Cuenta nuevaCuenta = new Cuenta(idCliente, idTipoCuenta, numeroCuenta, cbu);
                 nuevaCuenta.setFechaCreacion(LocalDate.now());
-                                                
                 boolean resultado = cuentaNegocio.insertarCuenta(nuevaCuenta);
                 
                 if (resultado) {

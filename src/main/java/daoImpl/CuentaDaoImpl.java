@@ -95,36 +95,49 @@ public class CuentaDaoImpl implements CuentaDao {
 	@Override
 	public String generarNumeroCuenta() {
 		String numeroCuenta = "";
-		PreparedStatement pst = null;
-		ResultSet rs = null;
-		Connection conexion = Conexion.getConexion().getSQLConexion();
+	    PreparedStatement pst = null;
+	    ResultSet rs = null;
+	    Connection conexion = Conexion.getConexion().getSQLConexion();
 
-		try {
-			String query = "SELECT MAX(numero_cuenta) as max_numero FROM cuenta";
-			pst = conexion.prepareStatement(query);
-			rs = pst.executeQuery();
+	    try {
+	        String query = "SELECT numero_cuenta FROM cuenta";
+	        pst = conexion.prepareStatement(query);
+	        rs = pst.executeQuery();
 
-			long proximoNumero = 0;
-			if (rs.next() && rs.getLong("max_numero") >= 0) {
-				proximoNumero = rs.getLong("max_numero") + 1;
-			}
+	        int maxNumero = 10000;
 
-			numeroCuenta = String.valueOf(proximoNumero);
+	        while (rs.next()) {
+	            String numeroStr = rs.getString("numero_cuenta");
+	            try {
+	                int numeroActual = Integer.parseInt(numeroStr);
+	                if (numeroActual > maxNumero) {
+	                    maxNumero = numeroActual;
+	                }
+	            } catch (NumberFormatException e) {
+	                continue;
+	            }
+	        }
 
-		} catch (SQLException e) {
+	        int proximoNumero = maxNumero + 1;
+	        numeroCuenta = String.valueOf(proximoNumero);
+
+	        while (existeNumeroCuenta(numeroCuenta)) {
+	            proximoNumero++;
+	            numeroCuenta = String.valueOf(proximoNumero);
+	        }
+
+	    } catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (rs != null)
-					rs.close();
-				if (pst != null)
-					pst.close();
+			if (pst != null)
+				pst.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
 
-		return numeroCuenta;
+	    return numeroCuenta;
 	}
 
 	@Override
@@ -274,7 +287,7 @@ public class CuentaDaoImpl implements CuentaDao {
 	    int cantidadCuentas = 0;
 
 	    try {
-	        String query = "SELECT COUNT(*) as cantidad FROM cuenta WHERE id_cliente = ? AND activa = true";
+	        String query = "SELECT COUNT(*) as cantidad FROM cuenta WHERE id_cliente = ? AND activa = 1";
 	        pst = conexion.prepareStatement(query);
 	        pst.setInt(1, idCliente);
 	        rs = pst.executeQuery();
