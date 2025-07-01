@@ -15,6 +15,8 @@ import dao.ClienteDao;
 import negocio.ClienteNegocio;
 import negocio.UsuarioNegocio;
 import entidades.Cliente;
+import entidades.Localidad;
+import entidades.Provincia;
 import entidades.Usuario;
 import entidades.TipoCuenta;
 import negocioImpl.ClienteNegociolmpl;
@@ -37,7 +39,18 @@ public class ServletCliente extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	
-	    
+		//para listar las provincias
+		  if (request.getParameter("cargarFormulario") != null) {
+		        List<Provincia> listaProvincia = clienteNegocio.listarProvincias();
+		        request.setAttribute("listaProvincias", listaProvincia);
+		        List<Localidad> listaLocalidades = clienteNegocio.listarLocalidades();
+		        request.setAttribute("listaLocalidades", listaLocalidades);
+
+		        RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
+		        rd.forward(request, response);
+		        return;
+		    }
+		
 	    // Para listar todos los clientes
 	    if (request.getParameter("listar") != null) {
 	        List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
@@ -47,6 +60,8 @@ public class ServletCliente extends HttpServlet {
 	        RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
 	        rd.forward(request, response);
 	    }
+	    
+	   
 	}
 
 	
@@ -66,8 +81,8 @@ public class ServletCliente extends HttpServlet {
 			cliente.setNacionalidad(request.getParameter("txtNacionalidad"));
 			cliente.setFechaNacimiento(request.getParameter("txtFechaNacimiento"));
 			cliente.setDireccion(request.getParameter("txtDireccion"));
-			cliente.setLocalidad(request.getParameter("txtLocalidad"));
-			cliente.setProvincia(request.getParameter("txtProvincia"));
+			cliente.setLocalidad(request.getParameter("ddlLocalidades"));
+			cliente.setProvincia(request.getParameter("ddlProvincias"));
 			cliente.setCorreoElectronico(request.getParameter("txtCorreo"));
 			cliente.setEliminado(false);				
 			

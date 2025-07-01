@@ -68,15 +68,15 @@
 		                <label for="direccion" class="form-label">Dirección</label>
 		                <input type="text" class="form-control" id="direccion" name="txtDireccion" placeholder="Tu Dirección" required>
 		            </div>
-		
+		 			 <div class="mb-3 col-md-6">
+		                <label for="provincia" class="form-label">Provincia</label>
+		                <input type="text" class="form-control" id="provincia" name="txtProvincia" placeholder="Provincia" required>
+		            </div>
 		            <div class="mb-3 col-md-6">
 		                <label for="localidad" class="form-label">Localidad</label>
 		                <input type="text" class="form-control" id="localidad" name="txtLocalidad" placeholder="Localidad" required>
 		            </div>
-		            <div class="mb-3 col-md-6">
-		                <label for="provincia" class="form-label">Provincia</label>
-		                <input type="text" class="form-control" id="provincia" name="txtProvincia" placeholder="Provincia" required>
-		            </div>
+		          
 		
 		            <div class="mb-3 col-md-6">
 		                <label for="correo" class="form-label">Email</label>
