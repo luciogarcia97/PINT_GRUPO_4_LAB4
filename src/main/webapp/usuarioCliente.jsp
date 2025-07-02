@@ -72,12 +72,12 @@
     <% } %>
     
     <div class="d-flex justify-content-center gap-3">
-		<button class="btn btn-primary" onclick="togglePanel('movimientos', this); cargarCuentasAlAbrir();">Ver Movimientos</button>
-        <button class="btn btn-primary" onclick="togglePanel('transferencias', this)">Transferencias</button>
-        <button class="btn btn-primary" onclick="togglePanel('prestamos', this)">Préstamos</button>
-        <button class="btn btn-primary" onclick="togglePanel('pagoPrestamos', this)">Pago de prestamos</button>
-        <button class="btn btn-primary" onclick="togglePanel('datos', this)">Mis Datos</button>
-    </div>
+	    <button class="btn btn-primary" onclick="togglePanel('movimientos', this)">Ver Movimientos</button>
+	    <button class="btn btn-primary" onclick="togglePanel('transferencias', this)">Transferencias</button>
+	    <button class="btn btn-primary" onclick="togglePanel('prestamos', this)">Préstamos</button>
+	    <button class="btn btn-primary" onclick="togglePanel('pagoPrestamos', this)">Pago de prestamos</button>
+	    <button class="btn btn-primary" onclick="togglePanel('datos', this)">Mis Datos</button>
+	</div>
     
 <div id="movimientos" class="panel">
     <h4><i class="bi bi-wallet2 me-2"></i>Consultar Movimientos</h4>
@@ -90,74 +90,39 @@
     <% } %>
     
     <!-- Formulario para seleccionar cuenta -->
-    <form action="ServletMovimiento" method="get">
-        <div class="row mb-4">
-            <div class="col-md-8">
-                <label for="selectCuenta" class="form-label">Seleccionar Cuenta</label>
-                <select class="form-select" id="selectCuenta" name="idCuenta" onchange="mostrarInfoCuenta()" required>
-                    <option value="" disabled selected>Seleccione una cuenta para ver movimientos</option>
+      <form action="ServletClienteUsuario" method="get">
+	    <input type="hidden" name="accion" value="movimientos">
+	    <div class="row mb-4">
+	        <div class="col-md-8">
+	            <select class="form-select" name="idCuenta" required>
                     <%
-                        // Cargar cuentas al abrir el panel
-                        if (request.getAttribute("cuentasCliente") == null) {
-                            // Primera vez - cargar cuentas via JavaScript
+                        java.util.List<entidades.Cuenta> cuentasCliente = 
+                            (java.util.List<entidades.Cuenta>) request.getAttribute("cuentasCliente");
+                        
+                        if (cuentasCliente != null && !cuentasCliente.isEmpty()) {
+                            for (entidades.Cuenta cuenta : cuentasCliente) {
                     %>
-                        <option disabled>Cargando cuentas...</option>
-                    <%
-                        } else {
-                            java.util.List<entidades.Cuenta> cuentasCliente = 
-                                (java.util.List<entidades.Cuenta>) request.getAttribute("cuentasCliente");
-                            
-                            if (cuentasCliente != null && !cuentasCliente.isEmpty()) {
-                                for (entidades.Cuenta cuenta : cuentasCliente) {
-                    %>
-                                    <option value="<%= cuenta.getIdCuenta() %>" 
-                                            data-numero="<%= cuenta.getNumeroCuenta() %>"
-                                            data-tipo="<%= cuenta.getIdTipoCuenta() == 1 ? "Cuenta Corriente" : "Caja de Ahorro" %>"
-                                            data-saldo="<%= String.format("%,.2f", cuenta.getSaldo()) %>"
-                                            data-cbu="<%= cuenta.getCbu() %>">
-                                        <%= cuenta.getNumeroCuenta() %> - 
-                                        <%= cuenta.getIdTipoCuenta() == 1 ? "Cuenta Corriente" : "Caja de Ahorro" %>
-                                    </option>
-                    <%
-                                }
-                            } else {
-                    %>
-                                <option disabled>No tienes cuentas activas</option>
+                                <option value="<%= cuenta.getIdCuenta() %>">
+                                    <%= cuenta.getNumeroCuenta() %> - 
+                                    <%= cuenta.getIdTipoCuenta() == 1 ? "Cuenta Corriente" : "Caja de Ahorro" %> 
+                                    - Saldo: $<%= String.format("%,.2f", cuenta.getSaldo()) %>
+                                </option>
                     <%
                             }
+                        } else {
+                    %>
+                            <option disabled>No tienes cuentas activas</option>
+                    <%
                         }
                     %>
                 </select>
-            </div>
-            <div class="col-md-4 d-flex align-items-end">
-                <button type="submit" name="consultar" class="btn btn-primary">
-                    <i class="bi bi-search me-2"></i>Ver Movimientos
-                </button>
-            </div>
-        </div>
-    </form>
+		        </div>
+		        <div class="col-md-4">
+		            <button type="submit" class="btn btn-primary">Ver Movimientos</button>
+		        </div>
+		    </div>
+		</form>
     
-    <!-- Información de la cuenta seleccionada -->
-    <div id="infoCuenta" class="card mb-4" style="display: none;">
-        <div class="card-header bg-primary text-white">
-            <h6 class="mb-0" id="tituloCuenta"></h6>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-3">
-                    <strong>Tipo:</strong> <span id="tipoCuenta"></span>
-                </div>
-                <div class="col-md-3">
-                    <strong>Saldo:</strong> <span id="saldoCuenta" class="text-success"></span>
-                </div>
-                <div class="col-md-6">
-                    <strong>CBU:</strong> <span id="cbuCuenta" class="text-muted"></span>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Tabla de movimientos -->
     <% if (request.getAttribute("movimientos") != null) { %>
         <%
             entidades.Cuenta cuentaSeleccionada = (entidades.Cuenta) request.getAttribute("cuentaSeleccionada");
@@ -222,6 +187,28 @@
     <% } %>
 </div>
     
+    <!-- Información de la cuenta seleccionada -->
+    <div id="infoCuenta" class="card mb-4" style="display: none;">
+        <div class="card-header bg-primary text-white">
+            <h6 class="mb-0" id="tituloCuenta"></h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <strong>Tipo:</strong> <span id="tipoCuenta"></span>
+                </div>
+                <div class="col-md-3">
+                    <strong>Saldo:</strong> <span id="saldoCuenta" class="text-success"></span>
+                </div>
+                <div class="col-md-6">
+                    <strong>CBU:</strong> <span id="cbuCuenta" class="text-muted"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+    
     <div id="transferencias" class="panel">
         <h4>Transferencias</h4>
         <form>
@@ -231,8 +218,6 @@
                 <select class="form-select" id="cuentaOrigen">
                     <option selected disabled>Seleccione una cuenta</option>
                     <% 
-                    java.util.List<entidades.Cuenta> cuentasCliente = 
-                    (java.util.List<entidades.Cuenta>) request.getAttribute("cuentasCliente");
                     if (cuentasCliente != null) {
                         for (Cuenta cuenta : cuentasCliente) {
                     %>

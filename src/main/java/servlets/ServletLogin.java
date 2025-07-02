@@ -48,12 +48,12 @@ public class ServletLogin extends HttpServlet {
 						  loginExitoso = true;
 						  if (usuarioLog.getTipo_usuario().equals("admin")){
 							  request.getSession().setAttribute("adminLogueado", usuarioLog);
-						      request.getRequestDispatcher("ServletCliente?listar=1").forward(request, response);
+							  response.sendRedirect("ServletCliente?listar=1");
 						    } else {
 						      request.getSession().setAttribute("usuarioLogueado", usuarioLog);
-						      request.getRequestDispatcher("ServletClienteUsuario?accion=datos").forward(request, response);
+						      response.sendRedirect("ServletClienteUsuario?accion=datos");
 						    }
-						}	
+						}
 				      break;    
 				 }
 			}
