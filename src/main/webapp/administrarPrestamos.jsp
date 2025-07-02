@@ -120,6 +120,7 @@
 										
 									
 										<td>
+										<% if(!p.getEstado().equals("denegado") && !p.getEstado().equals("aceptado")){%>
 										 <div class="d-flex gap-1">
 										 <form   action="ServletPrestamo?denegar=1" method="post"
 											class="d-inline">
@@ -144,6 +145,9 @@
 										 </form  >
 										 
 										 </div>
+										 <%
+										 } 
+										 %>
 									    </td>
 									</tr>
 									<% } } %>
