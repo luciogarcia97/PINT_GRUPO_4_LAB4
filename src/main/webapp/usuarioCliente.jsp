@@ -2,6 +2,9 @@
 <%@ page import="java.util.List" %>
 <%@ page import="entidades.Movimiento" %>
 <%@ page import="entidades.Cuenta" %>
+<%@ page import="entidades.TipoCuenta" %>
+<%@ page import="entidades.Usuario" %>
+<%@ page import="entidades.Cliente" %>
 <%
     // Autenticación de cliente
     Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
@@ -228,8 +231,10 @@
                 <select class="form-select" id="cuentaOrigen">
                     <option selected disabled>Seleccione una cuenta</option>
                     <% 
-                    if (cuentas != null) {
-                        for (Cuenta cuenta : cuentas) {
+                    java.util.List<entidades.Cuenta> cuentasCliente = 
+                    (java.util.List<entidades.Cuenta>) request.getAttribute("cuentasCliente");
+                    if (cuentasCliente != null) {
+                        for (Cuenta cuenta : cuentasCliente) {
                     %>
                         <option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %> - <%= cuenta.getSaldo() %></option>
                     <%
@@ -287,8 +292,8 @@
     <div class="mb-3">
         <label for="cuentaPrestamo" class="form-label">Cuenta Destino</label>
         <select class="form-select" id="cuentaPrestamo" name="cuentaPrestamo">
-            <% if (cuentas != null) {
-                for (Cuenta cuenta : cuentas) { %>
+            <% if (cuentasCliente != null) {
+                        for (Cuenta cuenta : cuentasCliente) { %>
                 <option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %> - <%= cuenta.getSaldo() %></option>
             <% }
             } %>
@@ -324,8 +329,8 @@
                 <label for="cuentaPago" class="form-label">Cuenta de Pago</label>
                 <select class="form-select" id="cuentaPago">
                     <% 
-                    if (cuentas != null) {
-                        for (Cuenta cuenta : cuentas) {
+                    if (cuentasCliente != null) {
+                        for (Cuenta cuenta : cuentasCliente) {
                     %>
                         <option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %> - <%= cuenta.getSaldo() %></option>
                     <%
@@ -361,7 +366,7 @@
 	    
 	    <div id="datosCuenta" class="mt-3 container bg-white p-4 rounded"> 
 	        <h4 class="mb-3">Mis cuentas</h4>
-	        <% if (cuentas != null && !cuentas.isEmpty()) { %>
+	        <% if (cuentasCliente != null && !cuentasCliente.isEmpty()) { %>
 	            <table id="example" class="table table-striped">
 	                <thead>
 	                    <tr>
@@ -375,7 +380,7 @@
 	                <tbody>
 	                    <% 
 	                    List<TipoCuenta> tiposCuenta = (List<TipoCuenta>) request.getAttribute("tiposCuenta");
-	                    for (Cuenta cuenta : cuentas) { 
+	                    for (Cuenta cuenta : cuentasCliente) { 
 	                    %>
 	                        <tr>
 	                            <td><%= cuenta.getNumeroCuenta() %></td>
