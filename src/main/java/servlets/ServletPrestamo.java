@@ -92,5 +92,46 @@ public class ServletPrestamo extends HttpServlet {
 	            rd.forward(request, response);
 	        }
 	    }
+		
+		if(request.getParameter("btnDenegarPrestamo")!= null) {
+			
+			int idPrestamo = Integer.parseInt(request.getParameter("idPrestamo"));
+					
+			
+			if (prestamoNegocio.denegarPrestamo(idPrestamo)) {			 
+							
+				 List<Prestamo> listaPrestamos = prestamoNegocio.obtenerPrestamos();
+			        
+			        request.setAttribute("listaPrestamos", listaPrestamos);
+			        
+			        RequestDispatcher rd = request.getRequestDispatcher("/administrarPrestamos.jsp");
+			        rd.forward(request, response);
+			 } else {
+					
+					request.setAttribute("error", "No se pudo denegar el prestamo.");
+                    List<Prestamo> listaPrestamos = prestamoNegocio.obtenerPrestamos();
+			        request.setAttribute("listaPrestamos", listaPrestamos);
+			        
+			        RequestDispatcher rd = request.getRequestDispatcher("/administrarPrestamos.jsp");
+			        rd.forward(request, response);
+				}	
+		}
+		
+		if(request.getParameter("btnAceptarPrestamo")!= null) {
+			int idPrestamo = Integer.parseInt(request.getParameter("idPrestamo"));
+
+			if (prestamoNegocio.aceptarPrestamo(idPrestamo)) {			 
+				List<Prestamo> listaPrestamos = prestamoNegocio.obtenerPrestamos();
+				request.setAttribute("listaPrestamos", listaPrestamos);
+				RequestDispatcher rd = request.getRequestDispatcher("/administrarPrestamos.jsp");
+				rd.forward(request, response);
+			} else {
+				request.setAttribute("error", "No se pudo aceptar el prestamo.");
+				List<Prestamo> listaPrestamos = prestamoNegocio.obtenerPrestamos();
+				request.setAttribute("listaPrestamos", listaPrestamos);
+				RequestDispatcher rd = request.getRequestDispatcher("/administrarPrestamos.jsp");
+				rd.forward(request, response);
+			}	
+		}
 	}
 }

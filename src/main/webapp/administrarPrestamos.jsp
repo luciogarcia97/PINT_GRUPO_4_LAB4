@@ -116,12 +116,33 @@
 										<td><%= p.getCantidad_cuotas() %></td>
 										<td><%= p.getEstado() %></td>
 										
-										<td>
-											<span class="badge <%= p.isEliminado() ? "bg-danger" : "bg-success" %>">
-													<%= p.isEliminado() ? "Inactivo" : "Activo" %>
-											</span>
-										</td>
 									
+										<td>
+										 <div class="d-flex gap-1">
+										 <form   action="ServletPrestamo?denegar=1" method="post"
+											class="d-inline">
+										 <input type="hidden" name="idPrestamo"
+											value="<%= p.getId_prestamo() %>" />														
+										 <button type="submit" class="btn btn-sm btn-outline-danger"
+											title="Denegar Prestamo" name="btnDenegarPrestamo">
+											<i class="bi bi-trash"></i>
+										 </button>
+										 
+										 </form>
+										 
+										  <form   action="ServletPrestamo?aceptar=1" method="post"
+											class="d-inline">
+										 <input type="hidden" name="idPrestamo"
+											value="<%= p.getId_prestamo() %>" />														
+										 <button type="submit" class="btn btn-sm btn-outline-success"
+											title="Aceptar Prestamo" name="btnAceptarPrestamo">
+											<i class="bi bi-arrow-through-heart-fill"></i>
+										 </button>
+										 
+										 </form  >
+										 
+										 </div>
+									    </td>
 									</tr>
 									<% } } %>
 								</tbody>
