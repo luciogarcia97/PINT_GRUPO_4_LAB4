@@ -3,12 +3,12 @@ package dao;
 import java.util.List;
 
 import entidades.Cliente;
+import entidades.Localidad;
+import entidades.Provincia;
 
 public interface ClienteDao {
 
-	public boolean insertarCliente(Cliente cliente);
-	
-	public int ultimoIdCliente();
+	public int insertarCliente(Cliente cliente);	
 	
 	public Cliente BuscarPorID(int id);
 
@@ -23,6 +23,11 @@ public interface ClienteDao {
     public boolean existeCuil(String cuil);
     
     public boolean existeDni(int dni);
+    
+    public List<Provincia> listarProvincias();
+    
+    public List<Localidad> listarLocalidades();
+    
 
 }
 

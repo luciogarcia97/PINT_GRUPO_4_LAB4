@@ -2,6 +2,14 @@
 <%@ page import="java.util.List" %>
 <%@ page import="entidades.Movimiento" %>
 <%@ page import="entidades.Cuenta" %>
+<%
+    // Autenticación de cliente
+    Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
+    if (usuarioLogueado == null) {
+        response.sendRedirect("index.jsp");
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -33,7 +41,15 @@
 <nav class="navbar navbar-light bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">
-            <i class="bi bi-person-circle"></i> Usuario Cliente
+            <i class="bi bi-person-circle"></i> 
+            <% 
+            Cliente cliente = (Cliente) request.getAttribute("cliente");
+            if (cliente != null) {
+                out.print(cliente.getNombre() + " " + cliente.getApellido());
+            } else {
+                out.print("Usuario Cliente");
+            }
+            %>
         </a>        
         <form action="ServletLogin" method="get" class="d-inline">
             <button class="btn btn-outline-dark" type="submit" name="btnCerrar">Cerrar Sesión</button>
@@ -42,6 +58,16 @@
 </nav>
 
 <div class="container mt-4">
+    <% 
+    String error = (String) request.getAttribute("error");
+    if (error != null && !error.isEmpty()) {
+    %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <% } %>
+    
     <div class="d-flex justify-content-center gap-3">
 		<button class="btn btn-primary" onclick="togglePanel('movimientos', this); cargarCuentasAlAbrir();">Ver Movimientos</button>
         <button class="btn btn-primary" onclick="togglePanel('transferencias', this)">Transferencias</button>
@@ -201,8 +227,15 @@
                 
                 <select class="form-select" id="cuentaOrigen">
                     <option selected disabled>Seleccione una cuenta</option>
-                    <option value="1">Caja de Ahorro - 12345678</option>
-                    <option value="2">Cuenta Corriente - 87654321</option>
+                    <% 
+                    if (cuentas != null) {
+                        for (Cuenta cuenta : cuentas) {
+                    %>
+                        <option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %> - <%= cuenta.getSaldo() %></option>
+                    <%
+                        }
+                    }
+                    %>
                 </select>
             </div>
             <div class="mb-3">
@@ -250,29 +283,31 @@
     
     <div id="prestamos" class="panel">
         <h4>Solicitar Préstamo</h4>
-        <form>
-            <div class="mb-3">
-                <label for="cuentaPrestamo" class="form-label">Cuenta Destino</label>
-                <select class="form-select" id="cuentaPrestamo">
-                    <option selected disabled>Seleccione una cuenta</option>
-                    <option value="1">Caja de Ahorro - 12345678</option>
-                    <option value="2">Cuenta Corriente - 87654321</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="montoPrestamo" class="form-label">Monto solicitado</label>
-                <input type="number" class="form-control" id="montoPrestamo">
-            </div>
-            <div class="mb-3">
-                <label for="cuotasPrestamo" class="form-label">Cantidad de cuotas</label>
-                <select class="form-select" id="cuotasPrestamo">
-                    <option>3</option>
-                    <option>6</option>
-                    <option>12</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-success">Pedir Préstamo</button>
-        </form>
+       <form action="ServletPrestamo" method="post">
+    <div class="mb-3">
+        <label for="cuentaPrestamo" class="form-label">Cuenta Destino</label>
+        <select class="form-select" id="cuentaPrestamo" name="cuentaPrestamo">
+            <% if (cuentas != null) {
+                for (Cuenta cuenta : cuentas) { %>
+                <option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %> - <%= cuenta.getSaldo() %></option>
+            <% }
+            } %>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="montoPrestamo" class="form-label">Monto solicitado</label>
+        <input type="number" class="form-control" id="montoPrestamo" name="montoPrestamo">
+    </div>
+    <div class="mb-3">
+        <label for="cuotasPrestamo" class="form-label">Cantidad de cuotas</label>
+        <select class="form-select" id="cuotasPrestamo" name="cuotasPrestamo">
+            <option>3</option>
+            <option>6</option>
+            <option>12</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success" name="btnSolicitarPrestamo">Pedir Préstamo</button>
+</form>
     </div>
 
     <div id="pagoPrestamos" class="panel">
@@ -288,8 +323,15 @@
             <div class="mb-3">
                 <label for="cuentaPago" class="form-label">Cuenta de Pago</label>
                 <select class="form-select" id="cuentaPago">
-                    <option value="1">Caja de Ahorro - 12345678</option>
-                    <option value="2">Cuenta Corriente - 87654321</option>
+                    <% 
+                    if (cuentas != null) {
+                        for (Cuenta cuenta : cuentas) {
+                    %>
+                        <option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %> - <%= cuenta.getSaldo() %></option>
+                    <%
+                        }
+                    }
+                    %>
                 </select>
             </div>
             <button type="submit" class="btn btn-success">Pagar Cuota</button>
@@ -298,43 +340,67 @@
 
     <div id="datos" style="background-color: rgb(104, 109, 250)" class="panel">
 	    <div id="datosPersonales" class="mt-3 container bg-white p-4 rounded">
-	        <h4>Datos Personales</h4>
-	        <ul>
-	            <li>Nombre: Lionel Messi</li>
-	            <li>DNI: 12345678</li>
-	            <li>Correo: messi10@gmail.com</li>
-	            <li>Dirección: Miami 123</li> 
-	        </ul>
+	        <h4 class="mb-3">Datos Personales</h4>
+	        <% if (cliente != null) { %>
+	            <ul>
+	                <li><strong>Nombre:</strong> <%= cliente.getNombre() %> <%= cliente.getApellido() %></li>
+	                <li><strong>DNI:</strong> <%= cliente.getDni() %></li>
+	                <li><strong>CUIL:</strong> <%= cliente.getCuil() %></li>
+	                <li><strong>Correo Electrónico:</strong> <%= cliente.getCorreoElectronico() %></li>
+	                <li><strong>Dirección:</strong> <%= cliente.getDireccion() %></li>
+	                <li><strong>Localidad:</strong> <%= cliente.getLocalidad() %></li>
+	                <li><strong>Provincia:</strong> <%= cliente.getProvincia() %></li>
+	                <li><strong>Nacionalidad:</strong> <%= cliente.getNacionalidad() %></li>
+	                <li><strong>Fecha de Nacimiento:</strong> <%= cliente.getFechaNacimiento() %></li>
+	                <li><strong>Sexo:</strong> <%= cliente.getSexo() %></li>
+	            </ul>
+	        <% } else { %>
+	            <p class="text-muted">No se pudieron cargar los datos personales.</p>
+	        <% } %>
 	    </div> 
 	    
 	    <div id="datosCuenta" class="mt-3 container bg-white p-4 rounded"> 
-	    <h4>Mis cuentas</h4>     
-	        <table id="example" class="table table-striped">
-	            <thead>
-	                <tr>
-	                    <th >Numero de cuenta</th>
-	                    <th >Tipo de cuenta</th>
-	                    <th >Dinero en cuenta</th>
-	                    <th >CBU</th>                                    
-	                </tr>
-	            </thead>
-	            <tbody>
-	                <tr>
-	                    <td>2089</td>
-	                    <td>Caja de ahorro</td>
-	                    <td>$100.000</td>
-	                    <td>0000007100007364498275</td>            
-	                    <td>                    
-	                </tr>
-	                <tr>
-	                    <td>2302</td>
-	                    <td>Cuenta corriente</td>
-	                    <td>$342.000</td>
-	                    <td>0000007100007375638986</td>            
-	                    <td>                    
-	                </tr>     	
+	        <h4 class="mb-3">Mis cuentas</h4>
+	        <% if (cuentas != null && !cuentas.isEmpty()) { %>
+	            <table id="example" class="table table-striped">
+	                <thead>
+	                    <tr>
+	                        <th>Número de cuenta</th>
+	                        <th>Tipo de cuenta</th>
+	                        <th>Saldo</th>
+	                        <th>CBU</th>
+	                        <th>Fecha de creación</th>                                    
+	                    </tr>
+	                </thead>
+	                <tbody>
+	                    <% 
+	                    List<TipoCuenta> tiposCuenta = (List<TipoCuenta>) request.getAttribute("tiposCuenta");
+	                    for (Cuenta cuenta : cuentas) { 
+	                    %>
+	                        <tr>
+	                            <td><%= cuenta.getNumeroCuenta() %></td>
+	                            <td>
+	                                <% 
+	                                if (tiposCuenta != null) {
+	                                    for (TipoCuenta tipo : tiposCuenta) {
+	                                        if (tipo.getId() == cuenta.getIdTipoCuenta()) {
+	                                            out.print(tipo.getNombre());
+	                                            break;
+	                                        }
+	                                    }
+	                                }
+	                                %>
+	                            </td>
+	                            <td>$<%= cuenta.getSaldo() %></td>
+	                            <td><%= cuenta.getCbu() %></td>
+	                            <td><%= cuenta.getFechaCreacion() %></td>
+	                        </tr>
+	                    <% } %>
 	                </tbody>
-	        </table>
+	            </table>
+	        <% } else { %>
+	            <p class="text-muted">No tienes cuentas registradas.</p>
+	        <% } %>
 	    </div> 
 	    
     </div>
@@ -392,16 +458,20 @@
         const visor = document.getElementById("saldoVisor");
         const saldoTexto = document.getElementById("saldoValor");
 
-        const saldos = {
-            1: "$150.000",
-            2: "$75.500"
-        };
-
         const seleccion = select.value;
-
-        if (saldos[seleccion]) {
-            saldoTexto.textContent = saldos[seleccion];
-            visor.classList.remove("d-none");
+        
+        if (seleccion && seleccion !== "Seleccione una cuenta") {
+            // Buscar la opción seleccionada para obtener el texto que contiene el saldo
+            const option = select.options[select.selectedIndex];
+            const texto = option.text;
+            const saldo = texto.split(" - ")[1]; // Obtener la parte del saldo
+            
+            if (saldo) {
+                saldoTexto.textContent = saldo;
+                visor.classList.remove("d-none");
+            } else {
+                visor.classList.add("d-none");
+            }
         } else {
             visor.classList.add("d-none");
         }

@@ -3,6 +3,8 @@ import java.util.List;
 import dao.ClienteDao;
 import daoImpl.ClienteDaolmpl;
 import entidades.Cliente;
+import entidades.Localidad;
+import entidades.Provincia;
 import negocio.ClienteNegocio;
 
 
@@ -16,18 +18,10 @@ public class ClienteNegociolmpl implements ClienteNegocio {
 	}
 	
 	@Override
-	public boolean insertarCliente(Cliente cliente) {
+	public int insertarCliente(Cliente cliente) {
 		
-		boolean fila = clienteDao.insertarCliente(cliente);
-		
-		return fila;
-	}
-	
-	@Override
-	public int ultimoIdCliente() {
-		
-		return clienteDao.ultimoIdCliente();
-	}
+		return clienteDao.insertarCliente(cliente);	
+	}	
     
 	@Override
 	public boolean eliminarCliente(int idCliente) {
@@ -75,6 +69,19 @@ public class ClienteNegociolmpl implements ClienteNegocio {
     {
 		return clienteDao.existeDni(dni);
     }
+
+	@Override
+	public List<Provincia> listarProvincias() {
+
+		return clienteDao.listarProvincias();
+	}
+
+	public List<Localidad> listarLocalidades() {
+		
+		return clienteDao.listarLocalidades();
+	}
+
+	
     
 }
 	

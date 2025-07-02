@@ -69,7 +69,7 @@
 				    <a href="ServletCuenta?listar=!" class="btn btn-light"> <i
 						class="bi bi-credit-card me-2"></i> Administrar Cuentas
 					</a>
-				    <a href="prestamos.jsp" class="btn btn-light"> <i
+				    <a href="ServletPrestamo?listar=1" class="btn btn-light"> <i
 						class="bi bi-cash-coin me-2"></i> Autorizar Préstamos
 					</a> 
 					<a href="reportesInformes.jsp" class="btn btn-light"> <i
@@ -86,7 +86,7 @@
 					<h3 class="text-white">
 						<i class="bi bi-people me-2"></i> Administrar Clientes
 					</h3>
-					<a href="registrarCliente.jsp" class="btn btn-success"> <i
+					<a href="ServletCliente?cargarFormulario=1" class="btn btn-success"> <i
 						class="bi bi-plus me-1"></i> Registrar Cliente
 					</a>
 				</div>

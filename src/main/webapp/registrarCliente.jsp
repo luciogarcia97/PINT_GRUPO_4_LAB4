@@ -1,4 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="entidades.Provincia" %>
+<%@ page import="entidades.Localidad" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -13,24 +16,24 @@
     <body>
      
     <%
-    int dni = 0; 
-    int cuil = 0;
-    int usuario = 0;
-    
-    if(request.getAttribute("dni") != null)
-    {
-    	dni = Integer.parseInt(request.getAttribute("dni").toString());
-    }
-    
-    if(request.getAttribute("cuil") != null)
-    {
-    	cuil = Integer.parseInt(request.getAttribute("cuil").toString());
-    }
-    
-    if(request.getAttribute("usuario") != null)
-    {
-    	usuario = Integer.parseInt(request.getAttribute("usuario").toString());
-    }
+	    int dni = 0; 
+	    int cuil = 0;
+	    int usuario = 0;
+	    
+	    if(request.getAttribute("dni") != null)
+	    {
+	    	dni = Integer.parseInt(request.getAttribute("dni").toString());
+	    }
+	    
+	    if(request.getAttribute("cuil") != null)
+	    {
+	    	cuil = Integer.parseInt(request.getAttribute("cuil").toString());
+	    }
+	    
+	    if(request.getAttribute("usuario") != null)
+	    {
+	    	usuario = Integer.parseInt(request.getAttribute("usuario").toString());
+	    }
     %>
 
 	    <form class="w-75 mx-auto mt-5" action="ServletCliente" method="post" onsubmit="return validarContraseñas()">
@@ -40,18 +43,53 @@
 		        <%
 		        if(dni != 0){
 		        %>
-		        <div class="alert alert-danger" role="alert">
-  				¡Ya existe un cliente con ese DNI!
-				</div>
+			        <div class="alert alert-danger" role="alert">
+	  					¡Ya existe un cliente con ese DNI!
+					</div>
 		        <%
-		        }else if(cuil != 0){
+		        } else if(cuil != 0){
 		        %>
-		        <div class="alert alert-danger" role="alert">
-  				¡Ya existe un cliente con ese CUIL!
-				</div>
+			        <div class="alert alert-danger" role="alert">
+	  					¡Ya existe un cliente con ese CUIL!
+					</div>
 		        <%
 		        }
-		        %>			       
+		        %>	
+		        
+		        <% 
+		        	boolean dniInvalido = false;
+		        	
+			        if(request.getAttribute("dniInvalido") != null) {
+			        	dniInvalido = (boolean)request.getAttribute("dniInvalido");
+			        	
+			        	if(dniInvalido){
+		        %>	
+		         	 <div class="alert alert-danger" role="alert">
+	  					¡El DNI solo lleva números!
+					</div>       
+		         
+		        <% 	  }
+		        	}		        
+		        %>		  
+		        
+		        
+		         <% 
+		        	boolean menorEdad = false;
+		        	
+			        if(request.getAttribute("menorEdad") != null) {
+			        	menorEdad = (boolean)request.getAttribute("menorEdad");
+			        	
+			        	if(menorEdad){
+		        %>	
+		         	 <div class="alert alert-danger" role="alert">
+	  					¡La persona no tiene la edad suficiente para registrarse como cliente!
+					</div>       
+		         
+		        <% 	  }
+		        	}		        
+		        %>
+		           
+		             
 		
 		        <div class="row">
 		            <div class="mb-3 col-md-6">
@@ -84,15 +122,46 @@
 		                <label for="direccion" class="form-label">Dirección</label>
 		                <input type="text" class="form-control" id="direccion" name="txtDireccion" placeholder="Tu Dirección" required>
 		            </div>
-		
+						<div class="mb-3 col-md-6">
+		                <label for="provincia" class="form-label">Provincia</label>
+		                 <select id="ddlProvincias" name="ddlProvincias" class="form-control" required>
+		                 <option value="">selecciona una provincia </option>
+		                
+		                
+					<%
+				    List<Provincia> listaProvincia = (List<Provincia>)request.getAttribute("listaProvincias");
+				    if (listaProvincia != null) {
+				        for (Provincia prov : listaProvincia) {
+					%>
+				            <option value="<%= prov.getNombre() %>"><%= prov.getNombre() %></option>
+					<%
+				      	  }
+				    	}
+					%>
+
+		                 
+		                 
+		                 </select>
+		            </div>
 		            <div class="mb-3 col-md-6">
 		                <label for="localidad" class="form-label">Localidad</label>
-		                <input type="text" class="form-control" id="localidad" name="txtLocalidad" placeholder="Localidad" required>
+		                  <select id="ddlLocalidades" name="ddlLocalidades" class="form-control" required>
+		                 <option value="">selecciona una localidad </option>
+		                 
+		                  <%
+						    List<Localidad> listaLocalidad = (List<Localidad>)request.getAttribute("listaLocalidades");
+						    if (listaLocalidad != null) {
+						        for (Localidad loc : listaLocalidad) {
+						  %>
+						            <option value="<%= loc.getNombre() %>"><%= loc.getNombre() %></option>
+						  <%
+						        }
+						    }
+						  %>
+		                 
+		                 </select>
 		            </div>
-		            <div class="mb-3 col-md-6">
-		                <label for="provincia" class="form-label">Provincia</label>
-		                <input type="text" class="form-control" id="provincia" name="txtProvincia" placeholder="Provincia" required>
-		            </div>
+		            
 		
 		            <div class="mb-3 col-md-6">
 		                <label for="correo" class="form-label">Email</label>

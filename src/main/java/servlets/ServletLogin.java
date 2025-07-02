@@ -49,7 +49,7 @@ public class ServletLogin extends HttpServlet {
 		                    request.getRequestDispatcher("ServletCliente?listar=1").forward(request, response);
 		                } else {
 		                    request.getSession().setAttribute("usuarioLogueado", usuarioLog);
-		                    request.getRequestDispatcher("usuarioCliente.jsp").forward(request, response); 
+		                    request.getRequestDispatcher("ServletClienteUsuario?accion=datos").forward(request, response); 
 		                }	
 				      break;    
 				 }

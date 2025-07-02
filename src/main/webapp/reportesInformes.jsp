@@ -53,7 +53,7 @@
 						class="bi bi-person-gear me-2"></i> Administrar Usuarios
 					</a> <a href="ServletCuenta?listar=1" class="btn btn-light"> <i
 						class="bi bi-credit-card me-2"></i> Administrar Cuentas
-					</a> <a href="prestamos.jsp" class="btn btn-light"> <i
+					</a> <a href="administrarPrestamos.jsp" class="btn btn-light"> <i
 						class="bi bi-cash-coin me-2"></i> Autorizar Préstamos
 					</a> <a href="reportesInformes.jsp" class="btn btn-primary fw-bold">
 						<i class="bi bi-graph-up me-2"></i> Informe/Reportes
@@ -170,7 +170,8 @@
 	    }
 
 	    function limpiarFormulario() {
-	        document.getElementById('formReporte').reset();
+	    	  document.getElementById('formReporte').reset();		   
+			  window.location.href = 'reportesInformes.jsp'
 	    }   
        
     </script>
