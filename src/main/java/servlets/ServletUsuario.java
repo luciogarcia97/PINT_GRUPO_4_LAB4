@@ -48,7 +48,7 @@ public class ServletUsuario extends HttpServlet {
 			throws ServletException, IOException {
 
 		Boolean resultado = false;
-		Boolean resultado1 = false;		
+		int resultado1 = -1;		
 		
 		if (request.getParameter("btnRegistrarUsuario") != null) {
 			
@@ -67,21 +67,19 @@ public class ServletUsuario extends HttpServlet {
 			cliente.setEliminado(true);
 						
 			
-			int ultimoId = clienteNegocio.ultimoIdCliente() + 1;
+			resultado1 = clienteNegocio.insertarCliente(cliente);
 			
 			Usuario usuario = new Usuario();			
-			usuario.setId_cliente(ultimoId);
+			usuario.setId_cliente(resultado1);
 			usuario.setUsuario(request.getParameter("txtUsuario"));
 			usuario.setContrasena(request.getParameter("txtContrasena"));
 			usuario.setTipo_usuario("cliente");
 			usuario.setEliminado(0);
-			usuario.setFecha_creacion(LocalDate.now());
-
-		
-			resultado1 = clienteNegocio.insertarCliente(cliente);
+			usuario.setFecha_creacion(LocalDate.now());		
+			
 			resultado = usuarioNegocio.insertarUsuario(usuario);
 
-			if(resultado1 && ultimoId != -1 && resultado) {
+			if(resultado1 > 0 && resultado) {
 				
 				List<Usuario> listaUsuarios = usuarioNegocio.obtenerUsuarios();
 				request.setAttribute("listaUsuarios", listaUsuarios);
@@ -122,8 +120,7 @@ public class ServletUsuario extends HttpServlet {
 			
 			Usuario existente = usuarioNegocio.buscarPorNombre(usuarioNuevo,idUsuario);
 
-			
-			
+						
 			if (existente != null) {
 			    request.setAttribute("errorNombre", "Ya existe un usuario con ese nombre.");
 			    request.setAttribute("id", idUsuario);

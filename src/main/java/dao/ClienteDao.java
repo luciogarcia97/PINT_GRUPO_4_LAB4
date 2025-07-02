@@ -8,9 +8,7 @@ import entidades.Provincia;
 
 public interface ClienteDao {
 
-	public boolean insertarCliente(Cliente cliente);
-	
-	public int ultimoIdCliente();
+	public int insertarCliente(Cliente cliente);	
 	
 	public Cliente BuscarPorID(int id);
 

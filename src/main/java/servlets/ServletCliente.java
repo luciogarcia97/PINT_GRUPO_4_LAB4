@@ -15,9 +15,12 @@ import dao.ClienteDao;
 import negocio.ClienteNegocio;
 import negocio.UsuarioNegocio;
 import entidades.Cliente;
+import entidades.Validaciones;
 import entidades.Localidad;
 import entidades.Provincia;
 import entidades.Usuario;
+import excepciones.ClienteMenorEdad;
+import excepciones.DniInvalido;
 import entidades.TipoCuenta;
 import negocioImpl.ClienteNegociolmpl;
 import negocioImpl.UsuarioNegocioImpl;
@@ -68,23 +71,69 @@ public class ServletCliente extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		Boolean resultado = false;
-		Boolean resultado1 = false;
+		int resultado1 = -1;
 		
 		if(request.getParameter("btnRegistrarCliente")!= null) {
 			
 			Cliente cliente = new Cliente();			
-			cliente.setDni(Integer.parseInt(request.getParameter("txtDni")));
-			cliente.setCuil(request.getParameter("txtCuil"));
-			cliente.setNombre(request.getParameter("txtNombre"));
-			cliente.setApellido(request.getParameter("txtApellido"));
-			cliente.setSexo(request.getParameter("txtSexo"));
-			cliente.setNacionalidad(request.getParameter("txtNacionalidad"));
-			cliente.setFechaNacimiento(request.getParameter("txtFechaNacimiento"));
-			cliente.setDireccion(request.getParameter("txtDireccion"));
-			cliente.setLocalidad(request.getParameter("ddlLocalidades"));
-			cliente.setProvincia(request.getParameter("ddlProvincias"));
-			cliente.setCorreoElectronico(request.getParameter("txtCorreo"));
-			cliente.setEliminado(false);				
+			
+			try {
+				
+				Validaciones.verificarDniInvalido(request.getParameter("txtDni"));				
+				cliente.setDni(Integer.parseInt(request.getParameter("txtDni")));
+				
+				LocalDate fechaNacimiento = LocalDate.parse(request.getParameter("txtFechaNacimiento").trim());
+			    Validaciones.esMenorDeEdad(fechaNacimiento);		
+				
+				cliente.setFechaNacimiento(request.getParameter("txtFechaNacimiento"));
+				
+				cliente.setCuil(request.getParameter("txtCuil"));
+				cliente.setNombre(request.getParameter("txtNombre"));
+				cliente.setApellido(request.getParameter("txtApellido"));
+				cliente.setSexo(request.getParameter("txtSexo"));
+				cliente.setNacionalidad(request.getParameter("txtNacionalidad"));			
+				cliente.setDireccion(request.getParameter("txtDireccion"));
+				cliente.setLocalidad(request.getParameter("ddlLocalidades"));
+				cliente.setProvincia(request.getParameter("ddlProvincias"));
+				cliente.setCorreoElectronico(request.getParameter("txtCorreo"));
+				cliente.setEliminado(false);
+				
+				
+			} catch (DniInvalido e) {
+				
+				request.setAttribute("dniInvalido", true);
+				
+				List<Provincia> listaProvincia = clienteNegocio.listarProvincias();
+			    request.setAttribute("listaProvincias", listaProvincia);
+
+			    List<Localidad> listaLocalidades = clienteNegocio.listarLocalidades();
+			    request.setAttribute("listaLocalidades", listaLocalidades);				
+				
+				RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
+				rd.forward(request, response);
+				
+				e.getMessage();
+				
+				return; 
+				
+		   } catch (ClienteMenorEdad e) {				
+				
+				request.setAttribute("menorEdad", true);
+				
+				List<Provincia> listaProvincia = clienteNegocio.listarProvincias();
+			    request.setAttribute("listaProvincias", listaProvincia);
+
+			    List<Localidad> listaLocalidades = clienteNegocio.listarLocalidades();
+			    request.setAttribute("listaLocalidades", listaLocalidades);				
+				
+				RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
+				rd.forward(request, response);
+				e.getMessage();
+				return; 				
+			}	
+			
+							
+			
 			
 			if(clienteNegocio.existeDni(cliente.getDni())) 
 			{
@@ -95,6 +144,7 @@ public class ServletCliente extends HttpServlet {
 				rd.forward(request, response);	
 				return;
 			}
+			
 			if(clienteNegocio.existeCuil(cliente.getCuil()))
 			{
 				// vuelve al registro con un cartel de que hubo un cuil repetido
@@ -104,18 +154,17 @@ public class ServletCliente extends HttpServlet {
 				rd.forward(request, response);
 				return;
 			}
-			
-			
-			int ultimoId = clienteNegocio.ultimoIdCliente();	// Busca en DB el ultimo Id_cliente
+						
 			List<Usuario> listaUsuario = usuarioNegocio.obtenerUsuarios();	
 		
+			resultado1 = clienteNegocio.insertarCliente(cliente); //inserta cliente devuelve ultimo ID			
+			
 			Usuario usuario = new Usuario();			
-			usuario.setId_cliente(ultimoId + 1);
+			usuario.setId_cliente(resultado1);
 			usuario.setUsuario(request.getParameter("txtUsuario"));
 			usuario.setContrasena(request.getParameter("txtContrasena"));
 			usuario.setTipo_usuario("cliente");
-			usuario.setEliminado(0);
-			usuario.setEliminado(0);
+			usuario.setEliminado(0);			
 			usuario.setFecha_creacion(LocalDate.now());
 			
 			for(Usuario u : listaUsuario) // Chequea que ya exista ese nombre de usuario de un usuario activo
@@ -129,12 +178,11 @@ public class ServletCliente extends HttpServlet {
 					rd.forward(request, response);
 					return;
 				}
-			}
+			}			
 			
-			resultado1 = clienteNegocio.insertarCliente(cliente); // Guarda en DB al cliente
 			resultado = usuarioNegocio.insertarUsuario(usuario); // Guarda en DB al usuario
 
-			if(resultado1 && ultimoId != -1 && resultado) {
+			if(resultado1 > 0 && resultado) {
 					
 				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
 				request.setAttribute("listaClientes", listaClientes);
@@ -152,8 +200,8 @@ public class ServletCliente extends HttpServlet {
 			}							
 		}
 		
-		if(request.getParameter("btnModificarCliente")!= null) {
-			
+		//modificar tmb agregar excepciones
+		if(request.getParameter("btnModificarCliente")!= null) {			
 			
 			Cliente c = new Cliente();
 			Boolean resultado2 = false;

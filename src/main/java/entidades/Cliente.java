@@ -14,8 +14,7 @@ public class Cliente {
 	private String localidad;	
 	private String provincia;
 	private String correoElectronico;
-	private boolean eliminado;
-	
+	private boolean eliminado;	
 
 	
 	public Cliente(int idCliente, int dni, String cuil, String nombre, String apellido, String sexo,

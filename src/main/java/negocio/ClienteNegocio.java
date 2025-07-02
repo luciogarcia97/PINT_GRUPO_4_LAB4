@@ -9,9 +9,7 @@ import entidades.Provincia;
 
 public interface ClienteNegocio {
 
-	public boolean insertarCliente(Cliente cliente); 
-	
-	public int ultimoIdCliente();
+	public int insertarCliente(Cliente cliente); 
 	
 	public boolean modificarCliente(Cliente cliente);
 	
