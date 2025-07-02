@@ -17,5 +17,7 @@ public interface UsuarioDao {
     public int buscarPorIDUsuario(int idCliente);
     
     public Usuario buscarPorNombre(String nombre, int id);
+    
+    public Usuario buscarPorIdCliente(int idCliente);
 
 }

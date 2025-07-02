@@ -353,6 +353,46 @@ private static final long serialVersionUID = 1L;
                 cargarListado(request, response);
             }
         }
+        
+        
+        //Transfiere desde la cuenta seleccionada dinero al CBU ingresado.
+        if (request.getParameter("btnTransferencia") != null)
+        {
+        	
+        	int idCuenta = Integer.parseInt(request.getParameter("idCuenta"));       	     	
+        	String cbu = request.getParameter("txtCbu").toString();       	
+        	BigDecimal monto = new BigDecimal(request.getParameter("txtMonto"));
+        	
+        	
+        	//Valida si la cuenta tiene el dinero suficiente:
+        	if(!cuentaNegocio.tieneSaldoSuficiente(idCuenta, monto))
+        	{
+        		//no tiene saldo suficiente
+        		return;
+        	}
+        	
+        	//Valida si el CBU existe:
+        	if(!cuentaNegocio.existeCBU(cbu))
+        	{
+        		//No existe el cbu
+        		return;
+        	}
+        	
+        	//Resta el monto al saldo de la cuenta origen y lo suma en la cuenta destino a la que le pertenezca ese CBU:
+        	Cuenta cuentaOrigen = cuentaNegocio.buscarPorID(idCuenta);
+        	Cuenta cuentaDestino = cuentaNegocio.buscarIdConCbu(cbu);
+        	
+        	BigDecimal saldoFinal = cuentaOrigen.getSaldo().subtract(monto);
+        	cuentaNegocio.modificarSaldo(cuentaOrigen.getIdCuenta(), saldoFinal);
+        	
+        	saldoFinal = cuentaDestino.getSaldo().add(monto);
+        	cuentaNegocio.modificarSaldo(cuentaDestino.getIdCuenta(), saldoFinal);
+        	
+        	// me envia al servlet, con los datos del cliente
+        	response.sendRedirect("ServletClienteUsuario?transferencia=" + cuentaOrigen.getIdCliente()); 
+        	
+        }
+        
     }
     
     private void cargarFormularioRegistrar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
