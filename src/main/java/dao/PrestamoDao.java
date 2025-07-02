@@ -12,6 +12,11 @@ public interface PrestamoDao {
 	List<Prestamo> obtenerPrestamos();
 
 
+	boolean denegarPrestamo(int idPrestamo);
+
+	boolean aceptarPrestamo(int idPrestamo);
+
+
 
 
 

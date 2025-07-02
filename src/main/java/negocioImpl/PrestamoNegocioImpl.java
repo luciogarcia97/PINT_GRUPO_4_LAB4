@@ -31,6 +31,23 @@ public class PrestamoNegocioImpl implements PrestamoNegocio {
 		public List<Prestamo> obtenerPrestamos(){
 			return prestamoDao.obtenerPrestamos();
 		}
+		
+		
+
+
+		@Override 
+		public boolean denegarPrestamo(int idPrestamo) {
+			
+			return prestamoDao.denegarPrestamo(idPrestamo);
+		}
+
+
+
+		public boolean aceptarPrestamo(int idPrestamo) {
+			return prestamoDao.aceptarPrestamo(idPrestamo);
+		
+		}
+
 
 
 	

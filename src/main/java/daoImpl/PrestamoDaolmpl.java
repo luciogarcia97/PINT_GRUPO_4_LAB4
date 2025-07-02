@@ -31,8 +31,8 @@ public class PrestamoDaolmpl implements PrestamoDao {
 	            ps.setInt(5, prestamo.getPlazo_pago_mes());
 	            ps.setDouble(6, prestamo.getImporte_por_cuota());
 	            ps.setInt(7, prestamo.getCantidad_cuotas());
-	            ps.setString(8, prestamo.getEstado());
-	            ps.setBoolean(9, prestamo.isEliminado());
+	            ps.setString(8, "pendiente");
+	            ps.setBoolean(9, false);
 
 	            estado = ps.executeUpdate() > 0;
 	            if (estado) {
@@ -89,6 +89,84 @@ public class PrestamoDaolmpl implements PrestamoDao {
 
 			return listaPrestamos;
 		}
+
+	 
+
+	  @Override
+	  public boolean denegarPrestamo(int idPrestamo) {
+		  PreparedStatement pst = null;
+			Connection conexion = Conexion.getConexion().getSQLConexion();
+			boolean resultado = false;		
+			try {
+				String query = "UPDATE prestamo SET estado = ? WHERE id_prestamo = ?";
+				pst = conexion.prepareStatement(query);
+				pst.setString(1, "denegado");
+				pst.setInt(2, idPrestamo);
+				
+				
+
+				if (pst.executeUpdate() > 0) {
+					conexion.commit();
+					resultado = true;
+				}
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+				try {
+					conexion.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			} finally {
+				try {
+					if (pst != null)
+						pst.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+
+			return resultado;
+
+	  }
+
+	  @Override
+	  public boolean aceptarPrestamo(int idPrestamo) {
+		  PreparedStatement pst = null;
+			Connection conexion = Conexion.getConexion().getSQLConexion();
+			boolean resultado = false;		
+			try {
+				String query = "UPDATE prestamo SET estado = ? WHERE id_prestamo = ?";
+				pst = conexion.prepareStatement(query);
+				pst.setString(1, "aceptado");
+				pst.setInt(2, idPrestamo);
+				
+				
+
+				if (pst.executeUpdate() > 0) {
+					conexion.commit();
+					resultado = true;
+				}
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+				try {
+					conexion.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			} finally {
+				try {
+					if (pst != null)
+						pst.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+
+			return resultado;
+
+	  }
 
 	
 }
