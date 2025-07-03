@@ -3,6 +3,8 @@ package daoImpl;
 import dao.Conexion;
 import dao.CuentaDao;
 import entidades.Cuenta;
+
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -544,6 +546,119 @@ public class CuentaDaoImpl implements CuentaDao {
 		}
 	
 		return resultado;	
+	}
+	
+	
+	public boolean tieneSaldoSuficiente(int idCuenta, BigDecimal monto) 
+	{
+	
+		PreparedStatement pst = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+		ResultSet rs = null;
+		BigDecimal saldo = null;
+		boolean resultado = false;
+		
+		try {
+			String query = "SELECT saldo FROM cuenta WHERE id_cuenta = ?";
+			pst = conexion.prepareStatement(query);
+			pst.setInt(1, idCuenta);
+			
+			rs = pst.executeQuery();
+			
+			if (rs.next()) {
+		        saldo = rs.getBigDecimal("saldo");		      
+		    }
+			
+			if(saldo != null && saldo.compareTo(monto) >= 0) {				
+				resultado = true;		
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pst != null)
+				pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	
+		return resultado;	
+	}
+		
+	
+	public boolean modificarSaldo(int idCuenta, BigDecimal saldoFinal)
+	{
+		PreparedStatement pst = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+		boolean resultado = false;
+		
+		try {
+			String query = "UPDATE cuenta SET saldo = ? WHERE id_cuenta = ?";
+			pst = conexion.prepareStatement(query);
+			pst.setBigDecimal(1, saldoFinal);
+			pst.setInt(2, idCuenta);
+			
+			if (pst.executeUpdate() > 0) { 
+				conexion.commit();
+				resultado = true;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pst != null)
+				pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	
+		return resultado;	
+	}
+		
+	
+	public Cuenta buscarIdConCbu(String cbu)
+	{
+		PreparedStatement pst = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+		ResultSet rs = null;
+		Cuenta cuenta = new Cuenta();
+		
+		try {
+			String query = "SELECT * FROM cuenta WHERE cbu = ?";
+			pst = conexion.prepareStatement(query);
+			pst.setString(1, cbu);
+			
+			rs = pst.executeQuery();
+			
+			if (rs.next()) {
+				cuenta.setIdCuenta(rs.getInt("id_cuenta"));	
+				cuenta.setIdCliente(rs.getInt("id_cliente"));	
+				cuenta.setFechaCreacion(rs.getDate("fecha_creacion").toLocalDate());	
+				cuenta.setIdTipoCuenta(rs.getInt("id_tipo_cuenta"));
+				cuenta.setNumeroCuenta(rs.getString("numero_cuenta"));
+				cuenta.setCbu(rs.getString("cbu"));	
+				cuenta.setSaldo(rs.getBigDecimal("saldo"));	
+				cuenta.setIdCuenta(rs.getInt("id_cuenta"));					
+		    }		
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pst != null)
+				pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	
+		return cuenta;	
+		
+		
 	}
 	
 }

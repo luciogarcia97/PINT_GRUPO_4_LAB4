@@ -65,6 +65,8 @@ private static final long serialVersionUID = 1L;
     }
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	
+    
             	
         if (request.getParameter("btnCrearCuenta") != null) {
         	
@@ -353,6 +355,9 @@ private static final long serialVersionUID = 1L;
                 cargarListado(request, response);
             }
         }
+        
+    
+        
     }
     
     private void cargarFormularioRegistrar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
