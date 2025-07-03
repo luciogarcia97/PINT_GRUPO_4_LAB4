@@ -74,11 +74,7 @@
                     <h3 class="text-white">
                         <i class="bi bi-person-gear me-2"></i>
                         Administrar Usuarios
-                    </h3>
-                    <a href="registrarUsuario.jsp" class="btn btn-success">
-                        <i class="bi bi-plus me-1"></i>
-                        Registrar Usuario
-                    </a>
+                    </h3>                   
                 </div>
                 
                 <div class="card shadow">

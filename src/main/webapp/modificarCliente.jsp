@@ -18,7 +18,7 @@
 <body>
 	<%
 	
-	Cliente cliente = (Cliente) request.getAttribute("clienteEditado");
+	Cliente cliente = (Cliente) request.getAttribute("cliente");
 
 	if (cliente == null) {
 	    String idStr = request.getParameter("id");
@@ -193,7 +193,7 @@
 				</div>
 				<div class="mb-3 col-md-6">
 					<label for="dni" class="form-label">DNI</label> <input
-						type="number" name="txtDni" class="form-control" id="dni"
+						type="number" class="form-control" id="dni"
 						name="txtDni" placeholder="DNI"
 						value="<%= cliente != null ? cliente.getDni() : "" %>" required>
 				</div>
@@ -207,7 +207,7 @@
 			</div>
 
 			<div class="text-center mt-3">
-				<a href="administrarClientes.jsp">Cancelar</a>
+				<a href="ServletCliente?listar=1">Cancelar</a>
 			</div>
 
 			<div class="mt-3">

@@ -87,7 +87,7 @@
 						<i class="bi bi-people me-2"></i> Administrar Clientes
 					</h3>
 					<a href="ServletCliente?cargarFormulario=1" class="btn btn-success"> <i
-						class="bi bi-plus me-1"></i> Registrar Cliente
+						class="bi bi-plus me-1"></i> Registrar Cliente y Usuario
 					</a>
 				</div>
 

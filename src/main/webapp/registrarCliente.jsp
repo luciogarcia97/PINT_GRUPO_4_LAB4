@@ -242,7 +242,7 @@
 		           	    
 		
 		        <div class="text-center mt-3">
-		            <a href="administrarClientes.jsp">Cancelar</a>
+		            <a href="ServletCliente?listar=1">Cancelar</a>
 		        </div>
 		
 		        <div class="mt-3">
