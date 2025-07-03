@@ -5,6 +5,7 @@ import dao.PrestamoDao;
 
 import entidades.Prestamo;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -167,6 +168,93 @@ public class PrestamoDaolmpl implements PrestamoDao {
 			return resultado;
 
 	  }
+
+	@Override
+	public Prestamo obtenerPrestamoID(int idPrestamo) {
+		
+		
+		Prestamo prestamo = new Prestamo();
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+
+		try {
+			String query = "SELECT id_prestamo, id_cliente, id_cuenta, fecha_solicitud, importe_solicitado, plazo_pago_meses, importe_por_cuota, cantidad_cuotas, estado, eliminado FROM prestamo WHERE id_prestamo = ?";
+;
+			pst = conexion.prepareStatement(query);
+			pst.setInt(1, idPrestamo);
+
+			rs = pst.executeQuery();
+
+			if (rs.next()) {
+
+				prestamo.setId_prestamo(rs.getInt("id_prestamo"));
+				prestamo.setId_cliente(rs.getInt("id_cliente"));
+				prestamo.setId_cuenta(rs.getInt("id_cuenta"));
+				prestamo.setFecha_solicitud(LocalDate.now());
+				prestamo.setImporte_solicitado(rs.getInt("importe_solicitado"));
+				prestamo.setPlazo_pago_mes(rs.getInt("plazo_pago_meses"));
+				prestamo.setImporte_por_cuota(rs.getInt("importe_por_cuota"));
+				prestamo.setCantidad_cuotas(rs.getInt("cantidad_cuotas"));
+				prestamo.setEstado(rs.getString("estado"));
+				prestamo.setEliminado(rs.getBoolean("eliminado"));
+				
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pst != null)
+					pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return prestamo;
+	}
+
+	
+
+	@Override
+	public boolean impactar_prestamo_cuenta(int idCuenta, double dinero) {
+		PreparedStatement pst = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+		boolean resultado = false;		
+		try {
+			String query = "UPDATE cuenta SET saldo = saldo + ? WHERE id_cuenta = ?";
+			pst = conexion.prepareStatement(query);
+			pst.setDouble(1, dinero);
+			pst.setInt(2, idCuenta);
+			
+			
+
+			if (pst.executeUpdate() > 0) {
+				conexion.commit();
+				resultado = true;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			try {
+				conexion.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		} finally {
+			try {
+				if (pst != null)
+					pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return resultado;
+	}
 
 	
 }

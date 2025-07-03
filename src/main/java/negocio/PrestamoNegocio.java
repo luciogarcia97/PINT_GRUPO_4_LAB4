@@ -1,5 +1,6 @@
 package negocio;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -12,6 +13,11 @@ public interface PrestamoNegocio {
 	List<Prestamo> obtenerPrestamos();
 	
 	boolean denegarPrestamo(int idPrestamo);
+	
+	Prestamo obtenerPrestamoID(int idPrestamo);
+	
+	boolean impactar_prestamo_cuenta(int idCuenta, double dinero );
+
 	
 	
 }
