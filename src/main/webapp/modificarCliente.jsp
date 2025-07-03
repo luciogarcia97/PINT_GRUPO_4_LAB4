@@ -77,13 +77,13 @@
 
 
 	<% 
-		        	boolean menorEdad = false;
+		 boolean menorEdad = false;
 		        	
-			        if(request.getAttribute("menorEdad") != null) {
-			        	menorEdad = (boolean)request.getAttribute("menorEdad");
+		if(request.getAttribute("menorEdad") != null) {
+			 menorEdad = (boolean)request.getAttribute("menorEdad");
 			        	
-			        	if(menorEdad){
-		        %>
+			if(menorEdad){
+	%>
 	<div class="alert alert-danger" role="alert">¡La persona no tiene
 		la edad suficiente para registrarse como cliente!</div>
 
@@ -200,7 +200,7 @@
 				<div class="mb-3 col-md-6">
 					<label for="cuil" class="form-label">CUIL</label> <input
 						type="number" name="txtCuil" class="form-control" id="cuil"
-						name="txtCuil" placeholder="CUIL"
+						 placeholder="CUIL"
 						value="<%= cliente != null ? cliente.getCuil() : "" %>" required>
 				</div>
 
