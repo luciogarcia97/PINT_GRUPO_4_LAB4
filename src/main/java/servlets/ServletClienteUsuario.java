@@ -47,8 +47,7 @@ public class ServletClienteUsuario extends HttpServlet {
 		if (usuarioLogueado == null) {
 			response.sendRedirect("index.jsp");
 			return;
-		}
-		
+		}	
 		
 		// Carga todos los datos del cliente
 		cargarDatosCompletos(request, response, usuarioLogueado);

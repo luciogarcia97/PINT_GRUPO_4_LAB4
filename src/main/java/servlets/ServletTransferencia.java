@@ -96,8 +96,9 @@ public class ServletTransferencia extends HttpServlet {
     		saldoFinal = cuentaDestino.getSaldo().add(monto);
     		cuentaNegocio.modificarSaldo(cuentaDestino.getIdCuenta(), saldoFinal);
     		
-    		 RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
-	          rd.forward(request, response);
+    		
+    		RequestDispatcher rd = request.getRequestDispatcher("usuarioCliente.jsp");
+	        rd.forward(request, response);
     	}
 		
 	}
