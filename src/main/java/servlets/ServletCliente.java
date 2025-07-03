@@ -145,8 +145,7 @@ public class ServletCliente extends HttpServlet {
 				RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
 				rd.forward(request, response);
 				
-				e.getMessage();
-				
+				e.getMessage();				
 				return; 	
 			}							
 			
@@ -217,12 +216,26 @@ public class ServletCliente extends HttpServlet {
 		}
 		
 		
-		//MODIFICAR CLIENTE
-		
+		//MODIFICAR CLIENTE		
 		if(request.getParameter("btnModificarCliente")!= null) {			
 			
 			Cliente c = new Cliente();
 			Boolean resultado2 = false;
+			
+			// Creo cliente con los atributos del ID que viene por parametro, es una replica ANTES de la modificacion
+			
+			c.setIdCliente(Integer.parseInt(request.getParameter("idCliente")));
+			
+			Cliente cliente = clienteNegocio.BuscarPorID(c.getIdCliente());	
+			 
+			c.setNombre(request.getParameter("txtNombre"));
+			c.setApellido(request.getParameter("txtApellido"));
+			c.setSexo(request.getParameter("txtSexo"));
+			c.setNacionalidad(request.getParameter("txtNacionalidad"));				
+			c.setDireccion(request.getParameter("txtDireccion"));
+			c.setLocalidad(request.getParameter("txtLocalidad"));
+			c.setProvincia(request.getParameter("txtProvincia"));
+			c.setCorreoElectronico(request.getParameter("txtEmail"));
 			
 			try {				
 				
@@ -234,17 +247,7 @@ public class ServletCliente extends HttpServlet {
 				
 				LocalDate fechaNacimiento = LocalDate.parse(request.getParameter("txtFechaNacimiento").trim());
 			    Validaciones.esMenorDeEdad(fechaNacimiento);				
-				c.setFechaNacimiento(request.getParameter("txtFechaNacimiento"));				
-				
-				c.setIdCliente(Integer.parseInt(request.getParameter("idCliente"))); 
-				c.setNombre(request.getParameter("txtNombre"));
-				c.setApellido(request.getParameter("txtApellido"));
-				c.setSexo(request.getParameter("txtSexo"));
-				c.setNacionalidad(request.getParameter("txtNacionalidad"));				
-				c.setDireccion(request.getParameter("txtDireccion"));
-				c.setLocalidad(request.getParameter("txtLocalidad"));
-				c.setProvincia(request.getParameter("txtProvincia"));
-				c.setCorreoElectronico(request.getParameter("txtEmail"));				
+				c.setFechaNacimiento(request.getParameter("txtFechaNacimiento"));								
 				
 			} catch (DniInvalido e) {
 				
@@ -256,11 +259,11 @@ public class ServletCliente extends HttpServlet {
 			    List<Localidad> listaLocalidades = clienteNegocio.listarLocalidades();
 			    request.setAttribute("listaLocalidades", listaLocalidades);				
 				
+			    request.setAttribute("clienteReplica", cliente);
 				RequestDispatcher rd = request.getRequestDispatcher("/modificarCliente.jsp");
 				rd.forward(request, response);
 				
-				e.getMessage();
-				
+				e.getMessage();				
 				return;
 				
 		   } catch (CuilInvalido e) {
@@ -273,11 +276,11 @@ public class ServletCliente extends HttpServlet {
 			    List<Localidad> listaLocalidades = clienteNegocio.listarLocalidades();
 			    request.setAttribute("listaLocalidades", listaLocalidades);				
 				
+			    request.setAttribute("clienteEditado", c);
 				RequestDispatcher rd = request.getRequestDispatcher("/modificarCliente.jsp");
 				rd.forward(request, response);
 				
-				e.getMessage();
-				
+				e.getMessage();				
 				return; 
 				
 			} catch (ClienteMenorEdad e) {				
@@ -290,14 +293,12 @@ public class ServletCliente extends HttpServlet {
 			    List<Localidad> listaLocalidades = clienteNegocio.listarLocalidades();
 			    request.setAttribute("listaLocalidades", listaLocalidades);				
 				
+			    request.setAttribute("clienteEditado", c);
 				RequestDispatcher rd = request.getRequestDispatcher("/modificarCliente.jsp");
 				rd.forward(request, response);
 				e.getMessage();
 				return;				
-			}		
-						
-			// Creo cliente con los atributos del ID que viene por parametro, es una replica ANTES de la modificacion
-			Cliente cliente = clienteNegocio.BuscarPorID(c.getIdCliente());
+			}				
 			
 			
 			//Si el Dni existe y es distinto al del ID modificado
@@ -305,6 +306,7 @@ public class ServletCliente extends HttpServlet {
 			{
 				// vuelve al registro con un cartel de que hubo un dni repetido	
 				request.setAttribute("dni", 1);
+				
 				request.setAttribute("clienteEditado", c);
 				RequestDispatcher rd = request.getRequestDispatcher("/modificarCliente.jsp");
 				rd.forward(request, response);	
@@ -329,7 +331,7 @@ public class ServletCliente extends HttpServlet {
 			   
 			    RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
 			    rd.forward(request, response);
-			} 
+			} 			
 		}
 		
 		
