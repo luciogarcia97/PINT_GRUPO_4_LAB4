@@ -1,5 +1,6 @@
 package dao;
 
+
 import java.util.List;
 
 
@@ -15,6 +16,10 @@ public interface PrestamoDao {
 	boolean denegarPrestamo(int idPrestamo);
 
 	boolean aceptarPrestamo(int idPrestamo);
+	
+	Prestamo obtenerPrestamoID(int idPrestamo);
+	
+	boolean impactar_prestamo_cuenta(int idCuenta, double dinero );
 
 
 

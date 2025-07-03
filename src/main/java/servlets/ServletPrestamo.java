@@ -119,10 +119,13 @@ public class ServletPrestamo extends HttpServlet {
 		
 		if(request.getParameter("btnAceptarPrestamo")!= null) {
 			int idPrestamo = Integer.parseInt(request.getParameter("idPrestamo"));
-
+			boolean resultado = false;
+			Prestamo prestamo = new Prestamo();
 			if (prestamoNegocio.aceptarPrestamo(idPrestamo)) {			 
 				List<Prestamo> listaPrestamos = prestamoNegocio.obtenerPrestamos();
 				request.setAttribute("listaPrestamos", listaPrestamos);
+				prestamo=prestamoNegocio.obtenerPrestamoID(idPrestamo);
+				resultado = prestamoNegocio.impactar_prestamo_cuenta(prestamo.getId_cuenta(), prestamo.getImporte_solicitado());
 				RequestDispatcher rd = request.getRequestDispatcher("/administrarPrestamos.jsp");
 				rd.forward(request, response);
 			} else {
