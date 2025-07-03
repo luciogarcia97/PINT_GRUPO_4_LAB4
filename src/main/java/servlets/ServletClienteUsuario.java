@@ -16,10 +16,12 @@ import entidades.TipoCuenta;
 import entidades.Usuario;
 import negocio.ClienteNegocio;
 import negocio.CuentaNegocio;
+import negocio.UsuarioNegocio;
 import negocio.TipoCuentaNegocio;
 import negocioImpl.ClienteNegociolmpl;
 import negocioImpl.CuentaNegocioImpl;
 import negocioImpl.TipoCuentaNegocioImpl;
+import negocioImpl.UsuarioNegocioImpl;
 
 @WebServlet("/ServletClienteUsuario")
 public class ServletClienteUsuario extends HttpServlet {
@@ -28,12 +30,14 @@ public class ServletClienteUsuario extends HttpServlet {
 	private ClienteNegocio clienteNegocio;
 	private CuentaNegocio cuentaNegocio;
 	private TipoCuentaNegocio tipoCuentaNegocio;
+	private UsuarioNegocio usuarioNegocio;
 	
     public ServletClienteUsuario() {
         super();
         this.clienteNegocio = new ClienteNegociolmpl();
         this.cuentaNegocio = new CuentaNegocioImpl();
         this.tipoCuentaNegocio = new TipoCuentaNegocioImpl();
+        this.usuarioNegocio = new UsuarioNegocioImpl();
     }
  
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -43,7 +47,7 @@ public class ServletClienteUsuario extends HttpServlet {
 		if (usuarioLogueado == null) {
 			response.sendRedirect("index.jsp");
 			return;
-		}
+		}	
 		
 		// Carga todos los datos del cliente
 		cargarDatosCompletos(request, response, usuarioLogueado);
