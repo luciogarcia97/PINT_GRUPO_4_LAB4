@@ -49,10 +49,6 @@ public class ServletClienteUsuario extends HttpServlet {
 			return;
 		}
 		
-		if(request.getParameter("transferencia") != null) {
-			int idCliente = Integer.parseInt(request.getAttribute("transferencia").toString());
-			usuarioLogueado = usuarioNegocio.buscarPorIdCliente(idCliente);
-		}
 		
 		// Carga todos los datos del cliente
 		cargarDatosCompletos(request, response, usuarioLogueado);
