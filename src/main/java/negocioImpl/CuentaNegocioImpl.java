@@ -5,6 +5,8 @@ import dao.CuentaDao;
 import daoImpl.ClienteDaolmpl;
 import daoImpl.CuentaDaoImpl;
 import entidades.Cuenta;
+
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -124,6 +126,24 @@ public class CuentaNegocioImpl implements CuentaNegocio {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public boolean tieneSaldoSuficiente(int idCuenta, BigDecimal monto)
+	{
+		return cuentaDao.tieneSaldoSuficiente(idCuenta, monto);
+	}
+	
+	@Override
+	public boolean modificarSaldo(int idCuenta, BigDecimal saldoFinal)
+	{
+		return cuentaDao.modificarSaldo(idCuenta, saldoFinal);
+	}
+	
+	@Override
+	public Cuenta buscarIdConCbu(String cbu) 
+	{
+		return cuentaDao.buscarIdConCbu(cbu);
 	}
 
 }

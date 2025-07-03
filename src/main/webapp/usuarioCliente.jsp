@@ -211,32 +211,27 @@
     
     <div id="transferencias" class="panel">
         <h4>Transferencias</h4>
-        <form>
+        <form action="ServletTransferencia" method="post">
             <div class="mb-3">
                 <label for="cuentaOrigen" class="form-label">Cuenta Origen</label>
                 
-                <select class="form-select" id="cuentaOrigen">
-                    <option selected disabled>Seleccione una cuenta</option>
-                    <% 
-                    if (cuentasCliente != null) {
-                        for (Cuenta cuenta : cuentasCliente) {
-                    %>
-                        <option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %> - <%= cuenta.getSaldo() %></option>
-                    <%
-                        }
-                    }
-                    %>
-                </select>
+                <select class="form-select" id="idCuenta" name="idCuenta">
+	            	<% if (cuentas != null) {
+		                for (Cuenta cuenta : cuentas) { %>
+		                	<option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %> - <%= cuenta.getSaldo() %></option>
+		            	<% }
+	            	} %>
+        		</select>
             </div>
             <div class="mb-3">
                 <label for="cbuDestino" class="form-label">CBU Destino</label>
-                <input type="text" class="form-control" id="cbuDestino" placeholder="Ingrese CBU">
+                <input type="text" class="form-control" name="txtCbu" id="cbuDestino" placeholder="Ingrese CBU">
             </div>
             <div class="mb-3">
                 <label for="montoTransferencia" class="form-label">Monto</label>
-                <input type="number" class="form-control" id="montoTransferencia" placeholder="$XXXX">
+                <input type="number" name="txtMonto" class="form-control" id="montoTransferencia" placeholder="$XXXX">
             </div>
-            <button type="submit" class="btn btn-success">Realizar Transferencia</button>
+            <button type="submit" name="btnTransferencia" class="btn btn-success">Realizar Transferencia</button>
         </form>
         <hr>
         <h5>Historial de Transferencias</h5>

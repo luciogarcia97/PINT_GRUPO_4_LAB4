@@ -17,12 +17,13 @@ import entidades.Usuario;
 import entidades.Movimiento;
 import negocio.ClienteNegocio;
 import negocio.CuentaNegocio;
+import negocio.UsuarioNegocio;
 import negocio.TipoCuentaNegocio;
 import negocio.MovimientoNegocio;
 import negocioImpl.ClienteNegociolmpl;
 import negocioImpl.CuentaNegocioImpl;
 import negocioImpl.TipoCuentaNegocioImpl;
-import negocioImpl.MovimientoNegocioImpl;
+import negocioImpl.UsuarioNegocioImpl;
 
 @WebServlet("/ServletClienteUsuario")
 public class ServletClienteUsuario extends HttpServlet {
@@ -31,85 +32,52 @@ public class ServletClienteUsuario extends HttpServlet {
 	private ClienteNegocio clienteNegocio;
 	private CuentaNegocio cuentaNegocio;
 	private TipoCuentaNegocio tipoCuentaNegocio;
-	private MovimientoNegocio movimientoNegocio;
+	private UsuarioNegocio usuarioNegocio;
 	
     public ServletClienteUsuario() {
         super();
         this.clienteNegocio = new ClienteNegociolmpl();
         this.cuentaNegocio = new CuentaNegocioImpl();
         this.tipoCuentaNegocio = new TipoCuentaNegocioImpl();
-        this.movimientoNegocio = new MovimientoNegocioImpl();
+        this.usuarioNegocio = new UsuarioNegocioImpl();
     }
  
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		// Verifica que el usuario este cargado
-		Usuario usuario = (Usuario) request.getSession().getAttribute("usuarioLogueado");
-	    if (usuario == null || usuario.getEliminado() == 1) {
-	        response.sendRedirect("index.jsp");
-	        return;
-	    }
-	    
-	    String accion = request.getParameter("accion");
-	    
-	    try {
-	        
-	        cargarDatosBasicos(request, usuario);
-	        
-	        if ("movimientos".equals(accion)) {
-	            manejarConsultaMovimientos(request, usuario);
-	        } else if ("transferencias".equals(accion)) {
-	            // Aca cargamos los datos que sean necesarios en transferencias
-	        } else if ("prestamos".equals(accion)) {
-	            // Aca cargamos los datos que sean necesarios en prestamos
-	        }
+		// Verifica que el usuario esté cargado
+		Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
+		if (usuarioLogueado == null) {
+			response.sendRedirect("index.jsp");
+			return;
+		}	
+		
+		// Carga todos los datos del cliente
+		cargarDatosCompletos(request, response, usuarioLogueado);
+	}
 
-	        
-	        RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
-	        rd.forward(request, response);
-	        
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        request.setAttribute("error", "Error del sistema: " + e.getMessage());
-	        RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
-	        rd.forward(request, response);
-	    }
-	}
-	
-	private void cargarDatosBasicos(HttpServletRequest request, Usuario usuario) {
-		// Cargar cuentas
-	    List<Cuenta> cuentasCliente = cuentaNegocio.obtenerCuentasPorCliente(usuario.getId_cliente());
-	    request.setAttribute("cuentasCliente", cuentasCliente);
-	    
-	    // Cargar cliente
-	    Cliente cliente = clienteNegocio.BuscarPorID(usuario.getId_cliente());
-	    request.setAttribute("cliente", cliente);
-	    
-	    // Cargar tipos de cuenta para mostrar nombres
-	    List<TipoCuenta> tiposCuenta = tipoCuentaNegocio.obtenerTiposCuenta();
-	    request.setAttribute("tiposCuenta", tiposCuenta);
-	    
-	}
-	
-	private void manejarConsultaMovimientos(HttpServletRequest request, Usuario usuario) {
-	    String idCuentaStr = request.getParameter("idCuenta");
-	    if (idCuentaStr != null && !idCuentaStr.isEmpty()) {
-	        try {
-	            int idCuenta = Integer.parseInt(idCuentaStr);
-	            
-	            // Validar que la cuenta pertenece al usuario
-	            Cuenta cuenta = cuentaNegocio.buscarPorID(idCuenta);
-	            if (cuenta != null && cuenta.getIdCliente() == usuario.getId_cliente()) {
-	                List<Movimiento> movimientos = movimientoNegocio.obtenerMovimientosPorCuenta(idCuenta);
-	                request.setAttribute("movimientos", movimientos);
-	                request.setAttribute("cuentaSeleccionada", cuenta);
-	            } else {
-	                request.setAttribute("error", "No tienes permisos para ver esta cuenta.");
-	            }
-	        } catch (NumberFormatException e) {
-	            request.setAttribute("error", "ID de cuenta inválido.");
-	        }
-	    }
+	private void cargarDatosCompletos(HttpServletRequest request, HttpServletResponse response, Usuario usuarioLogueado) throws ServletException, IOException {
+		try {
+			// Obtiene el cliente asociado al usuario logueado
+			Cliente cliente = clienteNegocio.BuscarPorID(usuarioLogueado.getId_cliente());
+			request.setAttribute("cliente", cliente);
+			
+			// Obtiene las cuentas del cliente
+			List<Cuenta> cuentas = cuentaNegocio.obtenerCuentasPorCliente(usuarioLogueado.getId_cliente());
+			request.setAttribute("cuentas", cuentas);
+			
+			// Obtiene tipos de cuenta para mostrar nombres
+			List<TipoCuenta> tiposCuenta = tipoCuentaNegocio.obtenerTiposCuenta();
+			request.setAttribute("tiposCuenta", tiposCuenta);
+			
+			RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioCliente.jsp");
+			dispatcher.forward(request, response);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			request.setAttribute("error", "Error al cargar los datos: " + e.getMessage());
+			RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioCliente.jsp");
+			dispatcher.forward(request, response);
+		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

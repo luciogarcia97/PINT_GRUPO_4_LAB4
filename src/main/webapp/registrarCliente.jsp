@@ -70,7 +70,23 @@
 		         
 		        <% 	  }
 		        	}		        
-		        %>		  
+		        %>	
+		        
+		        <% 
+		        	boolean cuilInvalido = false;
+		        	
+			        if(request.getAttribute("cuilInvalido") != null) {
+			        	cuilInvalido = (boolean)request.getAttribute("cuilInvalido");
+			        	
+			        	if(cuilInvalido){
+		        %>	
+		         	 <div class="alert alert-danger" role="alert">
+	  					¡El CUIL solo lleva números!
+					</div>       
+		         
+		        <% 	  }
+		        	}		        
+		        %>		        	  
 		        
 		        
 		         <% 
@@ -88,8 +104,7 @@
 		        <% 	  }
 		        	}		        
 		        %>
-		           
-		             
+		           		             
 		
 		        <div class="row">
 		            <div class="mb-3 col-md-6">
@@ -103,7 +118,8 @@
 		
 		            <div class="mb-3 col-md-6">
 		                <label for="sexo" class="form-label">Sexo</label>
-		                <select id="sexo" name="txtSexo" class="form-control">
+		                <select id="sexo" name="txtSexo" class="form-control" required>
+		                	<option value="" disabled selected>Selecciona sexo</option>
 		                    <option value="femenino">Femenino</option>
 		                    <option value="masculino">Masculino</option>
 		                    <option value="otro">No contesta</option>
@@ -125,28 +141,27 @@
 						<div class="mb-3 col-md-6">
 		                <label for="provincia" class="form-label">Provincia</label>
 		                 <select id="ddlProvincias" name="ddlProvincias" class="form-control" required>
-		                 <option value="">selecciona una provincia </option>
+		                 <option value="" disabled selected>Selecciona una provincia</option>             
 		                
 		                
-					<%
-				    List<Provincia> listaProvincia = (List<Provincia>)request.getAttribute("listaProvincias");
-				    if (listaProvincia != null) {
-				        for (Provincia prov : listaProvincia) {
-					%>
-				            <option value="<%= prov.getNombre() %>"><%= prov.getNombre() %></option>
-					<%
-				      	  }
-				    	}
-					%>
-
+							<%
+						    List<Provincia> listaProvincia = (List<Provincia>)request.getAttribute("listaProvincias");
+						    if (listaProvincia != null) {
+						        for (Provincia prov : listaProvincia) {
+							%>
+						            <option value="<%= prov.getNombre() %>"><%= prov.getNombre() %></option>
+							<%
+						      	  }
+						    	}
+							%>
 		                 
 		                 
 		                 </select>
 		            </div>
 		            <div class="mb-3 col-md-6">
 		                <label for="localidad" class="form-label">Localidad</label>
-		                  <select id="ddlLocalidades" name="ddlLocalidades" class="form-control" required>
-		                 <option value="">selecciona una localidad </option>
+		                  <select id="ddlLocalidades" name="ddlLocalidades" class="form-control" required>		                
+		                 <option value="" disabled selected>Selecciona una localidad</option>
 		                 
 		                  <%
 						    List<Localidad> listaLocalidad = (List<Localidad>)request.getAttribute("listaLocalidades");
@@ -199,10 +214,20 @@
 		        }
 		        %>
 				
-				<div class="center row">					
+				<div class="center row">
+					 
+					 <div class="mb-3">
+		                <label for="tipoUsuario" class="form-label">Tipo Usuario</label>
+		                <select id="tipoUsuario" name="txtTipoUsuario" class="form-control" required>		                	
+		                    <option value="" disabled selected>Selecciona tipo de usuario</option>
+		                    <option value="admin">Administrador</option>
+		                    <option value="cliente">Cliente</option>		                    
+		                </select>
+		            </div>
+									
 		            <div class="mb-3">
 		                <label for="usuario" class="form-label">Usuario</label>
-		                <input type="text" class="form-control" id="usuario" name="txtUsuario" placeholder="Usuario" required>
+		                <input type="text" class="form-control" id="usuario" name="txtUsuario" placeholder="Nombre Usuario" required>
 		            </div>
 		            <div class="mb-3">
 		                <label for="clave" class="form-label">Contraseña</label>
@@ -217,7 +242,7 @@
 		           	    
 		
 		        <div class="text-center mt-3">
-		            <a href="administrarClientes.jsp">Cancelar</a>
+		            <a href="ServletCliente?listar=1">Cancelar</a>
 		        </div>
 		
 		        <div class="mt-3">

@@ -250,6 +250,43 @@ public class UsuarioDaoImpl implements UsuarioDao {
 
 	    return usuario;
 	}
+	
+	public Usuario buscarPorIdCliente(int idCliente) {
+	    PreparedStatement pst = null;
+	    ResultSet rs = null;
+	    Connection conexion = Conexion.getConexion().getSQLConexion();
+	    Usuario usuario = null;
+
+	    try {
+	        String query = "SELECT * FROM usuario WHERE id_cliente = ? AND eliminado = 0";
+	        pst = conexion.prepareStatement(query);
+	        pst.setInt(1, idCliente);
+	        rs = pst.executeQuery();
+
+	        if (rs.next()) {
+	            usuario = new Usuario();
+	            usuario.setId_usuario(rs.getInt("id_usuario"));
+				usuario.setId_cliente(rs.getInt("id_cliente"));								
+				usuario.setUsuario(rs.getString("usuario"));
+				usuario.setContrasena(rs.getString("contraseña"));
+				usuario.setTipo_usuario(rs.getString("tipo_usuario"));
+				usuario.setEliminado(rs.getInt("eliminado"));
+				usuario.setFecha_creacion(rs.getDate("fecha_creacion").toLocalDate());
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pst != null) pst.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return usuario;
+	}
 
 
 }
