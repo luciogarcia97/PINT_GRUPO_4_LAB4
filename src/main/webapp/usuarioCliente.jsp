@@ -1,10 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List" %>
-<%@ page import="entidades.Movimiento" %>
-<%@ page import="entidades.Cuenta" %>
-<%@ page import="entidades.TipoCuenta" %>
-<%@ page import="entidades.Usuario" %>
-<%@ page import="entidades.Cliente" %>
+<%@ page import="java.util.*" %>
+<%@ page import="entidades.*" %>
 <%
     // Autenticación de cliente
     Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
@@ -72,142 +68,73 @@
     <% } %>
     
     <div class="d-flex justify-content-center gap-3">
-	    <button class="btn btn-primary" onclick="togglePanel('movimientos', this)">Ver Movimientos</button>
-	    <button class="btn btn-primary" onclick="togglePanel('transferencias', this)">Transferencias</button>
-	    <button class="btn btn-primary" onclick="togglePanel('prestamos', this)">Préstamos</button>
-	    <button class="btn btn-primary" onclick="togglePanel('pagoPrestamos', this)">Pago de prestamos</button>
-	    <button class="btn btn-primary" onclick="togglePanel('datos', this)">Mis Datos</button>
-	</div>
-    
-<div id="movimientos" class="panel">
-    <h4><i class="bi bi-wallet2 me-2"></i>Consultar Movimientos</h4>
-    
-    <!-- Mensajes -->
-    <% if (request.getAttribute("error") != null) { %>
-        <div class="alert alert-danger">
-            <i class="bi bi-exclamation-triangle me-2"></i><%= request.getAttribute("error") %>
-        </div>
-    <% } %>
-    
-    <!-- Formulario para seleccionar cuenta -->
-      <form action="ServletClienteUsuario" method="get">
-	    <input type="hidden" name="accion" value="movimientos">
-	    <div class="row mb-4">
-	        <div class="col-md-8">
-	            <select class="form-select" name="idCuenta" required>
-                    <%
-                        java.util.List<entidades.Cuenta> cuentasCliente = 
-                            (java.util.List<entidades.Cuenta>) request.getAttribute("cuentasCliente");
-                        
-                        if (cuentasCliente != null && !cuentasCliente.isEmpty()) {
-                            for (entidades.Cuenta cuenta : cuentasCliente) {
-                    %>
-                                <option value="<%= cuenta.getIdCuenta() %>">
-                                    <%= cuenta.getNumeroCuenta() %> - 
-                                    <%= cuenta.getIdTipoCuenta() == 1 ? "Cuenta Corriente" : "Caja de Ahorro" %> 
-                                    - Saldo: $<%= String.format("%,.2f", cuenta.getSaldo()) %>
-                                </option>
-                    <%
-                            }
-                        } else {
-                    %>
-                            <option disabled>No tienes cuentas activas</option>
-                    <%
-                        }
-                    %>
-                </select>
-		        </div>
-		        <div class="col-md-4">
-		            <button type="submit" class="btn btn-primary">Ver Movimientos</button>
-		        </div>
-		    </div>
-		</form>
-    
-    <% if (request.getAttribute("movimientos") != null) { %>
-        <%
-            entidades.Cuenta cuentaSeleccionada = (entidades.Cuenta) request.getAttribute("cuentaSeleccionada");
-            java.util.List<entidades.Movimiento> movimientos = 
-                (java.util.List<entidades.Movimiento>) request.getAttribute("movimientos");
-        %>
-        
-        <hr>
-        <h5>
-            <i class="bi bi-clock-history me-2"></i>
-            Movimientos - Cuenta <%= cuentaSeleccionada.getNumeroCuenta() %>
-        </h5>
-        
-        <% if (movimientos.isEmpty()) { %>
-            <div class="alert alert-info">
-                <i class="bi bi-info-circle me-2"></i>
-                Esta cuenta no tiene movimientos registrados.
-            </div>
-        <% } else { %>
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Tipo</th>
-                            <th>Detalle</th>
-                            <th class="text-end">Importe</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% for (entidades.Movimiento mov : movimientos) { %>
-                            <tr>
-                                <td><%= mov.getFecha() %></td>
-                                <td>
-                                    <% if (mov.getIdTipoMovimiento() == 1) { %>
-                                        <span class="badge bg-success">Alta de cuenta</span>
-                                    <% } else if (mov.getIdTipoMovimiento() == 4) { %>
-                                        <span class="badge bg-primary">Transferencia</span>
-                                    <% } else if (mov.getIdTipoMovimiento() == 5) { %>
-                                        <span class="badge bg-info">Depósito</span>
-                                    <% } else { %>
-                                        <span class="badge bg-secondary">Otro</span>
-                                    <% } %>
-                                </td>
-                                <td><%= mov.getDetalle() %></td>
-                                <td class="text-end">
-                                    <strong>$<%= String.format("%,.2f", mov.getImporte()) %></strong>
-                                </td>
-                            </tr>
-                        <% } %>
-                    </tbody>
-                </table>
-                
-                <div class="mt-3">
-                    <small class="text-muted">
-                        <i class="bi bi-info-circle me-1"></i>
-                        Se encontraron <%= movimientos.size() %> movimientos
-                    </small>
-                </div>
-            </div>
-        <% } %>
-    <% } %>
-</div>
-    
-    <!-- Información de la cuenta seleccionada -->
-    <div id="infoCuenta" class="card mb-4" style="display: none;">
-        <div class="card-header bg-primary text-white">
-            <h6 class="mb-0" id="tituloCuenta"></h6>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-3">
-                    <strong>Tipo:</strong> <span id="tipoCuenta"></span>
-                </div>
-                <div class="col-md-3">
-                    <strong>Saldo:</strong> <span id="saldoCuenta" class="text-success"></span>
-                </div>
-                <div class="col-md-6">
-                    <strong>CBU:</strong> <span id="cbuCuenta" class="text-muted"></span>
-                </div>
-            </div>
-        </div>
+        <button class="btn btn-primary" onclick="togglePanel('movimientos', this)">Ver Movimientos</button>
+        <button class="btn btn-primary" onclick="togglePanel('transferencias', this)">Transferencias</button>
+        <button class="btn btn-primary" onclick="togglePanel('prestamos', this)">Préstamos</button>
+        <button class="btn btn-primary" onclick="togglePanel('pagoPrestamos', this)">Pago de prestamos</button>
+        <button class="btn btn-primary" onclick="togglePanel('datos', this)">Mis Datos</button>
     </div>
     
-</div>
+    <div id="movimientos" class="panel">
+    <h4>Movimientos</h4>
+    
+    <form action="">
+    		
+    		 <div class="mb-3">
+                <label for="cuentaOrigen" class="form-label">Cuenta Origen</label>
+               
+                <select class="form-select" id="cuentaOrigen"  onchange="mostrarSaldo()">
+                    <option selected disabled>Seleccione una cuenta</option>
+                    <% 
+                    List<Cuenta> cuentas = (List<Cuenta>) request.getAttribute("cuentas");
+                    if (cuentas != null) {
+                        for (Cuenta cuenta : cuentas) {
+                    %>
+                        <option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %> - <%= cuenta.getSaldo() %></option>
+                    <%
+                        }
+                    }
+                    %>
+                </select>
+            </div>
+            
+             <div id="saldoVisor" class="alert alert-info d-none">
+		        Saldo disponible: <strong id="saldoValor">$0.00</strong>
+		    </div>
+    
+    
+	        <div class="col-11">	
+		      <div class="table-responsive">
+		          <table id="example" class="table table-striped">
+		            <thead>
+		                <tr>
+		                    <th >Tipo de movimiento</th>
+		                    <th >Fecha</th>
+		                    <th >Monto</th>                                    
+		                </tr>
+		            </thead>
+		            <tbody>
+		                <tr>
+		                    <td>Desposito</td>
+		                    <td>01/01/2025</td>
+		                    <td>$10.000</td>            
+		                    <td>
+		                                        
+		                </tr>
+		                <tr>
+		                    <td>Pago de prestamo</td>
+		                    <td>05/03/2025</td>
+		                    <td>$30.000</td>            
+		                                       
+		                </tr>	
+		                </tbody>
+		           
+		        </table>
+		      </div>	
+		    </div>
+	 </form>  
+	    
+    </div>
     
     <div id="transferencias" class="panel">
         <h4>Transferencias</h4>
@@ -272,8 +199,8 @@
     <div class="mb-3">
         <label for="cuentaPrestamo" class="form-label">Cuenta Destino</label>
         <select class="form-select" id="cuentaPrestamo" name="cuentaPrestamo">
-            <% if (cuentasCliente != null) {
-                        for (Cuenta cuenta : cuentasCliente) { %>
+            <% if (cuentas != null) {
+                for (Cuenta cuenta : cuentas) { %>
                 <option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %> - <%= cuenta.getSaldo() %></option>
             <% }
             } %>
@@ -309,8 +236,8 @@
                 <label for="cuentaPago" class="form-label">Cuenta de Pago</label>
                 <select class="form-select" id="cuentaPago">
                     <% 
-                    if (cuentasCliente != null) {
-                        for (Cuenta cuenta : cuentasCliente) {
+                    if (cuentas != null) {
+                        for (Cuenta cuenta : cuentas) {
                     %>
                         <option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %> - <%= cuenta.getSaldo() %></option>
                     <%
@@ -346,7 +273,7 @@
 	    
 	    <div id="datosCuenta" class="mt-3 container bg-white p-4 rounded"> 
 	        <h4 class="mb-3">Mis cuentas</h4>
-	        <% if (cuentasCliente != null && !cuentasCliente.isEmpty()) { %>
+	        <% if (cuentas != null && !cuentas.isEmpty()) { %>
 	            <table id="example" class="table table-striped">
 	                <thead>
 	                    <tr>
@@ -360,7 +287,7 @@
 	                <tbody>
 	                    <% 
 	                    List<TipoCuenta> tiposCuenta = (List<TipoCuenta>) request.getAttribute("tiposCuenta");
-	                    for (Cuenta cuenta : cuentasCliente) { 
+	                    for (Cuenta cuenta : cuentas) { 
 	                    %>
 	                        <tr>
 	                            <td><%= cuenta.getNumeroCuenta() %></td>
@@ -393,29 +320,6 @@
 </div>
 
 <script>
-	function mostrarInfoCuenta() {
-	    const select = document.getElementById('selectCuenta');
-	    const selectedOption = select.options[select.selectedIndex];
-	    const infoCuenta = document.getElementById('infoCuenta');
-	    
-	    if (selectedOption.value) {
-	        document.getElementById('tituloCuenta').textContent = 'Cuenta N° ' + selectedOption.dataset.numero;
-	        document.getElementById('tipoCuenta').textContent = selectedOption.dataset.tipo;
-	        document.getElementById('saldoCuenta').textContent = '$' + selectedOption.dataset.saldo;
-	        document.getElementById('cbuCuenta').textContent = selectedOption.dataset.cbu;
-	        
-	        infoCuenta.style.display = 'block';
-	    } else {
-	        infoCuenta.style.display = 'none';
-	    }
-	}
-	
-	function cargarCuentasAlAbrir() {
-	    const select = document.getElementById('selectCuenta');
-	    if (select && select.options.length <= 2) {
-	        window.location.href = 'ServletMovimiento';
-	    }
-	}
     let panelActual = null;
 
     function togglePanel(panelId, button) {
@@ -460,7 +364,8 @@
         } else {
             visor.classList.add("d-none");
         }
-    }
+    }    
+    
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

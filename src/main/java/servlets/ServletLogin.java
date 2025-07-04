@@ -47,15 +47,16 @@ public class ServletLogin extends HttpServlet {
 					  if (usuarioLog.getEliminado() == 0) {
 						  loginExitoso = true;
 						  if (usuarioLog.getTipo_usuario().equals("admin")){
-							  request.getSession().setAttribute("adminLogueado", usuarioLog);
+		                    request.getSession().setAttribute("adminLogueado", usuarioLog);
 							  response.sendRedirect("ServletCliente?listar=1");
-						    } else {
-						      request.getSession().setAttribute("usuarioLogueado", usuarioLog);
+		                } else {
+		                    request.getSession().setAttribute("usuarioLogueado", usuarioLog);
 						      response.sendRedirect("ServletClienteUsuario?accion=datos");
 						    }
-						}
+		                }	
 				      break;    
 				 }
+				
 			}
 			
 			if (!loginExitoso) {
@@ -67,12 +68,15 @@ public class ServletLogin extends HttpServlet {
 		
 		
 		if(request.getParameter("btnCerrar") != null) {
-		    HttpSession session = request.getSession(false);
-		    if (session != null) {
+			HttpSession session = request.getSession(false);
+		    
+			if (session != null) {
 		        session.invalidate();
 		    }
+		    
 		    request.getSession(true);
 		    response.sendRedirect("index.jsp");
+			
 		}
 		
 	}
