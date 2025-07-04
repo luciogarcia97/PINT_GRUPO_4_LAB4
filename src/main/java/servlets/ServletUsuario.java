@@ -84,6 +84,7 @@ public class ServletUsuario extends HttpServlet {
 				List<Usuario> listaUsuarios = usuarioNegocio.obtenerUsuarios();
 				request.setAttribute("listaUsuarios", listaUsuarios);		    
 			   
+				request.setAttribute("exitoModificado", true);
 			    RequestDispatcher rd = request.getRequestDispatcher("/administrarUsuarios.jsp");
 			    rd.forward(request, response);
 			} 
