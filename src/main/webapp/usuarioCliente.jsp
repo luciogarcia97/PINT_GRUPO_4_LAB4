@@ -75,66 +75,67 @@
         <button class="btn btn-primary" onclick="togglePanel('datos', this)">Mis Datos</button>
     </div>
     
+    <%
+	    List<Cuenta> cuentas = (List<Cuenta>) request.getAttribute("cuentas");
+	%>
+    
     <div id="movimientos" class="panel">
-    <h4>Movimientos</h4>
-    
-    <form action="">
-    		
-    		 <div class="mb-3">
-                <label for="cuentaOrigen" class="form-label">Cuenta Origen</label>
-               
-                <select class="form-select" id="cuentaOrigen"  onchange="mostrarSaldo()">
-                    <option selected disabled>Seleccione una cuenta</option>
-                    <% 
-                    List<Cuenta> cuentas = (List<Cuenta>) request.getAttribute("cuentas");
-                    if (cuentas != null) {
-                        for (Cuenta cuenta : cuentas) {
-                    %>
-                        <option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %> - <%= cuenta.getSaldo() %></option>
-                    <%
-                        }
-                    }
-                    %>
-                </select>
-            </div>
-            
-             <div id="saldoVisor" class="alert alert-info d-none">
-		        Saldo disponible: <strong id="saldoValor">$0.00</strong>
+		<h4>Movimientos de Cuenta</h4>
+		
+		<form action="ServletMovimiento" method="get">
+		    <div class="row mb-3">
+		        <div class="col-md-6">
+		            <label for="cuentaMovimientos" class="form-label">Seleccionar Cuenta</label>
+		            <select class="form-select" id="cuentaMovimientos" name="idCuenta" required>
+		                <option value="" disabled selected>Seleccione una cuenta</option>
+			                <% if (cuentas != null) {
+			                    for (Cuenta cuenta : cuentas) { 
+			                        Integer cuentaSeleccionada = (Integer) request.getAttribute("cuentaSeleccionada");
+			                        boolean selected = (cuentaSeleccionada != null && cuentaSeleccionada == cuenta.getIdCuenta());
+			                %>
+		                    <option value="<%= cuenta.getIdCuenta() %>" <%= selected ? "selected" : "" %>><%= cuenta.getNumeroCuenta() %> - $<%= cuenta.getSaldo() %></option>
+		                			<% } 
+		                	} %>
+		            </select>
+		        </div>
+		        <div class="col-md-6">
+		            <label class="form-label">&nbsp;</label>
+		            <button type="submit" name="listar" class="btn btn-primary form-control">Ver Movimientos</button>
+		        </div>
 		    </div>
-    
-    
-	        <div class="col-11">	
-		      <div class="table-responsive">
-		          <table id="example" class="table table-striped">
+		</form>
+	
+		<% List<Movimiento> listaMovimientos = (List<Movimiento>) request.getAttribute("listaMovimientos");
+		   if (listaMovimientos != null && !listaMovimientos.isEmpty()) { %>
+		    <hr>
+		    <h5>Historial de Movimientos</h5>
+		    <div class="table-responsive">
+		        <table class="table table-striped">
 		            <thead>
 		                <tr>
-		                    <th >Tipo de movimiento</th>
-		                    <th >Fecha</th>
-		                    <th >Monto</th>                                    
+		                    <th>Fecha</th>
+		                    <th>Tipo</th>
+		                    <th>Detalle</th>
+		                    <th>Importe</th>
 		                </tr>
 		            </thead>
 		            <tbody>
-		                <tr>
-		                    <td>Desposito</td>
-		                    <td>01/01/2025</td>
-		                    <td>$10.000</td>            
-		                    <td>
-		                                        
-		                </tr>
-		                <tr>
-		                    <td>Pago de prestamo</td>
-		                    <td>05/03/2025</td>
-		                    <td>$30.000</td>            
-		                                       
-		                </tr>	
-		                </tbody>
-		           
+		                <% for (Movimiento mov : listaMovimientos) { %>
+		                    <tr>
+		                        <td><%= mov.getFecha() %></td>
+		                        <td>Tipo <%= mov.getIdTipoMovimiento() %></td>
+		                        <td><%= mov.getDetalle() %></td>
+		                        <td class="<%= mov.getImporte().doubleValue() >= 0 ? "text-success" : "text-danger" %>">$<%= mov.getImporte() %></td>
+		                    </tr>
+		                <% } %>
+		            </tbody>
 		        </table>
-		      </div>	
 		    </div>
-	 </form>  
-	    
-    </div>
+		<% } else if (request.getAttribute("cuentaSeleccionada") != null) { %>
+		    <div class="alert alert-info">No hay movimientos para esta cuenta.</div>
+		<% } %> 
+		    
+	    </div>
     
     <div id="transferencias" class="panel">
         <h4>Transferencias</h4>
@@ -331,26 +332,33 @@
 </div>
 
 <script>
+	//Mostrar automaticamente la seccion de movimientos si viene del ServletMovimiento
+	<% if (request.getAttribute("mostrarSeccionMovimientos") != null) { %>
+	    const allPanels = document.querySelectorAll('.panel');
+	    allPanels.forEach(panel => panel.style.display = 'none');
+	    
+	    document.getElementById('movimientos').style.display = 'block';
+	    
+	    const buttons = document.querySelectorAll('.btn-primary');
+	    buttons.forEach(btn => btn.classList.remove('active-button'));
+	    
+	    const movimientosBtn = document.querySelector('button[onclick*="movimientos"]');
+	    if (movimientosBtn) {
+	        movimientosBtn.classList.add('active-button');
+	    }
+	<% } %>
     let panelActual = null;
 
     function togglePanel(panelId, button) {
-        const panel = document.getElementById(panelId);
-
-        if (panelActual && panelActual !== panel) {
-            panelActual.style.display = "none";
-            const botones = document.querySelectorAll(".btn.btn-primary");
-            botones.forEach(b => b.classList.remove("active-button"));
-        }
-
-        if (panel.style.display === "block") {
-            panel.style.display = "none";
-            button.classList.remove("active-button");
-            panelActual = null;
-        } else {
-            panel.style.display = "block";
-            button.classList.add("active-button");
-            panelActual = panel;
-        }
+        const panels = document.querySelectorAll('.panel');
+        panels.forEach(panel => panel.style.display = 'none');
+        
+        const buttons = document.querySelectorAll('.btn-primary');
+        buttons.forEach(btn => btn.classList.remove('active-button'));
+        
+        document.getElementById(panelId).style.display = 'block';
+        
+        button.classList.add('active-button');
     }
     
     function mostrarSaldo() {

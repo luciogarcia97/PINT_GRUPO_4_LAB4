@@ -18,6 +18,14 @@ public interface ClienteDao {
     
     public boolean eliminarCliente(int idCliente);
     
+    public boolean eliminarUsuario(int idUsuario, int idCliente);
+    
+    public boolean eliminarCuentasUsuario(int idCliente);
+    
+    public int buscarPorIDCliente(int id);
+    
+    public boolean verificoClienteEliminado(int idCliente);
+    
     public boolean existeCliente(int idCliente);
     
     public boolean existeCuil(String cuil);

@@ -29,8 +29,8 @@ import negocioImpl.UsuarioNegocioImpl;
 @WebServlet("/ServletCliente")
 public class ServletCliente extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private ClienteNegociolmpl clienteNegocio;
-	private UsuarioNegocioImpl usuarioNegocio;
+	private ClienteNegocio clienteNegocio;
+	private UsuarioNegocio usuarioNegocio;
        
    
     public ServletCliente() {
@@ -209,6 +209,18 @@ public class ServletCliente extends HttpServlet {
 			
 			clienteModificar = clienteNegocio.BuscarPorID(c.getIdCliente());
 			
+			//validar si ya esta eliminado no puedo modificar			
+			if(clienteNegocio.verificoClienteEliminado(Integer.parseInt(request.getParameter("idCliente")))) {
+				
+				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
+				request.setAttribute("listaClientes", listaClientes);
+				
+				request.setAttribute("errorModificar", true);				
+				RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
+				rd.forward(request, response);	
+				return;									
+			}			
+			
 			try {				
 				
 				Validaciones.verificarDniInvalido(request.getParameter("txtDni"));				
@@ -266,8 +278,9 @@ public class ServletCliente extends HttpServlet {
             if (clienteNegocio.modificarCliente(c)) {			 
 				
 				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
-				request.setAttribute("listaClientes", listaClientes);		    
-			   
+				request.setAttribute("listaClientes", listaClientes);			   
+					
+				request.setAttribute("exitoModificado", true);
 			    RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
 			    rd.forward(request, response);
 			} 			
@@ -277,18 +290,31 @@ public class ServletCliente extends HttpServlet {
 		if(request.getParameter("btnEliminarCliente")!= null) {
 					
 			int idCliente = Integer.parseInt(request.getParameter("idCliente"));			
-			int idEliminar = usuarioNegocio.buscarPorIDUsuario(idCliente);			
+			int idUsuario = clienteNegocio.buscarPorIDCliente(idCliente);			
 			
-			if (usuarioNegocio.eliminarUsuario(idEliminar, idCliente)) {			 
+			//validar si ya esta eliminado msj ya esta eliminado			
+			if(clienteNegocio.verificoClienteEliminado(idCliente)) {
+				
+				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
+				request.setAttribute("listaClientes", listaClientes);
+				
+				request.setAttribute("error", true);				
+				RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
+				rd.forward(request, response);	
+				return;									
+			}
+			
+			if (clienteNegocio.eliminarUsuario(idUsuario, idCliente)) {			 
 							
 				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
 				request.setAttribute("listaClientes", listaClientes);		    
-						   
+				
+				request.setAttribute("exito", true);
 			    RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
 				rd.forward(request, response);
 			 
 			} else {					
-				request.setAttribute("error", "No se pudo eliminar el cliente.");
+				request.setAttribute("error", false);
 				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
 				request.setAttribute("listaClientes", listaClientes);		
 			    RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");

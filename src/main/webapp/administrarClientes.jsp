@@ -51,7 +51,8 @@
 			</form>
 
 		</div>
-	</nav>
+	</nav>	
+	
 
 	<div class="container text-center flex-grow-1">
 		<div class="row">
@@ -90,6 +91,70 @@
 						class="bi bi-plus me-1"></i> Registrar Cliente y Usuario
 					</a>
 				</div>
+				
+				<div>
+						<% 
+							 boolean errorBorrar = false;		        	
+							 if(request.getAttribute("error") != null) {
+								    errorBorrar = (boolean)request.getAttribute("error");
+								        	
+								    if(errorBorrar){
+						 %>
+							<div class="alert alert-danger" role="alert">
+								¡No se pudo eliminar el cliente!
+							</div>
+					
+						<% 	  }
+							}		        
+						%>
+						
+						<% 
+							 boolean errorModificar = false;		        	
+							 if(request.getAttribute("errorModificar") != null) {
+								    errorModificar = (boolean)request.getAttribute("errorModificar");
+								        	
+								    if(errorModificar){
+						 %>
+							<div class="alert alert-danger" role="alert">
+								¡No se puede modificar un cliente que ya está eliminado¡
+							</div>
+					
+						<% 	  }
+							}		        
+						%>						
+						
+						<% 
+							 boolean exitoBorrar = false;		        	
+							 if(request.getAttribute("exito") != null) {
+								   exitoBorrar = (boolean)request.getAttribute("exito");
+								        	
+								   if(exitoBorrar){
+						 %>
+							<div class="alert alert-success" role="alert">
+								¡Cliente, usuario y sus cuentas relacionadas eliminados!
+							</div>
+					
+						<% 	  }
+							}		        
+						%>	
+						
+						<% 
+							 boolean exitoModificado = false;		        	
+							 if(request.getAttribute("exitoModificado") != null) {
+								   exitoModificado = (boolean)request.getAttribute("exitoModificado");
+								        	
+								   if(exitoModificado){
+						 %>
+							<div class="alert alert-success" role="alert">
+								¡Cliente modificado con éxito!
+							</div>
+					
+						<% 	  }
+							}		        
+						%>	
+						
+									
+				</div>				
 
 				<div class="card shadow">
 					<div class="card-header bg-primary text-white">
@@ -147,7 +212,8 @@
 													class="d-inline">
 													<input type="hidden" name="idCliente"
 														value="<%= c.getIdCliente() %>" />														
-													<button type="submit" class="btn btn-sm btn-outline-danger"
+													<button type="submit" class="btn btn-sm btn-outline-danger" 
+														onclick="return confirm('¿Estás seguro que deseas eliminar este cliente?')"
 														title="Eliminar Cliente" name="btnEliminarCliente">
 														<i class="bi bi-trash"></i>
 													</button>

@@ -33,6 +33,36 @@
         	</form>       
         </div>
     </nav>
+        
+    <% 
+		 boolean errorBorrar = false;		        	
+		 if(request.getAttribute("error") != null) {
+			    errorBorrar = (boolean)request.getAttribute("error");
+			        	
+			    if(errorBorrar){
+	 %>
+		<div class="alert alert-danger" role="alert">
+			¡No se pudo eliminar el cliente, usuario ni sus cuentas relacionadas!
+		</div>
+
+	<% 	  }
+		}		        
+	%>
+	
+	<% 
+		 boolean exitoBorrar = false;		        	
+		 if(request.getAttribute("exito") != null) {
+			   exitoBorrar = (boolean)request.getAttribute("exito");
+			        	
+			   if(exitoBorrar){
+	 %>
+		<div class="alert alert-success" role="alert">
+			¡Usuario, cliente y sus cuentas relacionadas eliminados!
+		</div>
+
+	<% 	  }
+		}		        
+	%>    
 
     <div class="container text-center flex-grow-1"> 
         <div class="row">		                    
