@@ -49,10 +49,11 @@ public class ServletUsuario extends HttpServlet {
 		if(request.getParameter("btnModificar") != null) {
 									
 			int idUsuario = Integer.parseInt(request.getParameter("idUsuario").trim());
-			String usuarioNuevo = request.getParameter("txtNombre");
+			String usuarioNuevo = request.getParameter("txtNombre").trim();
 			String clave = request.getParameter("txtContrasena");
 			int idCliente = Integer.parseInt(request.getParameter("idCliente").trim());
 			String fechaCreacionStr = request.getParameter("fechaCreacion").trim();
+			String tipoUsuario = request.getParameter("txtTipo");
 						
 			LocalDate fechaCreacion = LocalDate.parse(fechaCreacionStr);
 			
@@ -61,19 +62,17 @@ public class ServletUsuario extends HttpServlet {
 			usuario.setId_cliente(idCliente); 
 			usuario.setUsuario(usuarioNuevo);
 			usuario.setContrasena(clave);
-			usuario.setTipo_usuario("cliente");
+			usuario.setTipo_usuario(tipoUsuario);
 			usuario.setEliminado(0);
 			usuario.setFecha_creacion(fechaCreacion);
 			
-			Usuario existente = usuarioNegocio.buscarPorNombre(usuarioNuevo,idUsuario);
+			//Usuario existente = usuarioNegocio.buscarPorNombre(usuarioNuevo,idUsuario);
+			
+			boolean existe = usuarioNegocio.existeNombreUsuario(usuarioNuevo, idUsuario);
 						
-			if (existente != null) {
-			    request.setAttribute("errorNombre", "Ya existe un usuario con ese nombre.");
-			    request.setAttribute("id", idUsuario);
-			    request.setAttribute("idCliente", idCliente);
-			    request.setAttribute("fechaCreacion", fechaCreacion);
-			    request.setAttribute("usuario", usuarioNuevo);
-			    
+			if (existe) {
+			   
+				request.setAttribute("errorNombre", true); 			    
 			    RequestDispatcher rd = request.getRequestDispatcher("/modificarUsuario.jsp");
 			    rd.forward(request, response);
 			    return;

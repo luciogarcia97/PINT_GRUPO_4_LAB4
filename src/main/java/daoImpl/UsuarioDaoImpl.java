@@ -177,7 +177,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
 
 		return resultado;
 	}
-
+/*
 	@Override
 	public Usuario buscarPorNombre(String nombre, int id) {
 	    PreparedStatement pst = null;
@@ -211,7 +211,41 @@ public class UsuarioDaoImpl implements UsuarioDao {
 
 	    return usuario;
 	}
+	*/
 	
+	@Override
+	public boolean existeNombreUsuario(String nombre, int idUsuario) {
+	    PreparedStatement pst = null;
+	    ResultSet rs = null;
+	    Connection conexion = Conexion.getConexion().getSQLConexion();
+	    boolean existe = false;
+
+	    try {
+	        String query = "SELECT 1 FROM usuario WHERE usuario = ? AND id_usuario <> ? AND eliminado = 0 LIMIT 1";
+	        pst = conexion.prepareStatement(query);
+	        pst.setString(1, nombre);
+	        pst.setInt(2, idUsuario);
+	        rs = pst.executeQuery();
+
+	        if (rs.next()) {
+	            existe = true; 
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pst != null) pst.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return existe;
+	}	
+	
+	@Override
 	public Usuario buscarPorIdCliente(int idCliente) {
 	    PreparedStatement pst = null;
 	    ResultSet rs = null;

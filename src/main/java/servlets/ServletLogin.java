@@ -37,7 +37,7 @@ public class ServletLogin extends HttpServlet {
 			boolean loginExitoso = false;
 			
 			List<Usuario> lista = usuarioNegocio.obtenerUsuarios();				
-			
+			System.out.println("Cantidad de usuarios en BD: " + lista.size());
 			for(Usuario usuarioLog : lista) {
 								
 				if(usuarioLog.getUsuario().equals(usuario) &&
