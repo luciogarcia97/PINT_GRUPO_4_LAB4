@@ -83,8 +83,6 @@
 		}		        
 	%>
 	
-	
-	
 
 	<div class="container text-center flex-grow-1">
 		<div class="row">

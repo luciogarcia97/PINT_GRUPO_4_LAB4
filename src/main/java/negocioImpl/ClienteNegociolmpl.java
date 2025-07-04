@@ -26,8 +26,7 @@ public class ClienteNegociolmpl implements ClienteNegocio {
 	@Override
 	public boolean eliminarCliente(int idCliente) {
 	
-		return clienteDao.eliminarCliente(idCliente);		
-		
+		return clienteDao.eliminarCliente(idCliente);			
 	}
 	
 	@Override
@@ -51,8 +50,7 @@ public class ClienteNegociolmpl implements ClienteNegocio {
 	@Override
 	public boolean modificarCliente(Cliente cliente) {
 
-		return clienteDao.ModificarCliente(cliente);
-		
+		return clienteDao.ModificarCliente(cliente);		
 	}
 
 	@Override
@@ -70,8 +68,7 @@ public class ClienteNegociolmpl implements ClienteNegocio {
 	@Override
 	public boolean existeCliente(int idCliente) {
 		
-		return clienteDao.existeCliente(idCliente);
-		
+		return clienteDao.existeCliente(idCliente);		
 	}
 	
 	@Override

@@ -10,9 +10,7 @@ public interface UsuarioDao {
     
     public List<Usuario> obtenerUsuarios();   	
     	    
-    public boolean modificarUsuario(Usuario usuario);  
-    
-    public boolean eliminarUsuario(int idUsuario, int idCliente);
+    public boolean modificarUsuario(Usuario usuario);    
     
     public int buscarPorIDUsuario(int idCliente);
     

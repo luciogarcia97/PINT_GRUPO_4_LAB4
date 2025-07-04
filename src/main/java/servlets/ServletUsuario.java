@@ -99,12 +99,13 @@ public class ServletUsuario extends HttpServlet {
 							
 				List<Usuario> listaUsuarios = usuarioNegocio.obtenerUsuarios();
 				request.setAttribute("listaUsuarios", listaUsuarios);		    
-						   
+					
+				request.setAttribute("exito", true);
 			    RequestDispatcher rd = request.getRequestDispatcher("/administrarUsuarios.jsp");
 				rd.forward(request, response);
 			 } else {
 					
-					request.setAttribute("error", "No se pudo eliminar el usuario.");
+				 	request.setAttribute("error", false);
 				    List<Usuario> listaUsuarios = usuarioNegocio.obtenerUsuarios();
 				    request.setAttribute("listaUsuarios", listaUsuarios);		
 				    RequestDispatcher rd = request.getRequestDispatcher("/administrarUsuarios.jsp");

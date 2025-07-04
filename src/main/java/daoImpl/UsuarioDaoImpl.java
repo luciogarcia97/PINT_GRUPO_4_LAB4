@@ -144,48 +144,8 @@ public class UsuarioDaoImpl implements UsuarioDao {
 		
 		return resultado;		
 		
-	}
+	}	
 	
-	@Override
-	public boolean eliminarUsuario(int idUsuario, int idCliente) {
-		PreparedStatement pst = null;
-		Connection conexion = Conexion.getConexion().getSQLConexion();
-		boolean resultado = false;
-		
-		//MAL NO SE DEBE HACER ESTO 
-		ClienteNegociolmpl clienteNegocio = new ClienteNegociolmpl();
-		CuentaNegocioImpl cuentaNegocio = new CuentaNegocioImpl(); 
-		
-		try {
-			String query = "UPDATE usuario SET eliminado = 1 WHERE id_usuario = ?";
-			pst = conexion.prepareStatement(query);
-			pst.setInt(1, idUsuario);
-			
-			if (pst.executeUpdate() > 0) { 
-				conexion.commit();
-				resultado = true;
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (pst != null)
-				pst.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		if(resultado) {
-			return true;
-		} else {
-			return false;
-		}	
-			
-	}
-	
-
 	@Override
 	public int buscarPorIDUsuario(int id) {
 		PreparedStatement pst = null;
@@ -218,7 +178,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
 		return resultado;
 	}
 
-	
+	@Override
 	public Usuario buscarPorNombre(String nombre, int id) {
 	    PreparedStatement pst = null;
 	    ResultSet rs = null;

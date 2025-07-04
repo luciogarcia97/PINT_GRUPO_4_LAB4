@@ -16,23 +16,19 @@ import negocio.ClienteNegocio;
 public class UsuarioNegocioImpl implements UsuarioNegocio {
 
 	private UsuarioDao usuarioDao;
-	private ClienteDao clienteDao;
-	private CuentaDao cuentaNegocio;
-	
+	private ClienteDao clienteDao;	
 	
 	public UsuarioNegocioImpl() {
 		super();
 		this.usuarioDao = new UsuarioDaoImpl();
-		this.clienteDao = new ClienteDaolmpl();
-		this.cuentaNegocio = new CuentaDaoImpl();
+		this.clienteDao = new ClienteDaolmpl();		
 	}
 
 	@Override
 	public boolean insertarUsuario(Usuario usuario) {
 
 		return usuarioDao.insertarUsuario(usuario);
-	}
-	
+	}	
 
 	@Override
 	public List<Usuario> obtenerUsuarios() {
@@ -47,13 +43,13 @@ public class UsuarioNegocioImpl implements UsuarioNegocio {
 	}
 	
 	@Override
-	public boolean eliminarUsuario(int idUsuario, int idCliente) {
+	public boolean eliminarUsuario(int idUsuario, int idCliente) {		
 		
-		if(usuarioDao.eliminarUsuario(idUsuario, idCliente) && clienteDao.eliminarCliente(idCliente) && cuentaNegocio.eliminarCuentasUsuario(idCliente))
-		{
+		if(clienteDao.eliminarCliente(idCliente) && clienteDao.eliminarUsuario(idUsuario, idCliente) 
+		   && clienteDao.eliminarCuentasUsuario(idCliente)) {
+			
 			return true;
-		}
-		
+		}		
 		return false;
 	}
 	
