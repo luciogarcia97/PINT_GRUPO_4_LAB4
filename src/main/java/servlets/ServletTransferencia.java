@@ -80,9 +80,9 @@ public class ServletTransferencia extends HttpServlet {
     		}
     		
     		//Valida si el CBU existe:
-    		if(!cuentaNegocio.existeCBU(cbu))
+    		if(cuentaNegocio.existeCBU(cbu) == false)
     		{
-    			//No existe el cbu
+    			response.sendRedirect("ServletClienteUsuario?cbuInexistente=1");
     			return;
     		}
     		

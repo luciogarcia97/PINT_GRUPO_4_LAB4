@@ -50,6 +50,10 @@ public class ServletClienteUsuario extends HttpServlet {
 	        request.setAttribute("saldo", 1);
 	    }
 		
+		if (request.getParameter("cbuInexistente") != null) {
+	        request.setAttribute("cbu", 1);
+	    }
+		
 		if (usuarioLogueado == null) {
 			response.sendRedirect("index.jsp");
 			return;
