@@ -36,7 +36,15 @@
 </head>
 
 <body style="background-color: rgb(104, 109, 250);">
-
+	<%
+	
+	int saldoInsuficiente = 0;
+	
+	if(request.getAttribute("saldo") != null)
+    {
+		saldoInsuficiente = Integer.parseInt(request.getAttribute("saldo").toString());
+    }
+	%>
 <nav class="navbar navbar-light bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">
@@ -138,6 +146,17 @@
     
     <div id="transferencias" class="panel">
         <h4>Transferencias</h4>
+        
+        	<%
+			if(saldoInsuficiente != 0){
+		    %>
+		    <div class="alert alert-danger" role="alert">
+  			¡No tienes suficiente dinero en esa cuenta!
+			</div>
+		    <%
+		    }
+		    %>
+        
         <form action="ServletTransferencia" method="post">
             <div class="mb-3">
                 <label for="cuentaOrigen" class="form-label">Cuenta Origen</label>

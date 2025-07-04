@@ -32,6 +32,7 @@ public class ServletClienteUsuario extends HttpServlet {
 	private TipoCuentaNegocio tipoCuentaNegocio;
 	private UsuarioNegocio usuarioNegocio;
 	
+	
     public ServletClienteUsuario() {
         super();
         this.clienteNegocio = new ClienteNegociolmpl();
@@ -44,6 +45,11 @@ public class ServletClienteUsuario extends HttpServlet {
 		
 		// Verifica que el usuario esté cargado
 		Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
+		
+		if (request.getParameter("saldoInsuficiente") != null) {
+	        request.setAttribute("saldo", 1);
+	    }
+		
 		if (usuarioLogueado == null) {
 			response.sendRedirect("index.jsp");
 			return;

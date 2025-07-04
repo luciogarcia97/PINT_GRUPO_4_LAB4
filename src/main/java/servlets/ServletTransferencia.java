@@ -58,7 +58,7 @@ public class ServletTransferencia extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		// response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	
@@ -73,10 +73,10 @@ public class ServletTransferencia extends HttpServlet {
     		
     		
     		//Valida si la cuenta tiene el dinero suficiente:
-    		if(!cuentaNegocio.tieneSaldoSuficiente(idCuenta, monto))
+    		if(cuentaNegocio.tieneSaldoSuficiente(idCuenta, monto) == false)
     		{
-    			//no tiene saldo suficiente
-    			return;
+    			response.sendRedirect("ServletClienteUsuario?saldoInsuficiente=1");
+    		    return;
     		}
     		
     		//Valida si el CBU existe:
@@ -96,9 +96,9 @@ public class ServletTransferencia extends HttpServlet {
     		saldoFinal = cuentaDestino.getSaldo().add(monto);
     		cuentaNegocio.modificarSaldo(cuentaDestino.getIdCuenta(), saldoFinal);
     		
-    		
-    		RequestDispatcher rd = request.getRequestDispatcher("usuarioCliente.jsp");
-	        rd.forward(request, response);
+    		// Va directo al servlet para volver a cargar al usuario
+    		response.sendRedirect("ServletClienteUsuario?saldoInsuficiente=1");
+	        
     	}
 		
 	}
