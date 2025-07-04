@@ -4,6 +4,7 @@ import dao.Conexion;
 import dao.PrestamoDao;
 
 import entidades.Prestamo;
+import entidades.PrestamoCuota;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -254,6 +255,99 @@ public class PrestamoDaolmpl implements PrestamoDao {
 		}
 
 		return resultado;
+	}
+
+	@Override
+	public List<PrestamoCuota> obtenerCuotas(int idPrestamo) {
+		List<PrestamoCuota> cuotas = new ArrayList<>();
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+
+		try {
+			String query = "SELECT id_prestamo_cuota,id_prestamo,numero_cuota,monto,fecha_vencimiento,fecha_pago, pagada FROM prestamo_cuota WHERE id_prestamo = ?";
+;
+			pst = conexion.prepareStatement(query);
+			pst.setInt(1, idPrestamo);
+
+			rs = pst.executeQuery();
+
+			while (rs.next()) {
+				PrestamoCuota cuota= new PrestamoCuota();
+				
+			cuota.setIdCuota(rs.getInt("id_prestamo_cuota"));
+			cuota.setIdPrestamo(rs.getInt("id_prestamo"));
+			cuota.setNumCuota(rs.getInt("numero_cuota"));
+			cuota.setMonto(rs.getDouble("monto"));
+			cuota.setFechaVencimiento(rs.getObject("fecha_vencimiento",LocalDate.class));
+			cuota.setFechaPago(rs.getObject("fecha_pago",LocalDate.class));
+			cuota.setPagado(rs.getBoolean("pagada"));
+			
+			cuotas.add(cuota);
+				
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pst != null)
+					pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return cuotas;
+	}
+
+	@Override
+	public Prestamo obtenerPrestamoIDCuenta(int idCliente) {
+		
+		Prestamo prestamo = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+
+		try {
+			String query = "SELECT id_prestamo, id_cliente, id_cuenta, fecha_solicitud, importe_solicitado, plazo_pago_meses, importe_por_cuota, cantidad_cuotas, estado, eliminado FROM prestamo WHERE id_cliente = ?";
+;
+			pst = conexion.prepareStatement(query);
+			pst.setInt(1, idCliente);
+
+			rs = pst.executeQuery();
+
+			if (rs.next()) {
+				prestamo = new Prestamo();
+				prestamo.setId_prestamo(rs.getInt("id_prestamo"));
+				prestamo.setId_cliente(rs.getInt("id_cliente"));
+				prestamo.setId_cuenta(rs.getInt("id_cuenta"));
+				prestamo.setFecha_solicitud(LocalDate.now());
+				prestamo.setImporte_solicitado(rs.getInt("importe_solicitado"));
+				prestamo.setPlazo_pago_mes(rs.getInt("plazo_pago_meses"));
+				prestamo.setImporte_por_cuota(rs.getInt("importe_por_cuota"));
+				prestamo.setCantidad_cuotas(rs.getInt("cantidad_cuotas"));
+				prestamo.setEstado(rs.getString("estado"));
+				prestamo.setEliminado(rs.getBoolean("eliminado"));
+				
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pst != null)
+					pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return prestamo;
 	}
 
 	

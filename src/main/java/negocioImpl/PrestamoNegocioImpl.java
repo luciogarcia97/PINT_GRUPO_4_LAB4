@@ -6,6 +6,7 @@ import java.util.List;
 import dao.PrestamoDao;
 import daoImpl.PrestamoDaolmpl;
 import entidades.Prestamo;
+import entidades.PrestamoCuota;
 import negocio.PrestamoNegocio;
 
 public class PrestamoNegocioImpl implements PrestamoNegocio {
@@ -63,6 +64,22 @@ public class PrestamoNegocioImpl implements PrestamoNegocio {
 		public boolean impactar_prestamo_cuenta(int idCuenta, double dinero) {
 			
 			return prestamoDao.impactar_prestamo_cuenta(idCuenta, dinero);
+		}
+
+
+
+		@Override
+		public List<PrestamoCuota> obtenerCuotas(int idPrestamo) {
+			
+			return prestamoDao.obtenerCuotas(idPrestamo);
+		}
+
+
+
+		@Override
+		public Prestamo obtenerPrestamoIDCuenta(int idCliente) {
+		
+			return prestamoDao.obtenerPrestamoIDCuenta(idCliente);
 		}
 
 

@@ -5,6 +5,7 @@ import java.util.List;
 
 
 import entidades.Prestamo;
+import entidades.PrestamoCuota;
 
 public interface PrestamoDao {
 
@@ -20,6 +21,10 @@ public interface PrestamoDao {
 	Prestamo obtenerPrestamoID(int idPrestamo);
 	
 	boolean impactar_prestamo_cuenta(int idCuenta, double dinero );
+	
+	List<PrestamoCuota> obtenerCuotas(int idPrestamo);
+	
+	Prestamo obtenerPrestamoIDCuenta(int idCliente);
 
 
 

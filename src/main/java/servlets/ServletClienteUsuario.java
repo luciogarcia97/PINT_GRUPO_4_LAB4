@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -12,14 +13,18 @@ import javax.servlet.http.HttpServletResponse;
 
 import entidades.Cliente;
 import entidades.Cuenta;
+import entidades.Prestamo;
+import entidades.PrestamoCuota;
 import entidades.TipoCuenta;
 import entidades.Usuario;
 import negocio.ClienteNegocio;
 import negocio.CuentaNegocio;
+import negocio.PrestamoNegocio;
 import negocio.UsuarioNegocio;
 import negocio.TipoCuentaNegocio;
 import negocioImpl.ClienteNegociolmpl;
 import negocioImpl.CuentaNegocioImpl;
+import negocioImpl.PrestamoNegocioImpl;
 import negocioImpl.TipoCuentaNegocioImpl;
 import negocioImpl.UsuarioNegocioImpl;
 
@@ -31,6 +36,8 @@ public class ServletClienteUsuario extends HttpServlet {
 	private CuentaNegocio cuentaNegocio;
 	private TipoCuentaNegocio tipoCuentaNegocio;
 	private UsuarioNegocio usuarioNegocio;
+	private PrestamoNegocio prestamoNegocio;
+	
 	
     public ServletClienteUsuario() {
         super();
@@ -38,6 +45,7 @@ public class ServletClienteUsuario extends HttpServlet {
         this.cuentaNegocio = new CuentaNegocioImpl();
         this.tipoCuentaNegocio = new TipoCuentaNegocioImpl();
         this.usuarioNegocio = new UsuarioNegocioImpl();
+        this.prestamoNegocio = new PrestamoNegocioImpl();
     }
  
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -59,6 +67,14 @@ public class ServletClienteUsuario extends HttpServlet {
 			Cliente cliente = clienteNegocio.BuscarPorID(usuarioLogueado.getId_cliente());
 			request.setAttribute("cliente", cliente);
 			
+			// Obtiene cuotas del prestamo vigente
+			List<PrestamoCuota> cuotas = new ArrayList<>();
+			Prestamo prestamo = new Prestamo();
+			prestamo = prestamoNegocio.obtenerPrestamoIDCuenta(cliente.getIdCliente());
+			System.out.println("ID del préstamo vigente: " + prestamo.getId_prestamo());
+
+			cuotas = prestamoNegocio.obtenerCuotas(prestamo.getId_prestamo());
+			request.setAttribute("cuotas", cuotas);
 			// Obtiene las cuentas del cliente
 			List<Cuenta> cuentas = cuentaNegocio.obtenerCuentasPorCliente(usuarioLogueado.getId_cliente());
 			request.setAttribute("cuentas", cuentas);
@@ -67,6 +83,14 @@ public class ServletClienteUsuario extends HttpServlet {
 			List<TipoCuenta> tiposCuenta = tipoCuentaNegocio.obtenerTiposCuenta();
 			request.setAttribute("tiposCuenta", tiposCuenta);
 			
+			System.out.println("Cantidad de cuotas encontradas: " + cuotas.size());
+			for (PrestamoCuota pc : cuotas) {
+			    System.out.println("Cuota: " + pc.getNumCuota() + ", Monto: " + pc.getMonto());
+			}
+			
+			System.out.println("ID del cliente: " + cliente.getIdCliente());
+
+
 			RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioCliente.jsp");
 			dispatcher.forward(request, response);
 			

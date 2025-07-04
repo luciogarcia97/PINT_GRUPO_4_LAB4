@@ -228,8 +228,19 @@
             <div class="mb-3">
                 <label for="cuotaSeleccion" class="form-label">Seleccione Cuota</label>
                 <select class="form-select" id="cuotaSeleccion">
-                    <option value="1">Cuota 1 - $2.500 - Vence: 10/06/2025</option>
-                    <option value="2">Cuota 2 - $2.500 - Vence: 10/07/2025</option>
+					<% 
+                    if (request.getAttribute("cuotas") != null) {
+                    	List<PrestamoCuota> cuotas = (List<PrestamoCuota>)request.getAttribute("cuotas");
+                    	for(PrestamoCuota cuota : cuotas){
+                    	
+                   
+                    %>
+                        <option value="<%= cuota.getNumCuota() %>"><%= cuota.getMonto() %> - fecha de vencimiento -<%=  cuota.getFechaVencimiento() %></option>
+                    <%
+                    	}
+                    }
+                    %>
+                    
                 </select>
             </div>
             <div class="mb-3">
