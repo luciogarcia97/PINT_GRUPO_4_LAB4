@@ -45,7 +45,7 @@
      	<input type="hidden" name="idUsuario" value="<%= idUsuario %>">
      	<input type="hidden" name="idCliente" value="<%= idCliente %>">
 		<input type="hidden" name="fechaCreacion" value="<%= fechaCreacion %>">
-	   
+	    <input type="hidden" name="tipoUsuario" value="<%= tipoUsuario %>">
 	    <div class="inicio">
 	         
 	        <h2 class="text-center pt-2 pb-2"> Modificar usuario</h2>    
@@ -53,31 +53,23 @@
 			
 			<div>
 				<%
-			    String errorNombre = (String) request.getAttribute("errorNombre");
-			    if (errorNombre != null) {
-				%>
-					<div class="alert alert-danger" role="alert">
-					     ¡Existe nombre de Usuario!
-					</div>
+					Boolean errorNombre = (Boolean) request.getAttribute("errorNombre");
+					if (errorNombre != null && errorNombre) {
+					%>
+						<div class="alert alert-danger" role="alert">
+						     ¡Existe nombre de Usuario!
+						</div>
 				<%
-					 }
-				%>			
+					}
+				%>
+						
 			
 			</div>
 			
-			<div class="center row">
-				 <div class="mb-3">
-		                
-		            <label for="tipo" class="form-label">Tipo Usuario</label>
-		              <select id="tipo" name="txtTipo" class="form-control" required>
-		               	<option value="" disabled selected>Selecciona tipo de usuario</option>
-		                <option value="admin">Administrador</option>
-		                <option value="cliente">Cliente</option>		                   
-		              </select>
-			
+			<div class="center row">			
 	            <div class="mb-3">
 	                <label for="usuario" class="form-label">Usuario</label>
-	                <input type="text" class="form-control" id="usuario" placeholder="Usuario" name="txtNombre" value="<%= usuario %>" required>
+	                <input type="text" class="form-control" id="usuario" placeholder="Usuario" name="txtNombre" value="<%= (usuario != null) ? usuario : "" %>" required>
 	            </div>
 	            <div class="mb-3">
 	                <label for="clave" class="form-label">Contraseña</label>

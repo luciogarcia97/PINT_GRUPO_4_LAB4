@@ -177,41 +177,6 @@ public class UsuarioDaoImpl implements UsuarioDao {
 
 		return resultado;
 	}
-/*
-	@Override
-	public Usuario buscarPorNombre(String nombre, int id) {
-	    PreparedStatement pst = null;
-	    ResultSet rs = null;
-	    Connection conexion = Conexion.getConexion().getSQLConexion();
-	    Usuario usuario = null;
-
-	    try {
-	        String query = "SELECT * FROM usuario WHERE usuario = ? AND id_usuario <> ? AND eliminado = 0";
-	        pst = conexion.prepareStatement(query);
-	        pst.setString(1, nombre);
-	        pst.setInt(2, id);
-	        rs = pst.executeQuery();
-
-	        if (rs.next()) {
-	            usuario = new Usuario();
-	            usuario.setId_usuario(rs.getInt("id_usuario"));
-	            usuario.setUsuario(rs.getString("usuario"));
-	        }
-
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (rs != null) rs.close();
-	            if (pst != null) pst.close();
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-	    }
-
-	    return usuario;
-	}
-	*/
 	
 	@Override
 	public boolean existeNombreUsuario(String nombre, int idUsuario) {

@@ -53,7 +53,7 @@ public class ServletUsuario extends HttpServlet {
 			String clave = request.getParameter("txtContrasena");
 			int idCliente = Integer.parseInt(request.getParameter("idCliente").trim());
 			String fechaCreacionStr = request.getParameter("fechaCreacion").trim();
-			String tipoUsuario = request.getParameter("txtTipo");
+			String tipoUsuario = request.getParameter("tipoUsuario").trim();
 						
 			LocalDate fechaCreacion = LocalDate.parse(fechaCreacionStr);
 			
@@ -64,9 +64,8 @@ public class ServletUsuario extends HttpServlet {
 			usuario.setContrasena(clave);
 			usuario.setTipo_usuario(tipoUsuario);
 			usuario.setEliminado(0);
-			usuario.setFecha_creacion(fechaCreacion);
+			usuario.setFecha_creacion(fechaCreacion);			
 			
-			//Usuario existente = usuarioNegocio.buscarPorNombre(usuarioNuevo,idUsuario);
 			
 			boolean existe = usuarioNegocio.existeNombreUsuario(usuarioNuevo, idUsuario);
 						

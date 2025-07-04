@@ -59,12 +59,6 @@ public class UsuarioNegocioImpl implements UsuarioNegocio {
 		return usuarioDao.buscarPorIDUsuario(idCliente);
 	}
 	
-	/*@Override
-	public Usuario buscarPorNombre(String nombre, int id) {
-	
-		return usuarioDao.buscarPorNombre(nombre,id);
-	}*/
-	
 	@Override
 	public Usuario buscarPorIdCliente(int idCliente) {
 	
