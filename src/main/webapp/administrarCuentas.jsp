@@ -41,7 +41,7 @@
             </a>
              <form action="ServletLogin" method="get" class="d-inline">
             	<button class="btn btn-outline-dark" type="submit" name="btnCerrar">Cerrar Sesión</button>
-        	</form>        
+        	</form>
         </div>
     </nav>
 
