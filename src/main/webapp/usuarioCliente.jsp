@@ -155,21 +155,23 @@
         <h4>Transferencias</h4>
         
         	<%
-			if(saldoInsuficiente > 0){
+			if(saldoInsuficiente != 0){
 		    %>
-		    <div class="alert alert-danger" role="alert">
-  			¡No tienes suficiente dinero en esa cuenta!
-			</div>
+		    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        		<strong>Error:</strong> No tenés saldo suficiente para realizar la transferencia.
+        		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    		</div>
 		    <%
 		    }
 		    %>
 		    
 		    <%
-			if(cbuInexistente > 0){
+			if(cbuInexistente != 0){
 		    %>
-		    <div class="alert alert-danger" role="alert">
-  			¡El CBU ingresado no existe!
-			</div>
+		    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        		<strong>Error:</strong> El CBU ingresado es inexistente.
+        		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    		</div>
 		    <%
 		    }
 		    %>
