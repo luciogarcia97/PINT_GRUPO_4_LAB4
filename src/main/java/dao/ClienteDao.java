@@ -24,6 +24,8 @@ public interface ClienteDao {
     
     public int buscarPorIDCliente(int id);
     
+    public boolean verificoClienteEliminado(int idCliente);
+    
     public boolean existeCliente(int idCliente);
     
     public boolean existeCuil(String cuil);

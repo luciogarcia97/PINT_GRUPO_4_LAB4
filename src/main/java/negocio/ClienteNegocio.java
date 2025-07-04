@@ -23,6 +23,8 @@ public interface ClienteNegocio {
 	
 	public List<Cliente> obtenerClientes();
 	
+	boolean verificoClienteEliminado(int idCliente);
+	
 	public Cliente BuscarPorID(int id);
 	
 	public boolean existeCliente(int idCliente);

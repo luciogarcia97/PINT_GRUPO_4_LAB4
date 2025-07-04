@@ -18,7 +18,6 @@ import entidades.Provincia;
 
 public class ClienteDaolmpl implements ClienteDao {
 
-		
 	@Override
 	public int insertarCliente(Cliente cliente) {
 
@@ -61,8 +60,10 @@ public class ClienteDaolmpl implements ClienteDao {
 			}
 		} finally {
 			try {
-				if (rs != null) rs.close();
-				if (pst != null) pst.close();
+				if (rs != null)
+					rs.close();
+				if (pst != null)
+					pst.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -70,7 +71,7 @@ public class ClienteDaolmpl implements ClienteDao {
 
 		return idGenerado;
 	}
-	
+
 	@Override
 	public Cliente BuscarPorID(int id) {
 		PreparedStatement pst = null;
@@ -208,69 +209,69 @@ public class ClienteDaolmpl implements ClienteDao {
 
 		return listaClientes;
 	}
-	
+
 	@Override
 	public boolean eliminarUsuario(int idUsuario, int idCliente) {
 		PreparedStatement pst = null;
 		Connection conexion = Conexion.getConexion().getSQLConexion();
 		boolean resultado = false;
-		
+
 		try {
 			String query = "UPDATE usuario SET eliminado = 1 WHERE id_usuario = ?";
 			pst = conexion.prepareStatement(query);
 			pst.setInt(1, idUsuario);
-			
-			if (pst.executeUpdate() > 0) { 
+
+			if (pst.executeUpdate() > 0) {
 				conexion.commit();
 				resultado = true;
 			}
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			try {
 				if (pst != null)
-				pst.close();
+					pst.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-		
-		if(eliminarCliente(idCliente) && eliminarCuentasUsuario(idCliente) && resultado) {
+
+		if (eliminarCliente(idCliente) && eliminarCuentasUsuario(idCliente) && resultado) {
 			return true;
 		} else {
 			return false;
-		}	
-			
+		}
+
 	}
-	
+
 	@Override
 	public boolean eliminarCuentasUsuario(int idCliente) {
 		PreparedStatement pst = null;
 		Connection conexion = Conexion.getConexion().getSQLConexion();
 		boolean resultado = true;
-		
+
 		try {
 			String query = "UPDATE cuenta SET activa = 0 WHERE id_cliente = ?";
 			pst = conexion.prepareStatement(query);
 			pst.setInt(1, idCliente);
-			
+
 			pst.executeUpdate();
-			conexion.commit();			
-			
+			conexion.commit();
+
 		} catch (SQLException e) {
 			e.printStackTrace();
-			resultado = false; 
+			resultado = false;
 		} finally {
 			try {
 				if (pst != null)
-				pst.close();
+					pst.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-		}	
-		return resultado;	
-	}	
+		}
+		return resultado;
+	}
 
 	@Override
 	public boolean eliminarCliente(int idCliente) {
@@ -300,6 +301,39 @@ public class ClienteDaolmpl implements ClienteDao {
 		}
 
 		return resultado;
+	}
+
+	@Override
+	public boolean verificoClienteEliminado(int idCliente) {
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+		boolean eliminado = false;
+
+		try {
+			String query = "SELECT COUNT(*) as cantidad FROM cliente WHERE id_cliente = ? AND eliminado = 1";
+			pst = conexion.prepareStatement(query);
+			pst.setInt(1, idCliente);
+			rs = pst.executeQuery();
+
+			if (rs.next() && rs.getInt("cantidad") > 0) {
+				eliminado = true;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pst != null)
+					pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return eliminado;
 	}
 
 	@Override
@@ -338,7 +372,7 @@ public class ClienteDaolmpl implements ClienteDao {
 		}
 		return existe;
 	}
-	
+
 	@Override
 	public int buscarPorIDCliente(int id) {
 		PreparedStatement pst = null;
@@ -369,7 +403,7 @@ public class ClienteDaolmpl implements ClienteDao {
 		}
 
 		return resultado;
-	}	
+	}
 
 	@Override
 	public boolean existeDni(int dni) {

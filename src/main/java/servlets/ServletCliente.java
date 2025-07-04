@@ -280,7 +280,17 @@ public class ServletCliente extends HttpServlet {
 			int idCliente = Integer.parseInt(request.getParameter("idCliente"));			
 			int idUsuario = clienteNegocio.buscarPorIDCliente(idCliente);			
 			
-			//falta validar si ya esta eliminado msj ya esta eliminado
+			//validar si ya esta eliminado msj ya esta eliminado			
+			if(clienteNegocio.verificoClienteEliminado(idCliente)) {
+				
+				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
+				request.setAttribute("listaClientes", listaClientes);
+				
+				request.setAttribute("error", true);				
+				RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
+				rd.forward(request, response);	
+				return;									
+			}
 			
 			if (clienteNegocio.eliminarUsuario(idUsuario, idCliente)) {			 
 							

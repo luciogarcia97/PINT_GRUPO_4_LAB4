@@ -93,6 +93,12 @@ public class ClienteNegociolmpl implements ClienteNegocio {
 	public List<Localidad> listarLocalidades() {
 		
 		return clienteDao.listarLocalidades();
+	}
+
+	@Override
+	public boolean verificoClienteEliminado(int idCliente) {
+		
+		return clienteDao.verificoClienteEliminado(idCliente);
 	}			
     
 }

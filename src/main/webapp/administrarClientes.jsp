@@ -101,7 +101,7 @@
 								    if(errorBorrar){
 						 %>
 							<div class="alert alert-danger" role="alert">
-								¡No se pudo eliminar el cliente, usuario ni sus cuentas relacionadas!
+								¡No se pudo eliminar el cliente!
 							</div>
 					
 						<% 	  }
