@@ -51,37 +51,7 @@
 			</form>
 
 		</div>
-	</nav>
-	
-	<% 
-		 boolean errorBorrar = false;		        	
-		 if(request.getAttribute("error") != null) {
-			    errorBorrar = (boolean)request.getAttribute("error");
-			        	
-			    if(errorBorrar){
-	 %>
-		<div class="alert alert-danger" role="alert">
-			¡No se pudo eliminar el cliente, usuario ni sus cuentas relacionadas!
-		</div>
-
-	<% 	  }
-		}		        
-	%>
-	
-	<% 
-		 boolean exitoBorrar = false;		        	
-		 if(request.getAttribute("exito") != null) {
-			   exitoBorrar = (boolean)request.getAttribute("exito");
-			        	
-			   if(exitoBorrar){
-	 %>
-		<div class="alert alert-success" role="alert">
-			¡Cliente, usuario y sus cuentas relacionadas eliminados!
-		</div>
-
-	<% 	  }
-		}		        
-	%>
+	</nav>	
 	
 
 	<div class="container text-center flex-grow-1">
@@ -121,6 +91,55 @@
 						class="bi bi-plus me-1"></i> Registrar Cliente y Usuario
 					</a>
 				</div>
+				
+				<div>
+						<% 
+							 boolean errorBorrar = false;		        	
+							 if(request.getAttribute("error") != null) {
+								    errorBorrar = (boolean)request.getAttribute("error");
+								        	
+								    if(errorBorrar){
+						 %>
+							<div class="alert alert-danger" role="alert">
+								¡No se pudo eliminar el cliente, usuario ni sus cuentas relacionadas!
+							</div>
+					
+						<% 	  }
+							}		        
+						%>
+						
+						<% 
+							 boolean exitoBorrar = false;		        	
+							 if(request.getAttribute("exito") != null) {
+								   exitoBorrar = (boolean)request.getAttribute("exito");
+								        	
+								   if(exitoBorrar){
+						 %>
+							<div class="alert alert-success" role="alert">
+								¡Cliente, usuario y sus cuentas relacionadas eliminados!
+							</div>
+					
+						<% 	  }
+							}		        
+						%>	
+						
+						<% 
+							 boolean exitoModificado = false;		        	
+							 if(request.getAttribute("exitoModificado") != null) {
+								   exitoModificado = (boolean)request.getAttribute("exitoModificado");
+								        	
+								   if(exitoModificado){
+						 %>
+							<div class="alert alert-success" role="alert">
+								¡Cliente modificado con éxito!
+							</div>
+					
+						<% 	  }
+							}		        
+						%>	
+						
+									
+				</div>				
 
 				<div class="card shadow">
 					<div class="card-header bg-primary text-white">

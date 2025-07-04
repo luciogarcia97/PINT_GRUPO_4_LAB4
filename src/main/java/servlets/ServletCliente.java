@@ -266,8 +266,9 @@ public class ServletCliente extends HttpServlet {
             if (clienteNegocio.modificarCliente(c)) {			 
 				
 				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
-				request.setAttribute("listaClientes", listaClientes);		    
-			   
+				request.setAttribute("listaClientes", listaClientes);			   
+					
+				request.setAttribute("exitoModificado", true);
 			    RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
 			    rd.forward(request, response);
 			} 			
