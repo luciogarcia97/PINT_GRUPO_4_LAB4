@@ -1,8 +1,9 @@
 package servlets;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -11,20 +12,20 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import entidades.Cuenta;
 import entidades.Movimiento;
 import entidades.Usuario;
-import negocioImpl.MovimientoNegocioImpl;
+import negocio.CuentaNegocio;
+import negocio.MovimientoNegocio;
 import negocioImpl.CuentaNegocioImpl;
+import negocioImpl.MovimientoNegocioImpl;
 
 @WebServlet("/ServletMovimiento")
 public class ServletMovimiento extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    
-    private MovimientoNegocioImpl movimientoNegocio;
-    private CuentaNegocioImpl cuentaNegocio;
+    private MovimientoNegocio movimientoNegocio;
+    private CuentaNegocio cuentaNegocio;
     
     public ServletMovimiento() {
         super();
@@ -35,108 +36,114 @@ public class ServletMovimiento extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        HttpSession session = request.getSession();
-        Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
-        
-        if (usuario == null) {
-            response.sendRedirect("index.jsp");
-            return;
-        }
-        
-        if (request.getParameter("consultar") != null) {
-            consultarMovimientos(request, response, usuario);
-            return;
-        }
-        
-        try {
-            List<Cuenta> cuentasCliente = cuentaNegocio.obtenerCuentasPorCliente(usuario.getId_cliente());
-            request.setAttribute("cuentasCliente", cuentasCliente);
+        if (request.getParameter("listar") != null) {
+        	// Valido que el usuario este logueado
+            Usuario usuario = (Usuario) request.getSession().getAttribute("usuarioLogueado");
+            if (usuario == null) {
+                response.sendRedirect("index.jsp");
+                return;
+            }
             
-            RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
-            rd.forward(request, response);
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            request.setAttribute("error", "Error al cargar las cuentas: " + e.getMessage());
-            RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
-            rd.forward(request, response);
+            try {
+                int idCuenta = Integer.parseInt(request.getParameter("idCuenta"));
+                
+                
+                List<Movimiento> listaMovimientos = movimientoNegocio.obtenerMovimientosPorCuenta(idCuenta);
+                                
+                List<Cuenta> cuentas = cuentaNegocio.obtenerCuentasPorCliente(usuario.getId_cliente());
+                
+                request.setAttribute("listaMovimientos", listaMovimientos);
+                request.setAttribute("cuentas", cuentas);
+                request.setAttribute("cuentaSeleccionada", idCuenta);
+                request.setAttribute("mostrarSeccionMovimientos", true); // Esto lo declaro para que el jso sepa que viene de movimientos.
+                
+                RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
+                rd.forward(request, response);
+                
+            } catch (NumberFormatException e) {
+                request.setAttribute("error", "ID de cuenta inválido.");
+                RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
+                rd.forward(request, response);
+            }
         }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        HttpSession session = request.getSession();
-        Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
-        
+        // Validar usuario logueado
+        Usuario usuario = (Usuario) request.getSession().getAttribute("usuarioLogueado");
         if (usuario == null) {
-            response.sendRedirect("Login.jsp");
+            response.sendRedirect("index.jsp");
             return;
         }
-    }
-    
-    private void cargarCuentasCliente(HttpServletRequest request, HttpServletResponse response, Usuario usuario) throws ServletException, IOException {
         
-        try {
-            System.out.println("Cargando cuentas para cliente ID: " + usuario.getId_cliente());
-            
-            List<Cuenta> cuentasCliente = cuentaNegocio.obtenerCuentasPorCliente(usuario.getId_cliente());
-            
-            System.out.println("Cuentas encontradas: " + (cuentasCliente != null ? cuentasCliente.size() : 0));
-            
-            request.setAttribute("cuentasCliente", cuentasCliente);
-            
-            RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
-            rd.forward(request, response);
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            request.setAttribute("error", "Error al cargar las cuentas: " + e.getMessage());
-            RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
-            rd.forward(request, response);
+        if (request.getParameter("btnFiltrarFechas") != null) {
+            filtrarPorFechas(request, response, usuario);
+        }
+        
+        if (request.getParameter("btnFiltrarTipo") != null) {
+            filtrarPorTipo(request, response, usuario);
         }
     }
     
-    private void consultarMovimientos(HttpServletRequest request, HttpServletResponse response, Usuario usuario) throws ServletException, IOException {
+    private void filtrarPorFechas(HttpServletRequest request, HttpServletResponse response, Usuario usuario) 
+            throws ServletException, IOException {
         
         try {
             int idCuenta = Integer.parseInt(request.getParameter("idCuenta"));
+            String fechaDesdeStr = request.getParameter("fechaDesde");
+            String fechaHastaStr = request.getParameter("fechaHasta");
             
-            Cuenta cuenta = cuentaNegocio.buscarPorID(idCuenta);
-            if (cuenta == null || !cuenta.isActiva()) {
-                request.setAttribute("error", "La cuenta seleccionada no existe o está inactiva.");
-                RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
-                rd.forward(request, response);
-                return;
-            }
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date fechaDesde = new Date(sdf.parse(fechaDesdeStr).getTime());
+            Date fechaHasta = new Date(sdf.parse(fechaHastaStr).getTime());
             
-            if (cuenta.getIdCliente() != usuario.getId_cliente()) {
-                request.setAttribute("error", "No tiene permisos para consultar esta cuenta.");
-                RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
-                rd.forward(request, response);
-                return;
-            }
+            List<Movimiento> listaMovimientos = movimientoNegocio.obtenerMovimientosPorCuentaYFechas(
+                idCuenta, fechaDesde.toLocalDate(), fechaHasta.toLocalDate());
             
-            List<Movimiento> movimientos = movimientoNegocio.obtenerMovimientosPorCuenta(idCuenta);
-            List<Cuenta> cuentasCliente = cuentaNegocio.obtenerCuentasPorCliente(usuario.getId_cliente());
+            List<Cuenta> cuentas = cuentaNegocio.obtenerCuentasPorCliente(usuario.getId_cliente());
             
-            request.setAttribute("movimientos", movimientos);
-            request.setAttribute("cuentasCliente", cuentasCliente);
-            request.setAttribute("cuentaSeleccionada", cuenta);
+            request.setAttribute("listaMovimientos", listaMovimientos);
+            request.setAttribute("cuentas", cuentas);
+            request.setAttribute("cuentaSeleccionada", idCuenta);
+            request.setAttribute("fechaDesde", fechaDesdeStr);
+            request.setAttribute("fechaHasta", fechaHastaStr);
             
             RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
             rd.forward(request, response);
             
-        } catch (NumberFormatException e) {
-            request.setAttribute("error", "ID de cuenta inválido.");
-            RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
-            rd.forward(request, response);
         } catch (Exception e) {
-            e.printStackTrace();
-            request.setAttribute("error", "Error interno del sistema.");
+            request.setAttribute("error", "Error al filtrar por fechas: " + e.getMessage());
             RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
             rd.forward(request, response);
         }
     }
     
+    private void filtrarPorTipo(HttpServletRequest request, HttpServletResponse response, Usuario usuario) 
+            throws ServletException, IOException {
+        
+        try {
+            int idCuenta = Integer.parseInt(request.getParameter("idCuenta"));
+            int idTipoMovimiento = Integer.parseInt(request.getParameter("idTipoMovimiento"));
+            
+            List<Movimiento> listaMovimientos = movimientoNegocio.obtenerMovimientosPorCuentaYTipo(
+                idCuenta, idTipoMovimiento);
+            
+            List<Cuenta> cuentas = cuentaNegocio.obtenerCuentasPorCliente(usuario.getId_cliente());
+            
+            request.setAttribute("listaMovimientos", listaMovimientos);
+            request.setAttribute("cuentas", cuentas);
+            request.setAttribute("cuentaSeleccionada", idCuenta);
+            request.setAttribute("tipoSeleccionado", idTipoMovimiento);
+            
+            RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
+            rd.forward(request, response);
+            
+        } catch (Exception e) {
+            request.setAttribute("error", "Error al filtrar por tipo: " + e.getMessage());
+            RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
+            rd.forward(request, response);
+        }
+    }
 }
