@@ -209,6 +209,18 @@ public class ServletCliente extends HttpServlet {
 			
 			clienteModificar = clienteNegocio.BuscarPorID(c.getIdCliente());
 			
+			//validar si ya esta eliminado no puedo modificar			
+			if(clienteNegocio.verificoClienteEliminado(Integer.parseInt(request.getParameter("idCliente")))) {
+				
+				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
+				request.setAttribute("listaClientes", listaClientes);
+				
+				request.setAttribute("errorModificar", true);				
+				RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
+				rd.forward(request, response);	
+				return;									
+			}			
+			
 			try {				
 				
 				Validaciones.verificarDniInvalido(request.getParameter("txtDni"));				

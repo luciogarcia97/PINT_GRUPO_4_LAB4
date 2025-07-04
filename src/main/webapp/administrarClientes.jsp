@@ -109,6 +109,21 @@
 						%>
 						
 						<% 
+							 boolean errorModificar = false;		        	
+							 if(request.getAttribute("errorModificar") != null) {
+								    errorModificar = (boolean)request.getAttribute("errorModificar");
+								        	
+								    if(errorModificar){
+						 %>
+							<div class="alert alert-danger" role="alert">
+								¡No se puede modificar un cliente que ya está eliminado¡
+							</div>
+					
+						<% 	  }
+							}		        
+						%>						
+						
+						<% 
 							 boolean exitoBorrar = false;		        	
 							 if(request.getAttribute("exito") != null) {
 								   exitoBorrar = (boolean)request.getAttribute("exito");
