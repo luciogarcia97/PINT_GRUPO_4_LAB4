@@ -52,6 +52,39 @@
 
 		</div>
 	</nav>
+	
+	<% 
+		 boolean errorBorrar = false;		        	
+		 if(request.getAttribute("error") != null) {
+			    errorBorrar = (boolean)request.getAttribute("error");
+			        	
+			    if(errorBorrar){
+	 %>
+		<div class="alert alert-danger" role="alert">
+			¡No se pudo eliminar el cliente, usuario ni sus cuentas relacionadas!
+		</div>
+
+	<% 	  }
+		}		        
+	%>
+	
+	<% 
+		 boolean exitoBorrar = false;		        	
+		 if(request.getAttribute("exito") != null) {
+			   exitoBorrar = (boolean)request.getAttribute("exito");
+			        	
+			   if(exitoBorrar){
+	 %>
+		<div class="alert alert-success" role="alert">
+			¡Cliente, usuario y sus cuentas relacionadas eliminados!
+		</div>
+
+	<% 	  }
+		}		        
+	%>
+	
+	
+	
 
 	<div class="container text-center flex-grow-1">
 		<div class="row">
@@ -147,7 +180,8 @@
 													class="d-inline">
 													<input type="hidden" name="idCliente"
 														value="<%= c.getIdCliente() %>" />														
-													<button type="submit" class="btn btn-sm btn-outline-danger"
+													<button type="submit" class="btn btn-sm btn-outline-danger" 
+														onclick="return confirm('¿Estás seguro que deseas eliminar este cliente?')"
 														title="Eliminar Cliente" name="btnEliminarCliente">
 														<i class="bi bi-trash"></i>
 													</button>

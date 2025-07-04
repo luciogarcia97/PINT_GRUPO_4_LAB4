@@ -26,21 +26,38 @@ public class ClienteNegociolmpl implements ClienteNegocio {
 	@Override
 	public boolean eliminarCliente(int idCliente) {
 	
-		boolean fila = clienteDao.eliminarCliente(idCliente);
+		return clienteDao.eliminarCliente(idCliente);		
 		
-		return fila;
+	}
+	
+	@Override
+	public boolean eliminarUsuario(int idUsuario, int idCliente) {
+		
+		return clienteDao.eliminarUsuario(idUsuario, idCliente);
+	}
+
+	@Override
+	public boolean eliminarCuentasUsuario(int idCliente) {
+		
+		return clienteDao.eliminarCuentasUsuario(idCliente);
+	}
+	
+	@Override
+	public int buscarPorIDCliente(int id) {
+		
+		return clienteDao.buscarPorIDCliente(id);
 	}
     
 	@Override
 	public boolean modificarCliente(Cliente cliente) {
 
-		boolean fila = clienteDao.ModificarCliente(cliente);
+		return clienteDao.ModificarCliente(cliente);
 		
-		return fila;
 	}
 
 	@Override
 	public List<Cliente> obtenerClientes() {
+		
 		return clienteDao.obtenerClientes();
 	}
 	
@@ -58,15 +75,14 @@ public class ClienteNegociolmpl implements ClienteNegocio {
 	}
 	
 	@Override
-	public boolean existeCuil(String cuil)
-	{
+	public boolean existeCuil(String cuil) {
+	
 		return clienteDao.existeCuil(cuil);
-	}
-    
+	}    
 	
 	@Override
-    public boolean existeDni(int dni)
-    {
+    public boolean existeDni(int dni) {
+    
 		return clienteDao.existeDni(dni);
     }
 
@@ -76,12 +92,11 @@ public class ClienteNegociolmpl implements ClienteNegocio {
 		return clienteDao.listarProvincias();
 	}
 
+	@Override
 	public List<Localidad> listarLocalidades() {
 		
 		return clienteDao.listarLocalidades();
-	}
-
-	
+	}			
     
 }
 	

@@ -21,6 +21,13 @@
                     <%= request.getAttribute("error") %>
                 </div>
             <% } %>
+            
+            <% if (request.getAttribute("exito") != null) { %>
+			    <div class="alert alert-success" role="alert">
+			        <%= request.getAttribute("exito") %>
+			    </div>
+			<% } %>        
+            
 
             <div class="row">
                 <div class="center row">

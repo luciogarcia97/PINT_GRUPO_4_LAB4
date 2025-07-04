@@ -152,6 +152,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
 		Connection conexion = Conexion.getConexion().getSQLConexion();
 		boolean resultado = false;
 		
+		//MAL NO SE DEBE HACER ESTO 
 		ClienteNegociolmpl clienteNegocio = new ClienteNegociolmpl();
 		CuentaNegocioImpl cuentaNegocio = new CuentaNegocioImpl(); 
 		

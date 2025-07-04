@@ -21,7 +21,7 @@ import negocioImpl.ClienteNegociolmpl;
 @WebServlet("/ServletUsuario")
 public class ServletUsuario extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private UsuarioNegocioImpl usuarioNegocio;
+	private UsuarioNegocio usuarioNegocio;
 	
 
 	public ServletUsuario() {

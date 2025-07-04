@@ -208,6 +208,69 @@ public class ClienteDaolmpl implements ClienteDao {
 
 		return listaClientes;
 	}
+	
+	@Override
+	public boolean eliminarUsuario(int idUsuario, int idCliente) {
+		PreparedStatement pst = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+		boolean resultado = false;
+		
+		try {
+			String query = "UPDATE usuario SET eliminado = 1 WHERE id_usuario = ?";
+			pst = conexion.prepareStatement(query);
+			pst.setInt(1, idUsuario);
+			
+			if (pst.executeUpdate() > 0) { 
+				conexion.commit();
+				resultado = true;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pst != null)
+				pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if(eliminarCliente(idCliente) && eliminarCuentasUsuario(idCliente) && resultado) {
+			return true;
+		} else {
+			return false;
+		}	
+			
+	}
+	
+	@Override
+	public boolean eliminarCuentasUsuario(int idCliente) {
+		PreparedStatement pst = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+		boolean resultado = true;
+		
+		try {
+			String query = "UPDATE cuenta SET activa = 0 WHERE id_cliente = ?";
+			pst = conexion.prepareStatement(query);
+			pst.setInt(1, idCliente);
+			
+			pst.executeUpdate();
+			conexion.commit();			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			resultado = false; 
+		} finally {
+			try {
+				if (pst != null)
+				pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}	
+		return resultado;	
+	}	
 
 	@Override
 	public boolean eliminarCliente(int idCliente) {
@@ -275,6 +338,38 @@ public class ClienteDaolmpl implements ClienteDao {
 		}
 		return existe;
 	}
+	
+	@Override
+	public int buscarPorIDCliente(int id) {
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		Connection conexion = Conexion.getConexion().getSQLConexion();
+		int resultado = -1;
+
+		try {
+			String query = "SELECT id_usuario FROM usuario WHERE id_cliente = ?";
+			pst = conexion.prepareStatement(query);
+			pst.setInt(1, id);
+			rs = pst.executeQuery();
+
+			if (rs.next()) {
+				resultado = rs.getInt("id_usuario");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pst != null)
+					pst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return resultado;
+	}	
 
 	@Override
 	public boolean existeDni(int dni) {
