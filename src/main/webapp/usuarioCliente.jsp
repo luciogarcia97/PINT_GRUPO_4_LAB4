@@ -37,6 +37,27 @@
 
 <body style="background-color: rgb(104, 109, 250);">
 
+   <%
+Boolean resultado = (Boolean) request.getAttribute("resultado");
+if (resultado != null) {
+if (resultado) {
+%>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+<strong>¡Éxito!</strong> Pago registrado con éxito.
+<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<%
+} else {
+%>
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+<strong>Error!</strong> No se pudo procesar el pago. Intente nuevamente.
+<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<%
+}
+}
+%>
+
 <nav class="navbar navbar-light bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">
@@ -57,6 +78,7 @@
 </nav>
 
 <div class="container mt-4">
+
     <% 
     String error = (String) request.getAttribute("error");
     if (error != null && !error.isEmpty()) {
@@ -225,10 +247,10 @@
 
     <div id="pagoPrestamos" class="panel">
         <h4>Pago de prestamos</h4>
-        <form>
+        <form method="post" action="ServletPrestamo">
             <div class="mb-3">
                 <label for="cuotaSeleccion" class="form-label">Seleccione Cuota</label>
-                <select class="form-select" id="cuotaSeleccion">
+                <select class="form-select" id="cuotaSeleccion" name="cuotaSeleccion">
 					<% 
                     if (request.getAttribute("cuotas") != null) {
                     	List<PrestamoCuota> cuotas = (List<PrestamoCuota>)request.getAttribute("cuotas");
@@ -236,7 +258,7 @@
                     	
                    
                     %>
-                        <option value="<%= cuota.getNumCuota() %>"><%= cuota.getMonto() %> - fecha de vencimiento -<%=  cuota.getFechaVencimiento() %></option>
+                        <option value="<%= cuota.getIdCuota() %>|<%= cuota.getMonto() %>"><%= cuota.getMonto() %> - fecha de vencimiento -<%=  cuota.getFechaVencimiento() %></option>
                     <%
                     	}
                     }
@@ -246,7 +268,7 @@
             </div>
             <div class="mb-3">
                 <label for="cuentaPago" class="form-label">Cuenta de Pago</label>
-                <select class="form-select" id="cuentaPago">
+                <select class="form-select" id="cuentaPago" name="cuentaPago">
                     <% 
                     if (cuentas != null) {
                         for (Cuenta cuenta : cuentas) {
@@ -258,10 +280,10 @@
                     %>
                 </select>
             </div>
-            <button type="submit" class="btn btn-success">Pagar Cuota</button>
+            <button type="submit" class="btn btn-success" name="btnPagarCuota">Pagar Cuota</button>
         </form>
     </div>
-
+			
     <div id="datos" style="background-color: rgb(104, 109, 250)" class="panel">
 	    <div id="datosPersonales" class="mt-3 container bg-white p-4 rounded">
 	        <h4 class="mb-3">Datos Personales</h4>
@@ -330,7 +352,6 @@
     </div>
     
 </div>
-
 <script>
 	//Mostrar automaticamente la seccion de movimientos si viene del ServletMovimiento
 	<% if (request.getAttribute("mostrarSeccionMovimientos") != null) { %>
