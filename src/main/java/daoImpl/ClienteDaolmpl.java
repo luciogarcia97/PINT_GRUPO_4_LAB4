@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mysql.jdbc.CallableStatement;
+
 import dao.Conexion;
 import dao.ClienteDao;
 import entidades.Cliente;
@@ -209,99 +211,36 @@ public class ClienteDaolmpl implements ClienteDao {
 
 		return listaClientes;
 	}
-
+	
 	@Override
-	public boolean eliminarUsuario(int idUsuario, int idCliente) {
-		PreparedStatement pst = null;
-		Connection conexion = Conexion.getConexion().getSQLConexion();
-		boolean resultado = false;
+	public boolean eliminarClienteUsuarioCuentas(int idUsuario, int idCliente) {
+	    CallableStatement cst = null;
+	    Connection conexion = Conexion.getConexion().getSQLConexion();
+	    boolean resultado = false;
 
-		try {
-			String query = "UPDATE usuario SET eliminado = 1 WHERE id_usuario = ?";
-			pst = conexion.prepareStatement(query);
-			pst.setInt(1, idUsuario);
+	    try {
+	        String call = "{CALL eliminar_usuario_completo(?, ?)}";
+	        cst = (CallableStatement) conexion.prepareCall(call);
+	        cst.setInt(1, idUsuario);
+	        cst.setInt(2, idCliente);
 
-			if (pst.executeUpdate() > 0) {
-				conexion.commit();
-				resultado = true;
-			}
+	        cst.execute();
+	        resultado = true;
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (pst != null)
-					pst.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (cst != null)
+	                cst.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
 
-		if (eliminarCliente(idCliente) && eliminarCuentasUsuario(idCliente) && resultado) {
-			return true;
-		} else {
-			return false;
-		}
-
-	}
-
-	@Override
-	public boolean eliminarCuentasUsuario(int idCliente) {
-		PreparedStatement pst = null;
-		Connection conexion = Conexion.getConexion().getSQLConexion();
-		boolean resultado = true;
-
-		try {
-			String query = "UPDATE cuenta SET activa = 0 WHERE id_cliente = ?";
-			pst = conexion.prepareStatement(query);
-			pst.setInt(1, idCliente);
-
-			pst.executeUpdate();
-			conexion.commit();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			resultado = false;
-		} finally {
-			try {
-				if (pst != null)
-					pst.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return resultado;
-	}
-
-	@Override
-	public boolean eliminarCliente(int idCliente) {
-		PreparedStatement pst = null;
-		Connection conexion = Conexion.getConexion().getSQLConexion();
-		boolean resultado = false;
-
-		try {
-			String query = "UPDATE cliente SET eliminado = 1 WHERE id_cliente = ?";
-			pst = conexion.prepareStatement(query);
-			pst.setInt(1, idCliente);
-
-			if (pst.executeUpdate() > 0) {
-				conexion.commit();
-				resultado = true;
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (pst != null)
-					pst.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return resultado;
-	}
+	    return resultado;
+	}	
+	
 
 	@Override
 	public boolean verificoClienteEliminado(int idCliente) {

@@ -13,9 +13,7 @@ public class Conexion {
         	
             Class.forName("com.mysql.jdbc.Driver");
             this.connection = DriverManager.getConnection(
-            		"jdbc:mysql://localhost:3306/banco_db?useSSL=false", 
-            	    "root", 
-            	    "root");
+            		"jdbc:mysql://localhost:3306/banco_db?useSSL=false","facultad","Facultad2025!");
             
             this.connection.setAutoCommit(false);
         } catch(Exception e) {

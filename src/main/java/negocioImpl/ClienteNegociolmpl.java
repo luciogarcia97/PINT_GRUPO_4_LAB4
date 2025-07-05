@@ -21,25 +21,14 @@ public class ClienteNegociolmpl implements ClienteNegocio {
 	public int insertarCliente(Cliente cliente) {
 		
 		return clienteDao.insertarCliente(cliente);	
+	}	  
+	
+	
+	@Override
+	public boolean eliminarClienteUsuarioCuentas(int idUsuario, int idCliente) {
+		
+		return clienteDao.eliminarClienteUsuarioCuentas(idUsuario, idCliente);
 	}	
-    
-	@Override
-	public boolean eliminarCliente(int idCliente) {
-	
-		return clienteDao.eliminarCliente(idCliente);			
-	}
-	
-	@Override
-	public boolean eliminarUsuario(int idUsuario, int idCliente) {
-		
-		return clienteDao.eliminarUsuario(idUsuario, idCliente);
-	}
-
-	@Override
-	public boolean eliminarCuentasUsuario(int idCliente) {
-		
-		return clienteDao.eliminarCuentasUsuario(idCliente);
-	}
 	
 	@Override
 	public int buscarPorIDCliente(int id) {

@@ -13,13 +13,11 @@ public interface UsuarioNegocio {
     	    
     public boolean modificarUsuario(Usuario usuario);
     
-    public boolean eliminarUsuario(int idUsuario, int idCliente);
+    public boolean eliminarClienteUsuarioCuentas(int idUsuario, int idCliente);
     
     public int buscarPorIDUsuario(int idCliente);
     
-    public boolean existeNombreUsuario(String nombre, int idUsuario);
-
-    //public Usuario buscarPorNombre(String nombre,int id);
+    public boolean existeNombreUsuario(String nombre, int idUsuario);    
     
     public Usuario buscarPorIdCliente(int idCliente);
 }

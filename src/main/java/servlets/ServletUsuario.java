@@ -94,7 +94,7 @@ public class ServletUsuario extends HttpServlet {
 			int idEliminar = Integer.parseInt(request.getParameter("idEliminar"));			
 			int idCliente = Integer.parseInt(request.getParameter("idCliente"));
 			
-			if (usuarioNegocio.eliminarUsuario(idEliminar, idCliente)) {			 
+			if (usuarioNegocio.eliminarClienteUsuarioCuentas(idEliminar, idCliente)) {			 
 							
 				List<Usuario> listaUsuarios = usuarioNegocio.obtenerUsuarios();
 				request.setAttribute("listaUsuarios", listaUsuarios);		    

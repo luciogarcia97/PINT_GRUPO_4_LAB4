@@ -14,13 +14,9 @@ public interface ClienteDao {
 
     public boolean ModificarCliente(Cliente cliente);
 	
-    public List<Cliente> obtenerClientes();
+    public List<Cliente> obtenerClientes();    
     
-    public boolean eliminarCliente(int idCliente);
-    
-    public boolean eliminarUsuario(int idUsuario, int idCliente);
-    
-    public boolean eliminarCuentasUsuario(int idCliente);
+    public boolean eliminarClienteUsuarioCuentas(int idUsuario, int idCliente);    
     
     public int buscarPorIDCliente(int id);
     

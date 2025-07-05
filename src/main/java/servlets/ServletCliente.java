@@ -304,7 +304,7 @@ public class ServletCliente extends HttpServlet {
 				return;									
 			}
 			
-			if (clienteNegocio.eliminarUsuario(idUsuario, idCliente)) {			 
+			if (clienteNegocio.eliminarClienteUsuarioCuentas(idUsuario, idCliente)) {			 
 							
 				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
 				request.setAttribute("listaClientes", listaClientes);		    

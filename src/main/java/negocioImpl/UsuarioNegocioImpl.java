@@ -43,14 +43,9 @@ public class UsuarioNegocioImpl implements UsuarioNegocio {
 	}
 	
 	@Override
-	public boolean eliminarUsuario(int idUsuario, int idCliente) {		
+	public boolean eliminarClienteUsuarioCuentas(int idUsuario, int idCliente) {		
 		
-		if(clienteDao.eliminarCliente(idCliente) && clienteDao.eliminarUsuario(idUsuario, idCliente) 
-		   && clienteDao.eliminarCuentasUsuario(idCliente)) {
-			
-			return true;
-		}		
-		return false;
+		return  clienteDao.eliminarClienteUsuarioCuentas(idUsuario, idCliente);		
 	}
 	
 	@Override

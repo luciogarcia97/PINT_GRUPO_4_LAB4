@@ -312,3 +312,29 @@ END //
 -- Restaurar el delimitador original
 DELIMITER ;
 
+
+--procedimiento almacenado elimina cliente, usuario y cuentas
+DELIMITER $$
+CREATE PROCEDURE eliminar_usuario_completo ( IN p_idUsuario INT, IN p_idCliente INT )
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
+    START TRANSACTION;    
+    UPDATE usuario SET eliminado = 1 WHERE id_usuario = p_idUsuario;
+   
+    UPDATE cliente  SET eliminado = 1 WHERE id_cliente = p_idCliente;
+   
+    UPDATE cuenta SET activa = 0 WHERE id_cliente = p_idCliente;
+    
+    COMMIT;
+END$$
+DELIMITER ;
+
+
+
+
+
+
+
