@@ -23,6 +23,7 @@ public interface PrestamoNegocio {
 	
 	Prestamo obtenerPrestamoIDCuenta(int idCliente);
 
-	
+	boolean pagarCuota(int idCuota,int idCuenta,double monto);
+
 	
 }

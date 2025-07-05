@@ -136,5 +136,22 @@ public class ServletPrestamo extends HttpServlet {
 				rd.forward(request, response);
 			}	
 		}
+		if(request.getParameter("btnPagarCuota") != null) {
+			boolean resultado = false;
+			 int idCuenta = Integer.parseInt(request.getParameter("cuentaPago"));
+			  String datosCuota = request.getParameter("cuotaSeleccion");
+		        String[] datosCuotaArray = datosCuota.split("\\|");
+		        int idCuota = Integer.parseInt(datosCuotaArray[0]);
+		        double monto = Double.parseDouble(datosCuotaArray[1]);
+		     
+		     resultado = prestamoNegocio.pagarCuota(idCuota, idCuenta, monto);
+		     
+		     request.setAttribute("resultado", resultado);
+				RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
+				rd.forward(request, response);
+		     
+		     
+		       
+		}
 	}
 }

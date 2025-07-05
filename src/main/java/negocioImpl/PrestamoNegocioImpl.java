@@ -84,5 +84,14 @@ public class PrestamoNegocioImpl implements PrestamoNegocio {
 
 
 
+
+		@Override
+		public boolean pagarCuota(int idCuota, int idCuenta, double monto) {
+			
+			return prestamoDao.pagarCuota(idCuota, idCuenta, monto);
+		}
+
+
+
 	
 }

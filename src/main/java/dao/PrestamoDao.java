@@ -25,6 +25,8 @@ public interface PrestamoDao {
 	List<PrestamoCuota> obtenerCuotas(int idPrestamo);
 	
 	Prestamo obtenerPrestamoIDCuenta(int idCliente);
+	
+	boolean pagarCuota(int idCuota,int idCuenta,double monto);
 
 
 
