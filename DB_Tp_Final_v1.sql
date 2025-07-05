@@ -256,3 +256,59 @@ drop foreign key  `fk_movimiento_cuenta_destino` ;
 
 ALTER TABLE movimiento
 DROP COLUMN id_cuenta_destino;
+
+--sp pago cuota prestamo
+DELIMITER //
+
+CREATE PROCEDURE sp_pagar_cuota(
+    IN p_id_cuota INT,
+    IN p_id_cuenta INT,
+    IN p_monto DECIMAL(10,2)
+)
+BEGIN
+    DECLARE v_saldo_actual DECIMAL(10,2);
+    DECLARE v_cuota_pendiente DECIMAL(10,2);
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
+    
+    -- Iniciar transacción
+    START TRANSACTION;
+    
+    -- Obtener saldo actual de la cuenta
+    SELECT saldo INTO v_saldo_actual 
+    FROM cuenta 
+    WHERE id_cuenta = p_id_cuenta;
+    
+    -- Obtener monto de la cuota
+    SELECT monto INTO v_cuota_pendiente 
+    FROM prestamo_cuota 
+    WHERE id_prestamo_cuota = p_id_cuota AND pagada = 0;
+    
+    -- Verificar si hay suficiente saldo
+    IF v_saldo_actual >= p_monto THEN
+        -- Actualizar saldo de la cuenta
+        UPDATE cuenta 
+        SET saldo = saldo - p_monto 
+        WHERE id_cuenta = p_id_cuenta;
+        
+        -- Marcar cuota como pagada
+        UPDATE prestamo_cuota 
+        SET pagada = 1, 
+            fecha_pago = curdate() 
+        WHERE id_prestamo_cuota = p_id_cuota;
+        
+        COMMIT;
+        SELECT 'Pago realizado exitosamente' AS mensaje;
+    ELSE
+        ROLLBACK;
+        SELECT 'Saldo insuficiente' AS mensaje;
+    END IF;
+    
+END //
+
+-- Restaurar el delimitador original
+DELIMITER ;
+
