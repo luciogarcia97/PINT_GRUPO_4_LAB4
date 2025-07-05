@@ -36,6 +36,7 @@
 </head>
 
 <body style="background-color: rgb(104, 109, 250);">
+pago_cuotas_prestamo2
 
    <%
 Boolean resultado = (Boolean) request.getAttribute("resultado");
@@ -58,6 +59,23 @@ if (resultado) {
 }
 %>
 
+
+	<%
+	
+	int saldoInsuficiente = 0;
+	
+	if(request.getAttribute("saldo") != null)
+    {
+		saldoInsuficiente = Integer.parseInt(request.getAttribute("saldo").toString());
+    }
+	
+	int cbuInexistente = 0;
+	
+	if(request.getAttribute("cbu") != null)
+    {
+		cbuInexistente = Integer.parseInt(request.getAttribute("cbu").toString());
+    }
+	%> desarrollo
 <nav class="navbar navbar-light bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">
@@ -161,6 +179,29 @@ if (resultado) {
     
     <div id="transferencias" class="panel">
         <h4>Transferencias</h4>
+        
+        	<%
+			if(saldoInsuficiente != 0){
+		    %>
+		    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        		<strong>Error:</strong> No tenés saldo suficiente para realizar la transferencia.
+        		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    		</div>
+		    <%
+		    }
+		    %>
+		    
+		    <%
+			if(cbuInexistente != 0){
+		    %>
+		    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        		<strong>Error:</strong> El CBU ingresado es inexistente.
+        		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    		</div>
+		    <%
+		    }
+		    %>
+        
         <form action="ServletTransferencia" method="post">
             <div class="mb-3">
                 <label for="cuentaOrigen" class="form-label">Cuenta Origen</label>
@@ -175,7 +216,7 @@ if (resultado) {
             </div>
             <div class="mb-3">
                 <label for="cbuDestino" class="form-label">CBU Destino</label>
-                <input type="text" class="form-control" name="txtCbu" id="cbuDestino" placeholder="Ingrese CBU">
+                <input type="number" class="form-control" name="txtCbu" id="cbuDestino" placeholder="Ingrese CBU">
             </div>
             <div class="mb-3">
                 <label for="montoTransferencia" class="form-label">Monto</label>

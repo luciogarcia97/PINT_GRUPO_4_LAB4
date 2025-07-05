@@ -16,8 +16,10 @@ public interface UsuarioNegocio {
     public boolean eliminarUsuario(int idUsuario, int idCliente);
     
     public int buscarPorIDUsuario(int idCliente);
+    
+    public boolean existeNombreUsuario(String nombre, int idUsuario);
 
-    public Usuario buscarPorNombre(String nombre,int id);
+    //public Usuario buscarPorNombre(String nombre,int id);
     
     public Usuario buscarPorIdCliente(int idCliente);
 }

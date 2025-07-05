@@ -32,8 +32,8 @@ public class ServletLogin extends HttpServlet {
 		
 		if(request.getParameter("btnLogin") != null) {			
 			
-			String usuario = request.getParameter("usuario");
-			String contrasena = request.getParameter("contrasena");
+			String usuario = request.getParameter("usuario").trim();
+			String contrasena = request.getParameter("contrasena").trim();
 			boolean loginExitoso = false;
 			
 			List<Usuario> lista = usuarioNegocio.obtenerUsuarios();				

@@ -24,43 +24,52 @@
     </head>
 <body>	
 
-	<%
-    String idUsuario = request.getParameter("idUsuario");
-    if (idUsuario == null) idUsuario = (String) request.getAttribute("id");
-
-    String idCliente = request.getParameter("idCliente");
-    if (idCliente == null) idCliente = (String) request.getAttribute("idCliente");
-
-    String fechaCreacion = request.getParameter("fechaCreacion");
-    if (fechaCreacion == null) fechaCreacion = (String) request.getAttribute("fechaCreacion");
-
-    String usuario = request.getParameter("usuario");
-    if (usuario == null) usuario = (String) request.getAttribute("usuario");
-%>
-
-
+		<%
+		    String idUsuario = request.getParameter("idUsuario");
+		    if (idUsuario == null) idUsuario = (String) request.getAttribute("id");
+		
+		    String idCliente = request.getParameter("idCliente");
+		    if (idCliente == null) idCliente = (String) request.getAttribute("idCliente");
+		
+		    String fechaCreacion = request.getParameter("fechaCreacion");
+		    if (fechaCreacion == null) fechaCreacion = (String) request.getAttribute("fechaCreacion");
+		
+		    String usuario = request.getParameter("usuario");
+		    if (usuario == null) usuario = (String) request.getAttribute("usuario");
+		    
+		    String tipoUsuario = request.getParameter("tipoUsuario");
+		    if(tipoUsuario == null) tipoUsuario = (String) request.getAttribute("tipoUsuario");
+		%>
 
      <form class="w-75 mx-auto mt-5" onsubmit="return validarContraseñas()" action="ServletUsuario" method="post">
      	<input type="hidden" name="idUsuario" value="<%= idUsuario %>">
      	<input type="hidden" name="idCliente" value="<%= idCliente %>">
 		<input type="hidden" name="fechaCreacion" value="<%= fechaCreacion %>">
+	    <input type="hidden" name="tipoUsuario" value="<%= tipoUsuario %>">
 	    <div class="inicio">
 	         
 	        <h2 class="text-center pt-2 pb-2"> Modificar usuario</h2>    
-<%
-    String errorNombre = (String) request.getAttribute("errorNombre");
-    if (errorNombre != null) {
-%>
-    <div class="alert alert-danger" role="alert">
-        <%= errorNombre %>
-    </div>
-<%
-    }
-%>
-			<div class="center row">
+			
+			
+			<div>
+				<%
+					Boolean errorNombre = (Boolean) request.getAttribute("errorNombre");
+					if (errorNombre != null && errorNombre) {
+					%>
+						<div class="alert alert-danger" role="alert">
+						     ¡Existe nombre de Usuario!
+						</div>
+				<%
+					}
+				%>
+						
+			
+			</div>
+			
+			<div class="center row">			
 	            <div class="mb-3">
 	                <label for="usuario" class="form-label">Usuario</label>
-	                <input type="text" class="form-control" id="usuario" placeholder="Usuario" name="txtNombre" value="<%= usuario %>" required>
+	                <input type="text" class="form-control" id="usuario" placeholder="Usuario" name="txtNombre" value="<%= (usuario != null) ? usuario : "" %>" required>
 	            </div>
 	            <div class="mb-3">
 	                <label for="clave" class="form-label">Contraseña</label>

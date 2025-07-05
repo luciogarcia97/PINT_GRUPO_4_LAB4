@@ -32,39 +32,11 @@
             	<button class="btn btn-outline-dark" type="submit" name="btnCerrar">Cerrar Sesión</button>
         	</form>       
         </div>
-    </nav>
-        
-    <% 
-		 boolean errorBorrar = false;		        	
-		 if(request.getAttribute("error") != null) {
-			    errorBorrar = (boolean)request.getAttribute("error");
-			        	
-			    if(errorBorrar){
-	 %>
-		<div class="alert alert-danger" role="alert">
-			¡No se pudo eliminar el cliente, usuario ni sus cuentas relacionadas!
-		</div>
+    </nav>        
+      
 
-	<% 	  }
-		}		        
-	%>
-	
-	<% 
-		 boolean exitoBorrar = false;		        	
-		 if(request.getAttribute("exito") != null) {
-			   exitoBorrar = (boolean)request.getAttribute("exito");
-			        	
-			   if(exitoBorrar){
-	 %>
-		<div class="alert alert-success" role="alert">
-			¡Usuario, cliente y sus cuentas relacionadas eliminados!
-		</div>
-
-	<% 	  }
-		}		        
-	%>    
-
-    <div class="container text-center flex-grow-1"> 
+    <div class="container text-center flex-grow-1">     
+    
         <div class="row">		                    
             
             <div class="col-2 d-flex flex-column align-items-center justify-content-start pt-4">
@@ -106,6 +78,55 @@
                         Administrar Usuarios
                     </h3>                   
                 </div>
+                
+                <div>
+                	<% 
+						 boolean exitoModificado = false;		        	
+						 if(request.getAttribute("exitoModificado") != null) {
+							exitoModificado = (boolean)request.getAttribute("exitoModificado");
+											        	
+							if(exitoModificado){
+					 %>
+						 <div class="alert alert-success" role="alert">
+							¡Usuario modificado con éxito!
+						 </div>
+								
+					<% 	  }
+						}		        
+					%>   
+					
+					<% 
+						 boolean errorBorrar = false;		        	
+						 if(request.getAttribute("error") != null) {
+							    errorBorrar = (boolean)request.getAttribute("error");
+							        	
+							    if(errorBorrar){
+					 %>
+						<div class="alert alert-danger" role="alert">
+							¡No se pudo eliminar el cliente, usuario ni sus cuentas relacionadas!
+						</div>
+				
+					<% 	  }
+						}		        
+					%>
+					
+					<% 
+						 boolean exitoBorrar = false;		        	
+						 if(request.getAttribute("exito") != null) {
+							   exitoBorrar = (boolean)request.getAttribute("exito");
+							        	
+							   if(exitoBorrar){
+					 %>
+						<div class="alert alert-success" role="alert">
+							¡Usuario, cliente y sus cuentas relacionadas eliminados!
+						</div>
+				
+					<% 	  }
+						}		        
+					%>    
+                
+                </div>               
+                              
                 
                 <div class="card shadow">
                     <div class="card-header bg-primary text-white">
@@ -150,7 +171,9 @@
                                         <td> <%= usuario.getFecha_creacion() %></td>                   
                                         <td>
                                             <div class="d-flex gap-1">                                            
-                                               <a href="modificarUsuario.jsp?idUsuario=<%= usuario.getId_usuario()%>&idCliente=<%= usuario.getId_cliente()%>&fechaCreacion=<%= usuario.getFecha_creacion()%>&usuario=<%= usuario.getUsuario()%>" 
+                                               <a href="modificarUsuario.jsp?idUsuario=<%= usuario.getId_usuario()%>&idCliente=<%= usuario.getId_cliente()%>
+                                               			&fechaCreacion=<%= usuario.getFecha_creacion()%>&usuario=<%= usuario.getUsuario()%>
+                                               			&tipoUsuario=<%= usuario.getTipo_usuario() %>" 
                                                class="btn btn-sm btn-outline-primary" title="Modificar Usuario">
                                                <i class="bi bi-pencil"></i>
                                                </a>
@@ -158,7 +181,8 @@
                                                 <form action="ServletUsuario?eliminar=1" method="post">
                                                 	<input type="hidden" name="idCliente" value="<%= usuario.getId_cliente()%>" />
                                                 	<input type="hidden" name="idEliminar" value="<%= usuario.getId_usuario()%>" />
-                                                	<button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar Usuario"
+                                                	<input type="hidden" name="tipoUsuario" value="<%= usuario.getTipo_usuario()%>" />
+                                                	<button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar Usuario" 
                                                 		onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?')">
                                                     	<i class="bi bi-trash"></i>
                                                 	</button>
