@@ -177,6 +177,7 @@ public class ServletCliente extends HttpServlet {
 				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
 				request.setAttribute("listaClientes", listaClientes);
 
+				request.setAttribute("clienteRegistrado", true);
 				RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
 				rd.forward(request, response);				
 					

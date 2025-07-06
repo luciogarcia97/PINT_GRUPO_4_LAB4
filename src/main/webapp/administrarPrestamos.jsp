@@ -161,7 +161,7 @@
         </div>
     </div>
 
-    <footer class="bg-light text-center text-muted py-3 mt-auto">
+    <footer class="bg-light text-center text-muted py-3 mt-5">
         <div class="container">
             <span>© 2025 Banco UTN – Todos los derechos reservados</span>
         </div>

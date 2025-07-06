@@ -153,6 +153,21 @@
 							}		        
 						%>	
 						
+						<% 
+							 boolean clienteRegistrado = false;		        	
+							 if(request.getAttribute("clienteRegistrado") != null) {
+								    clienteRegistrado = (boolean)request.getAttribute("clienteRegistrado");
+								        	
+								    if(clienteRegistrado){
+						 %>
+							<div class="alert alert-success" role="alert">
+								¡Cliente Registrado!
+							</div>
+					
+						<% 	  }
+							}		        
+						%>
+						
 									
 				</div>				
 
@@ -232,7 +247,7 @@
 		</div>
 	</div>
 
-	<footer class="bg-light text-center text-muted py-3 mt-auto">
+	<footer class="bg-light text-center text-muted py-3 mt-5">
 		<div class="container">
 			<span>© 2025 Banco UTN – Todos los derechos reservados</span>
 		</div>

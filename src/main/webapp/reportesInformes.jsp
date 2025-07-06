@@ -110,7 +110,7 @@
 							<div class="text-center">
 								<button type="submit" class="btn btn-success btn-lg"
 									name="btnReporte">
-									<i class="bi bi-download me-2"></i> Generar y Descargar Reporte
+									<i class="bi bi-file-earmark-text me-2"></i> Generar Reporte
 								</button>
 								<button type="button" name="btnLimpiar"
 									class="btn btn-outline-secondary btn-lg ms-2"
@@ -151,7 +151,7 @@
 		</div>
 	</div>
 
-	<footer class="bg-light text-center text-muted py-3 mt-auto">
+	<footer class="bg-light text-center text-muted py-3 mt-5">
 		<div class="container">
 			<span>© 2025 Banco UTN – Todos los derechos reservados</span>
 		</div>
