@@ -153,6 +153,21 @@
 							}		        
 						%>	
 						
+						<% 
+							 boolean clienteRegistrado = false;		        	
+							 if(request.getAttribute("clienteRegistrado") != null) {
+								    clienteRegistrado = (boolean)request.getAttribute("clienteRegistrado");
+								        	
+								    if(clienteRegistrado){
+						 %>
+							<div class="alert alert-success" role="alert">
+								¡Cliente Registrado!
+							</div>
+					
+						<% 	  }
+							}		        
+						%>
+						
 									
 				</div>				
 
