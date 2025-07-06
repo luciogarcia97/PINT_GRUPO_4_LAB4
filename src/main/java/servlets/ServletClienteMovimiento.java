@@ -81,23 +81,10 @@ public class ServletClienteMovimiento extends HttpServlet {
                 rd.forward(request, response);
             }              
         
-        } 
-        	
+        }        	
         	
         RequestDispatcher rd = request.getRequestDispatcher("/usuarioClienteMovimientos.jsp");
-        rd.forward(request, response);        	
-        
-        
-        System.out.println("ID del cliente: " + usuarioLogueado.getId_cliente());
-        System.out.println("Cuentas encontradas:");
-        for (Cuenta c : cuentas) {
-            System.out.println("Cuenta: " + c.getNumeroCuenta() + " - Saldo: " + c.getSaldo());
-        }
-        
-        
-        
-        
-        
+        rd.forward(request, response);               
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
