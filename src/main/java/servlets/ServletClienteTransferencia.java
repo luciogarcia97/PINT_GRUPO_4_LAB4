@@ -24,6 +24,7 @@ import daoImpl.TipoCuentaDaoImpl;
 import entidades.Cliente;
 import entidades.Cuenta;
 import entidades.TipoCuenta;
+import entidades.Usuario;
 import negocio.ClienteNegocio;
 import negocio.CuentaNegocio;
 import negocio.TipoCuentaNegocio;
@@ -36,11 +37,9 @@ import negocioImpl.ClienteNegociolmpl;
 import entidades.Cuenta;
 import negocio.CuentaNegocio;
 
-/**
- * Servlet implementation class ServletTransferencia
- */
-@WebServlet("/ServletTransferencia")
-public class ServletTransferencia extends HttpServlet {
+
+@WebServlet("/ServletClienteTransferencia")
+public class ServletClienteTransferencia extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private ClienteNegocio clienteNegocio;
@@ -48,7 +47,7 @@ public class ServletTransferencia extends HttpServlet {
 	private TipoCuentaNegocio tipoCuentaNegocio;
 	private UsuarioNegocio usuarioNegocio;
 	
-    public ServletTransferencia() {
+    public ServletClienteTransferencia() {
         super();
         this.clienteNegocio = new ClienteNegociolmpl();
         this.cuentaNegocio = new CuentaNegocioImpl();
@@ -57,8 +56,23 @@ public class ServletTransferencia extends HttpServlet {
     }
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		// response.getWriter().append("Served at: ").append(request.getContextPath());
+		
+		Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
+		if(usuarioLogueado != null) {
+    		Cliente cliente = clienteNegocio.BuscarPorID(usuarioLogueado.getId_cliente());
+			request.setAttribute("cliente", cliente);
+    	}
+		
+		
+		if (usuarioLogueado == null) {
+			response.sendRedirect("index.jsp");
+			return;
+		}
+		
+		RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioClienteTransferencias.jsp");
+		dispatcher.forward(request, response);
+		
+		
 	}
 
 	

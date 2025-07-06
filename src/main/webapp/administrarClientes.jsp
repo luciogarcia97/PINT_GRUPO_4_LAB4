@@ -17,24 +17,24 @@
 <html lang="es">
 
 <head>
-<meta charset="UTF-8">
-<title>Administrador - Clientes</title>
-<link rel="icon" type="image/x-icon" href="img/banco.png">
-
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-	rel="stylesheet">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-<link rel="stylesheet"
-	href="https://cdn.datatables.net/2.3.2/css/dataTables.bootstrap5.css">
-
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
-<script
-	src="https://cdn.datatables.net/2.3.2/js/dataTables.bootstrap5.min.js"></script>
+		<meta charset="UTF-8">
+		<title>Administrador - Clientes</title>
+		<link rel="icon" type="image/x-icon" href="img/banco.png">
+		
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+			rel="stylesheet">
+		<link rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+		<link rel="stylesheet"
+			href="https://cdn.datatables.net/2.3.2/css/dataTables.bootstrap5.css">
+		
+		<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
+		<script
+			src="https://cdn.datatables.net/2.3.2/js/dataTables.bootstrap5.min.js"></script>
 </head>
 
 <body
@@ -239,8 +239,8 @@
 	</footer>
 
 	<script>
-                    new DataTable('#example');
-                </script>
+       new DataTable('#example');
+    </script>
 
 </body>
 

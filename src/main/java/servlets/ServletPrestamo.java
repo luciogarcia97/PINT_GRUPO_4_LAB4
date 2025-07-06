@@ -35,6 +35,14 @@ public class ServletPrestamo extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");		
+		
+		if (usuarioLogueado == null) {
+			response.sendRedirect("index.jsp");
+			return;
+		}
+		
+		
 		if (request.getParameter("listar") != null) {
 	        List<Prestamo> listaPrestamos = prestamoNegocio.obtenerPrestamos();
 	        
@@ -42,7 +50,8 @@ public class ServletPrestamo extends HttpServlet {
 	        
 	        RequestDispatcher rd = request.getRequestDispatcher("/administrarPrestamos.jsp");
 	        rd.forward(request, response);
-	    }
+	    }		
+		
 		
 	}
 

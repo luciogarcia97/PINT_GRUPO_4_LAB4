@@ -1,0 +1,153 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ page import="java.util.*"%>
+<%@ page import="entidades.*"%>
+<%
+    // Autenticación de cliente
+    Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
+    if (usuarioLogueado == null) {
+        response.sendRedirect("index.jsp");
+        return;
+    }      
+%>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+		<meta charset="UTF-8">
+		<title>Cliente</title>
+		<link rel="icon" type="image/x-icon" href="img/banco.png">
+		
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+			rel="stylesheet">
+		<link rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+		
+		<link rel="stylesheet" href="style/usuarioClienteStyle.css" />		
+</head>
+
+<body class="d-flex flex-column min-vh-100">	
+	<nav class="navbar navbar-light bg-light">
+		<div class="container-fluid">
+			<a class="navbar-brand" href="#"> <i class="bi bi-person-circle"></i>
+				<% 
+		            Cliente cliente = (Cliente) request.getAttribute("cliente");
+		            if (cliente != null) {
+		                out.print(cliente.getNombre() + " " + cliente.getApellido());
+		            } else {
+		                out.print("Usuario Cliente");
+		            }
+           		 %>
+			</a>
+			<form action="ServletLogin" method="get" class="d-inline">
+				<button class="btn btn-outline-dark" type="submit" name="btnCerrar">Cerrar Sesión</button>
+			</form>
+		</div>
+	</nav>
+	
+	<main class="flex-grow-1">
+		
+		<%
+			List<Cuenta> cuentas = (List<Cuenta>) request.getAttribute("cuentas");
+		%>	
+		
+		
+		
+		<div class="container mt-4">
+	
+		
+			<div class="d-flex justify-content-center gap-3">
+				<a href="ServletClienteMovimiento" class="btn btn-primary">Ver Movimientos</a>
+				<a href="ServletClientePrestamo" class="btn btn-primary">Préstamos</a>
+				<a href="ServletClienteTransferencia" class="btn btn-primary"> Transferencias</a>			
+				<a href="ServletClienteDatos" class="btn btn-primary">Mis Datos</a>
+			</div>		
+		
+		<div id="prestamos" class="panel" style="display: block">
+				<h4>Solicitar Préstamo</h4>
+				<form action="ServletPrestamo" method="post">
+					<div class="mb-3">
+						<label for="cuentaPrestamo" class="form-label">Cuenta Destino</label> <select class="form-select" id="cuentaPrestamo"
+							name="cuentaPrestamo">
+							<% if (cuentas != null) {
+	                			for (Cuenta cuenta : cuentas) { %>
+							<option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %>
+								-
+								<%= cuenta.getSaldo() %></option>
+							<% }
+	            } %>
+						</select>
+					</div>
+					<div class="mb-3">
+						<label for="montoPrestamo" class="form-label">Monto
+							solicitado</label> <input type="number" class="form-control"
+							id="montoPrestamo" name="montoPrestamo">
+					</div>
+					<div class="mb-3">
+						<label for="cuotasPrestamo" class="form-label">Cantidad de
+							cuotas</label> <select class="form-select" id="cuotasPrestamo"
+							name="cuotasPrestamo">
+							<option>3</option>
+							<option>6</option>
+							<option>12</option>
+						</select>
+					</div>
+					<button type="submit" class="btn btn-success"
+						name="btnSolicitarPrestamo">Pedir Préstamo</button>
+				</form>
+			</div>
+	
+			<div id="pagoPrestamos" class="panel" style="display: block">
+				<h4>Pago de prestamos</h4>
+				<form method="post" action="ServletPrestamo">
+					<div class="mb-3">
+						<label for="cuotaSeleccion" class="form-label">Seleccione
+							Cuota</label> <select class="form-select" id="cuotaSeleccion"
+							name="cuotaSeleccion">
+							<% 
+	                    if (request.getAttribute("cuotas") != null) {
+	                    	List<PrestamoCuota> cuotas = (List<PrestamoCuota>)request.getAttribute("cuotas");
+	                    	for(PrestamoCuota cuota : cuotas){
+	                    	
+	                   
+	                    %>
+							<option value="<%= cuota.getIdCuota() %>|<%= cuota.getMonto() %>"><%= cuota.getMonto() %>
+								- fecha de vencimiento -<%=  cuota.getFechaVencimiento() %></option>
+							<%
+	                    	}
+	                    }
+	                    %>
+	
+						</select>
+					</div>
+					<div class="mb-3">
+						<label for="cuentaPago" class="form-label">Cuenta de Pago</label> <select
+							class="form-select" id="cuentaPago" name="cuentaPago">
+							<% 
+	                    if (cuentas != null) {
+	                        for (Cuenta cuenta : cuentas) {
+	                    %>
+							<option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %>
+								-
+								<%= cuenta.getSaldo() %></option>
+							<%
+	                        }
+	                    }
+	                    %>
+						</select>
+					</div>
+					<button type="submit" class="btn btn-success" name="btnPagarCuota">Pagar Cuota</button>
+				</form>
+			</div>	
+	</div>	
+  </main> 
+
+	<footer class="bg-light text-center text-muted py-3 mt-5">
+			<div class="container">
+				<span>© 2025 Banco UTN – Todos los derechos reservados</span>
+			</div>
+	</footer>
+
+</body>
+</html>

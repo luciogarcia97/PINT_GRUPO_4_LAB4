@@ -13,59 +13,91 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import entidades.Cliente;
 import entidades.Cuenta;
 import entidades.Movimiento;
 import entidades.Usuario;
+import negocio.ClienteNegocio;
 import negocio.CuentaNegocio;
 import negocio.MovimientoNegocio;
+import negocioImpl.ClienteNegociolmpl;
 import negocioImpl.CuentaNegocioImpl;
+
 import negocioImpl.MovimientoNegocioImpl;
 
-@WebServlet("/ServletMovimiento")
-public class ServletMovimiento extends HttpServlet {
+
+@WebServlet("/ServletClienteMovimiento")
+public class ServletClienteMovimiento extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private MovimientoNegocio movimientoNegocio;
     private CuentaNegocio cuentaNegocio;
+    private ClienteNegocio clienteNegocio;
     
-    public ServletMovimiento() {
+    public ServletClienteMovimiento() {
         super();
         this.movimientoNegocio = new MovimientoNegocioImpl();
         this.cuentaNegocio = new CuentaNegocioImpl();
+        this.clienteNegocio = new ClienteNegociolmpl();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
+    	
+    	Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
+    	if(usuarioLogueado != null) {
+    		Cliente cliente = clienteNegocio.BuscarPorID(usuarioLogueado.getId_cliente());
+			request.setAttribute("cliente", cliente);
+    	}
+		
+		if (usuarioLogueado == null) {
+			response.sendRedirect("index.jsp");
+			return;
+		}
+				
+		List<Cuenta> cuentas = cuentaNegocio.obtenerCuentasPorCliente(usuarioLogueado.getId_cliente());
+	    request.setAttribute("cuentas", cuentas);
         
-        if (request.getParameter("listar") != null) {
-        	// Valido que el usuario este logueado
-            Usuario usuario = (Usuario) request.getSession().getAttribute("usuarioLogueado");
-            if (usuario == null) {
-                response.sendRedirect("index.jsp");
-                return;
-            }
-            
+        if (request.getParameter("listar") != null) {        	
+                       
             try {
-                int idCuenta = Integer.parseInt(request.getParameter("idCuenta"));
-                
+                int idCuenta = Integer.parseInt(request.getParameter("idCuenta"));                
                 
                 List<Movimiento> listaMovimientos = movimientoNegocio.obtenerMovimientosPorCuenta(idCuenta);
+                        
                                 
-                List<Cuenta> cuentas = cuentaNegocio.obtenerCuentasPorCliente(usuario.getId_cliente());
-                
                 request.setAttribute("listaMovimientos", listaMovimientos);
                 request.setAttribute("cuentas", cuentas);
                 request.setAttribute("cuentaSeleccionada", idCuenta);
                 request.setAttribute("mostrarSeccionMovimientos", true); // Esto lo declaro para que el jso sepa que viene de movimientos.
                 
-                RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
+                
+                RequestDispatcher rd = request.getRequestDispatcher("/usuarioClienteMovimientos.jsp");
                 rd.forward(request, response);
                 
             } catch (NumberFormatException e) {
-                request.setAttribute("error", "ID de cuenta inválido.");
-                RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
+                request.setAttribute("error", "ID de cuenta inválido.");                
+                
+                RequestDispatcher rd = request.getRequestDispatcher("/usuarioClienteMovimientos.jsp");
                 rd.forward(request, response);
-            }
+            }              
+        
+        } 
+        	
+        	
+        RequestDispatcher rd = request.getRequestDispatcher("/usuarioClienteMovimientos.jsp");
+        rd.forward(request, response);        	
+        
+        
+        System.out.println("ID del cliente: " + usuarioLogueado.getId_cliente());
+        System.out.println("Cuentas encontradas:");
+        for (Cuenta c : cuentas) {
+            System.out.println("Cuenta: " + c.getNumeroCuenta() + " - Saldo: " + c.getSaldo());
         }
+        
+        
+        
+        
+        
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
@@ -110,12 +142,12 @@ public class ServletMovimiento extends HttpServlet {
             request.setAttribute("fechaDesde", fechaDesdeStr);
             request.setAttribute("fechaHasta", fechaHastaStr);
             
-            RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
+            RequestDispatcher rd = request.getRequestDispatcher("/usuarioClienteMovimientos.jsp");
             rd.forward(request, response);
             
         } catch (Exception e) {
             request.setAttribute("error", "Error al filtrar por fechas: " + e.getMessage());
-            RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
+            RequestDispatcher rd = request.getRequestDispatcher("/usuarioClienteMovimientos.jsp");
             rd.forward(request, response);
         }
     }
@@ -137,12 +169,12 @@ public class ServletMovimiento extends HttpServlet {
             request.setAttribute("cuentaSeleccionada", idCuenta);
             request.setAttribute("tipoSeleccionado", idTipoMovimiento);
             
-            RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
+            RequestDispatcher rd = request.getRequestDispatcher("/usuarioClienteMovimientos.jsp");
             rd.forward(request, response);
             
         } catch (Exception e) {
             request.setAttribute("error", "Error al filtrar por tipo: " + e.getMessage());
-            RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
+            RequestDispatcher rd = request.getRequestDispatcher("/usuarioClienteMovimientos.jsp");
             rd.forward(request, response);
         }
     }

@@ -20,57 +20,42 @@ import entidades.Usuario;
 import negocio.ClienteNegocio;
 import negocio.CuentaNegocio;
 import negocio.PrestamoNegocio;
-import negocio.UsuarioNegocio;
 import negocio.TipoCuentaNegocio;
-import negocioImpl.ClienteNegociolmpl;
 import negocioImpl.CuentaNegocioImpl;
+import negocioImpl.ClienteNegociolmpl;
 import negocioImpl.PrestamoNegocioImpl;
 import negocioImpl.TipoCuentaNegocioImpl;
-import negocioImpl.UsuarioNegocioImpl;
 
-@WebServlet("/ServletClienteUsuario")
-public class ServletClienteUsuario extends HttpServlet {
+@WebServlet("/ServletClienteDatos")
+public class ServletClienteDatos extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
 	private ClienteNegocio clienteNegocio;
-	private CuentaNegocio cuentaNegocio;
-	private TipoCuentaNegocio tipoCuentaNegocio;
-	private UsuarioNegocio usuarioNegocio;
-	private PrestamoNegocio prestamoNegocio;
-	
-	
-	
-    public ServletClienteUsuario() {
-        super();
+    private CuentaNegocio cuentaNegocio;
+    private PrestamoNegocio prestamoNegocio;
+    private TipoCuentaNegocio tipoCuentaNegocio;
+    
+    public ServletClienteDatos() {
+        super(); 
         this.clienteNegocio = new ClienteNegociolmpl();
         this.cuentaNegocio = new CuentaNegocioImpl();
-        this.tipoCuentaNegocio = new TipoCuentaNegocioImpl();
-        this.usuarioNegocio = new UsuarioNegocioImpl();
         this.prestamoNegocio = new PrestamoNegocioImpl();
+        this.tipoCuentaNegocio = new TipoCuentaNegocioImpl();
     }
- 
+
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		// Verifica que el usuario esté cargado
 		Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
-		
-		if (request.getParameter("saldoInsuficiente") != null) {
-	        request.setAttribute("saldo", 1);
-	    }
-		
-		if (request.getParameter("cbuInexistente") != null) {
-	        request.setAttribute("cbu", 1);
-	    }
 		
 		if (usuarioLogueado == null) {
 			response.sendRedirect("index.jsp");
 			return;
-		}	
+		}
 		
 		// Carga todos los datos del cliente
 		cargarDatosCompletos(request, response, usuarioLogueado);
 	}
-
+	
 	private void cargarDatosCompletos(HttpServletRequest request, HttpServletResponse response, Usuario usuarioLogueado) throws ServletException, IOException {
 		try {
 			// Obtiene el cliente asociado al usuario logueado
@@ -101,18 +86,23 @@ public class ServletClienteUsuario extends HttpServlet {
 			System.out.println("ID del cliente: " + cliente.getIdCliente());
 
 
-			RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioCliente.jsp");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioClienteDatos.jsp");
 			dispatcher.forward(request, response);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 			request.setAttribute("error", "Error al cargar los datos: " + e.getMessage());
-			RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioCliente.jsp");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioClienteDatos.jsp");
 			dispatcher.forward(request, response);
 		}
 	}
+	
+	
+	
 
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
+	
 	}
-} 
+
+}
