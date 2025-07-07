@@ -106,9 +106,11 @@ public class ServletPrestamo extends HttpServlet {
 				List<Prestamo> listaPrestamos = prestamoNegocio.obtenerPrestamos();
 				request.setAttribute("listaPrestamos", listaPrestamos);
 				
+				request.setAttribute("exito", "¡Préstamo otorgado!");
 				RequestDispatcher rd = request.getRequestDispatcher("/administrarPrestamos.jsp");
 				rd.forward(request, response);
 			} else {
+				
 				request.setAttribute("error", "No se pudo aceptar el prestamo.");
 				List<Prestamo> listaPrestamos = prestamoNegocio.obtenerPrestamos();
 				request.setAttribute("listaPrestamos", listaPrestamos);

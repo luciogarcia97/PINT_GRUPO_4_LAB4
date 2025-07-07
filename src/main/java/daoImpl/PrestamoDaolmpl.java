@@ -17,30 +17,11 @@ import java.util.ArrayList;
 
 import java.util.List;
 
+import com.mysql.jdbc.CallableStatement;
+
 public class PrestamoDaolmpl implements PrestamoDao {
 	private Connection cn = Conexion.getConexion().getSQLConexion();
 
-	/*
-	 * public boolean insertar(Prestamo prestamo) { boolean estado = false;
-	 * 
-	 * try {
-	 * 
-	 * String query =
-	 * "INSERT INTO prestamo (id_cliente, id_cuenta, fecha_solicitud, importe_solicitado, plazo_pago_meses, importe_por_cuota, cantidad_cuotas, estado, eliminado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-	 * ; PreparedStatement ps = cn.prepareStatement(query); ps.setInt(1,
-	 * prestamo.getId_cliente()); ps.setInt(2, prestamo.getId_cuenta());
-	 * ps.setDate(3, Date.valueOf(prestamo.getFecha_solicitud())); ps.setDouble(4,
-	 * prestamo.getImporte_solicitado()); ps.setInt(5,
-	 * prestamo.getPlazo_pago_mes()); ps.setDouble(6,
-	 * prestamo.getImporte_por_cuota()); ps.setInt(7,
-	 * prestamo.getCantidad_cuotas()); ps.setString(8, "pendiente");
-	 * ps.setBoolean(9, false);
-	 * 
-	 * estado = ps.executeUpdate() > 0; if (estado) { cn.commit(); } ps.close();
-	 * 
-	 * } catch (Exception e) { e.printStackTrace(); } return estado; }
-	 */
-	
 	@Override
 	public boolean insertar(Prestamo prestamo) {
 		boolean estado = false;
@@ -169,7 +150,7 @@ public class PrestamoDaolmpl implements PrestamoDao {
 
 	}
 
-	@Override
+	/*@Override
 	public boolean aceptarPrestamo(int idPrestamo) {
 		PreparedStatement pst = null;
 
@@ -203,7 +184,49 @@ public class PrestamoDaolmpl implements PrestamoDao {
 
 		return resultado;
 
+	}*/
+	
+	@Override
+	public boolean aceptarPrestamo(int idPrestamo) {
+	    CallableStatement cs = null;
+	    boolean resultado = false;
+
+	    try {
+	        String call = "{CALL aceptar_prestamo_valida_cliente_activo(?, ?)}";
+	        cs = (CallableStatement) cn.prepareCall(call);
+	        cs.setInt(1, idPrestamo);
+	        cs.registerOutParameter(2, java.sql.Types.INTEGER);
+
+	        cs.execute();
+	        int estado = cs.getInt(2); // 0 = no aceptado, 1 = aceptado
+	        System.out.println("Estado devuelto por el procedimiento: " + estado);
+	        if (estado == 1) {
+	            cn.commit();
+	            resultado = true;
+	        } else {
+	            cn.rollback(); 
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        try {
+	            cn.rollback();
+	        } catch (SQLException e1) {
+	            e1.printStackTrace();
+	        }
+	    } finally {
+	        try {
+	            if (cs != null) cs.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return resultado;
 	}
+
+	
+	
 
 	@Override
 	public Prestamo obtenerPrestamoID(int idPrestamo) {

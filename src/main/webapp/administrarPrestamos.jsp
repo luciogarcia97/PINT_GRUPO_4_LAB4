@@ -69,7 +69,8 @@
                 </div>
             </div>
             
-            <div class="col-10">
+            <div class="col-10">           	
+            
                 
                 <div class="d-flex justify-content-between align-items-center mb-4 pt-4">
                     <h3 class="text-white">
@@ -77,6 +78,21 @@
                         Autorizar Préstamos
                     </h3>
                 </div>
+                
+                 <% if (request.getAttribute("error") != null) { %>
+	                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
+	                    <i class="bi bi-exclamation-triangle me-2"></i>
+	                        <%= request.getAttribute("error") %>
+	                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+	                 </div>
+               	 <% } %> 
+               	 
+               	 <% if (request.getAttribute("exito") != null) { %>
+				    <div class="alert alert-success" role="alert">				    
+				        <%= request.getAttribute("exito") %>
+				    </div>
+				<% } %>                  
+                
                 
                 <div class="card shadow">
                     <div class="card-header bg-primary text-white">

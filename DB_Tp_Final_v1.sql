@@ -333,6 +333,40 @@ END$$
 DELIMITER ;
 
 
+-- procedimiento almacenado valida cliente activo antes de aceptar el prestamo 
+DELIMITER $$
+CREATE PROCEDURE aceptar_prestamo_valida_cliente_activo (
+    IN idPrestamo INT, 
+    OUT resultado INT
+)
+salida: BEGIN
+    DECLARE eliminado_cliente TINYINT DEFAULT NULL;
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SET resultado = -1;
+    END;
+
+    START TRANSACTION;
+   
+    SELECT c.eliminado INTO eliminado_cliente FROM prestamo p
+    JOIN cliente c ON p.id_cliente = c.id_cliente WHERE p.id_prestamo = idPrestamo;
+    
+    IF eliminado_cliente IS NULL OR eliminado_cliente = 1 THEN
+        ROLLBACK;
+        SET resultado = 0;
+        LEAVE salida;
+    END IF;
+  
+    UPDATE prestamo SET estado = 'aceptado' WHERE id_prestamo = idPrestamo;
+
+    COMMIT;
+    SET resultado = 1;
+END salida$$
+DELIMITER ;
+
+
 
 
 
