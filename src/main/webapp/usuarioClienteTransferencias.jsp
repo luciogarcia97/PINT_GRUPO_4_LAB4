@@ -78,7 +78,7 @@
 					
 			
 			<%
-				List<Cuenta> cuentas = (List<Cuenta>) request.getAttribute("cuentas");
+				List<Cuenta> cuentas = (List<Cuenta>) request.getAttribute("cuentasCliente");
 			%>
 			
 			
@@ -123,7 +123,7 @@
 				    }
 				    %>
 		
-					<form action="ServletTransferencia" method="post">
+					<form action="ServletClienteTransferencia" method="post">
 						<div class="mb-3">
 							<label for="cuentaOrigen" class="form-label">Cuenta Origen</label>
 		

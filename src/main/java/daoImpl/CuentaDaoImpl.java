@@ -661,4 +661,34 @@ public class CuentaDaoImpl implements CuentaDao {
 		
 	}
 	
+	@Override
+	public int obtenerUltimaIdCuenta() {
+		PreparedStatement pst = null;
+	    ResultSet rs = null;
+	    Connection conexion = Conexion.getConexion().getSQLConexion();
+	    int ultimoId = 0;
+
+	    try {
+	        String query = "SELECT MAX(id_cuenta) as ultimo_id FROM cuenta";
+	        pst = conexion.prepareStatement(query);
+	        rs = pst.executeQuery();
+
+	        if (rs.next()) {
+	            ultimoId = rs.getInt("ultimo_id");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pst != null) pst.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return ultimoId;
+	}
+	
 }

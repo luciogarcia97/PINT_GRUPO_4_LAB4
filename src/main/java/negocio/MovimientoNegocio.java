@@ -1,8 +1,8 @@
 package negocio;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-
 import entidades.Movimiento;
 
 public interface MovimientoNegocio {
@@ -18,5 +18,13 @@ public interface MovimientoNegocio {
     public List<Movimiento> obtenerTodosLosMovimientos();
     
     public int contarMovimientosPorCuenta(int idCuenta);
+    
+    boolean registrarMovimientoTransferencia(int idCuentaOrigen, int idCuentaDestino, BigDecimal monto, String detalle);
+    
+    boolean registrarMovimientoAltaPrestamo(int idCuenta, BigDecimal monto, int idPrestamo);
+    
+    boolean registrarMovimientoPagoCuota(int idCuenta, BigDecimal monto, int idPrestamo);
+    
+    boolean registrarMovimientoAltaCuenta(int idCuenta, BigDecimal montoInicial);
         
 }

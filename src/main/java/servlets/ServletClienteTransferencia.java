@@ -2,10 +2,6 @@ package servlets;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -29,13 +25,12 @@ import negocio.ClienteNegocio;
 import negocio.CuentaNegocio;
 import negocio.TipoCuentaNegocio;
 import negocio.UsuarioNegocio;
+import negocio.MovimientoNegocio;
 import negocioImpl.CuentaNegocioImpl;
 import negocioImpl.TipoCuentaNegocioImpl;
 import negocioImpl.UsuarioNegocioImpl;
 import negocioImpl.ClienteNegociolmpl;
-
-import entidades.Cuenta;
-import negocio.CuentaNegocio;
+import negocioImpl.MovimientoNegocioImpl;
 
 
 @WebServlet("/ServletClienteTransferencia")
@@ -46,6 +41,7 @@ public class ServletClienteTransferencia extends HttpServlet {
 	private CuentaNegocio cuentaNegocio;
 	private TipoCuentaNegocio tipoCuentaNegocio;
 	private UsuarioNegocio usuarioNegocio;
+	private MovimientoNegocio movimientoNegocio;
 	
     public ServletClienteTransferencia() {
         super();
@@ -53,26 +49,25 @@ public class ServletClienteTransferencia extends HttpServlet {
         this.cuentaNegocio = new CuentaNegocioImpl();
         this.tipoCuentaNegocio = new TipoCuentaNegocioImpl();
         this.usuarioNegocio = new UsuarioNegocioImpl();
+        this.movimientoNegocio = new MovimientoNegocioImpl();
     }
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
-		if(usuarioLogueado != null) {
-    		Cliente cliente = clienteNegocio.BuscarPorID(usuarioLogueado.getId_cliente());
-			request.setAttribute("cliente", cliente);
-    	}
+	    if (usuarioLogueado == null) {
+	        response.sendRedirect("index.jsp");
+	        return;
+	    }
 		
-		
-		if (usuarioLogueado == null) {
-			response.sendRedirect("index.jsp");
-			return;
-		}
-		
-		RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioClienteTransferencias.jsp");
-		dispatcher.forward(request, response);
-		
-		
+	    Cliente cliente = clienteNegocio.BuscarPorID(usuarioLogueado.getId_cliente());
+	    request.setAttribute("cliente", cliente);
+	    
+	    List<Cuenta> cuentasCliente = cuentaNegocio.obtenerCuentasPorCliente(cliente.getIdCliente());
+	    request.setAttribute("cuentasCliente", cuentasCliente);
+	    
+	    RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioClienteTransferencias.jsp");
+	    dispatcher.forward(request, response);
 	}
 
 	
@@ -104,14 +99,35 @@ public class ServletClienteTransferencia extends HttpServlet {
     		Cuenta cuentaOrigen = cuentaNegocio.buscarPorID(idCuenta);
     		Cuenta cuentaDestino = cuentaNegocio.buscarIdConCbu(cbu);
     		
+    		Boolean debitoResultado = false;
     		BigDecimal saldoFinal = cuentaOrigen.getSaldo().subtract(monto);
-    		cuentaNegocio.modificarSaldo(cuentaOrigen.getIdCuenta(), saldoFinal);
+    		debitoResultado = cuentaNegocio.modificarSaldo(cuentaOrigen.getIdCuenta(), saldoFinal);
     		
+    		Boolean acreditacionResultado = false;
     		saldoFinal = cuentaDestino.getSaldo().add(monto);
-    		cuentaNegocio.modificarSaldo(cuentaDestino.getIdCuenta(), saldoFinal);
+    		acreditacionResultado = cuentaNegocio.modificarSaldo(cuentaDestino.getIdCuenta(), saldoFinal);
     		
-    		// Va directo al servlet para volver a cargar al usuario
-    		response.sendRedirect("ServletClienteUsuario?saldoInsuficiente=1");
+    		// Si se registro todo correctamente, registro el movimiento
+    		if(acreditacionResultado && debitoResultado) {
+    			String detalle = "CBU: " + cuentaDestino.getCbu();
+    		    boolean movimientoRegistrado = movimientoNegocio.registrarMovimientoTransferencia(cuentaOrigen.getIdCuenta(), cuentaDestino.getIdCuenta(), monto, detalle);
+    		
+    		    if (!movimientoRegistrado) {
+    		        System.out.println("Advertencia: No se pudieron registrar los movimientos de transferencia");
+    		    }
+    		}
+    		
+    		// Recargar datos y mostrar la página de transferencias
+    		Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
+    		Cliente cliente = clienteNegocio.BuscarPorID(usuarioLogueado.getId_cliente());
+    		request.setAttribute("cliente", cliente);
+
+    		// Cargar las cuentas del cliente para el desplegable
+    		List<Cuenta> cuentasCliente = cuentaNegocio.obtenerCuentasPorCliente(cliente.getIdCliente());
+    		request.setAttribute("cuentasCliente", cuentasCliente);
+
+    		RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioClienteTransferencias.jsp");
+    		dispatcher.forward(request, response);
 	        
     	}
 		

@@ -2,7 +2,6 @@ package servlets;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -14,18 +13,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dao.CuentaDao;
-import dao.TipoCuentaDao;
-import daoImpl.CuentaDaoImpl;
-import daoImpl.TipoCuentaDaoImpl;
-import entidades.Cliente;
+
 import entidades.Cuenta;
 import entidades.TipoCuenta;
-import negocio.CuentaNegocio;
-import negocio.TipoCuentaNegocio;
 import negocioImpl.CuentaNegocioImpl;
 import negocioImpl.TipoCuentaNegocioImpl;
 import negocioImpl.ClienteNegociolmpl;
+import negocioImpl.MovimientoNegocioImpl;
 
 @WebServlet("/ServletCuenta")
 public class ServletCuenta extends HttpServlet {
@@ -34,12 +28,14 @@ private static final long serialVersionUID = 1L;
     private CuentaNegocioImpl cuentaNegocio;
     private TipoCuentaNegocioImpl tipoCuentaNegocio;
     private ClienteNegociolmpl clienteNegocio;
+    private MovimientoNegocioImpl movimientoNegocio;
     
     public ServletCuenta() {
         super();
         this.cuentaNegocio = new CuentaNegocioImpl();
         this.tipoCuentaNegocio = new TipoCuentaNegocioImpl();
         this.clienteNegocio = new ClienteNegociolmpl();
+        this.movimientoNegocio = new MovimientoNegocioImpl();
     }
     
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -69,9 +65,7 @@ private static final long serialVersionUID = 1L;
     
             	
         if (request.getParameter("btnCrearCuenta") != null) {
-        	
-        	
-        	
+
             try {
                 int idCliente = Integer.parseInt(request.getParameter("idCliente"));
                 int idTipoCuenta = Integer.parseInt(request.getParameter("ddlTipoCuenta"));
@@ -115,6 +109,20 @@ private static final long serialVersionUID = 1L;
                 boolean resultado = cuentaNegocio.insertarCuenta(nuevaCuenta);
                 
                 if (resultado) {
+                	
+                	// Obtenemos el ID de la cuenta recien creada
+                    int idCuentaCreada = cuentaNegocio.obtenerUltimaIdCuenta();
+                	
+                	//Registramos el movimiento de alta de cuenta
+                	boolean movimientoRegistrado = movimientoNegocio.registrarMovimientoAltaCuenta(idCuentaCreada, BigDecimal.valueOf(10000.00));
+            	    
+            	    if (!movimientoRegistrado) {
+            	        System.out.println("Advertencia: No se pudo registrar el movimiento de alta de cuenta");
+            	    }
+            	    
+            	    request.getSession().setAttribute("exito", "Cuenta agregada exitosamente");
+                	
+                	
                     request.setAttribute("exito", "Cuenta creada exitosamente");
                     request.setAttribute("numeroCuenta", numeroCuenta);
                     request.setAttribute("cbu", cbu);

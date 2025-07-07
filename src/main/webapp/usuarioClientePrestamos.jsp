@@ -123,9 +123,7 @@
 							<% 
 	                    if (request.getAttribute("cuotas") != null) {
 	                    	List<PrestamoCuota> cuotas = (List<PrestamoCuota>)request.getAttribute("cuotas");
-	                    	for(PrestamoCuota cuota : cuotas){
-	                    	
-	                   
+	                    	for(PrestamoCuota cuota : cuotas){	                   
 	                    %>
 							<option value="<%= cuota.getIdCuota() %>|<%= cuota.getMonto() %>"><%= cuota.getMonto() %>
 								- fecha de vencimiento -<%=  cuota.getFechaVencimiento() %></option>

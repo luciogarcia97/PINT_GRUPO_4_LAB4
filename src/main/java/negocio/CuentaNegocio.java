@@ -46,5 +46,7 @@ public interface CuentaNegocio {
     public boolean modificarSaldo(int idCuenta, BigDecimal saldoFinal);
     
     public Cuenta buscarIdConCbu(String cbu);
+    
+    public int obtenerUltimaIdCuenta();
 
 }
