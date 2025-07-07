@@ -39,6 +39,9 @@
 		    
 		    String tipoUsuario = request.getParameter("tipoUsuario");
 		    if(tipoUsuario == null) tipoUsuario = (String) request.getAttribute("tipoUsuario");
+		    
+		    String contrasena = request.getParameter("contrasena");
+		    if(contrasena == null) contrasena = (String) request.getAttribute("contrasena");
 		%>
 
      <form class="w-75 mx-auto mt-5" onsubmit="return validarContraseñas()" action="ServletUsuario" method="post">
@@ -46,6 +49,7 @@
      	<input type="hidden" name="idCliente" value="<%= idCliente %>">
 		<input type="hidden" name="fechaCreacion" value="<%= fechaCreacion %>">
 	    <input type="hidden" name="tipoUsuario" value="<%= tipoUsuario %>">
+	    <input type="hidden" name="contrasena" value="<%= contrasena %>">
 	    <div class="inicio">
 	         
 	        <h2 class="text-center pt-2 pb-2"> Modificar usuario</h2>    
@@ -73,12 +77,12 @@
 	            </div>
 	            <div class="mb-3">
 	                <label for="clave" class="form-label">Contraseña</label>
-	                <input type="password" class="form-control" id="clave" placeholder="Tu contraseña" name="txtContrasena" required>
+	                <input type="password" class="form-control" id="clave" placeholder="Tu contraseña" name="txtContrasena" value="<%= (contrasena != null) ? contrasena : "" %>" required>
 	            </div>
 	
 	            <div class="mb-3">
 	                <label for="repetirClave" class="form-label">Repetir Contraseña</label>
-	                <input type="password" class="form-control" id="repetirClave" placeholder="Repetir Contraseña" name="txtReContrasena" required>
+	                <input type="password" class="form-control" id="repetirClave" placeholder="Repetir Contraseña" name="txtReContrasena" value="<%= (contrasena != null) ? contrasena : "" %>" required>
 	            </div>
 	        </div>	        
 	

@@ -148,7 +148,8 @@
                                         <th>Usuario</th>
                                         <th>Tipo Usuario</th>
                                         <th>Eliminado</th>
-                                        <th>Fecha de Creación</th> 
+                                        <th>Fecha de Creación</th>
+                                        <th class="d-none">Contraseña</th> 
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
@@ -168,12 +169,13 @@
                                         <td><%= usuario.getUsuario() %></td>
                                         <td><%= usuario.getTipo_usuario() %></td>
                                         <td><%= usuario.getEliminado() %></td>
-                                        <td> <%= usuario.getFecha_creacion() %></td>                   
+                                        <td> <%= usuario.getFecha_creacion() %></td> 
+                                        <td style="display:none;"> <%= usuario.getContrasena() %></td>                  
                                         <td>
                                             <div class="d-flex gap-1">                                            
                                                <a href="modificarUsuario.jsp?idUsuario=<%= usuario.getId_usuario()%>&idCliente=<%= usuario.getId_cliente()%>
                                                			&fechaCreacion=<%= usuario.getFecha_creacion()%>&usuario=<%= usuario.getUsuario()%>
-                                               			&tipoUsuario=<%= usuario.getTipo_usuario() %>" 
+                                               			&tipoUsuario=<%= usuario.getTipo_usuario() %>&contrasena=<%= usuario.getContrasena()%>" 
                                                class="btn btn-sm btn-outline-primary" title="Modificar Usuario">
                                                <i class="bi bi-pencil"></i>
                                                </a>
