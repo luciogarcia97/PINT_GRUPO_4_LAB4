@@ -13,6 +13,8 @@ public interface PrestamoNegocio {
 
 	List<Prestamo> obtenerPrestamos();
 	
+	boolean aceptarPrestamo(int idPrestamo);
+	
 	boolean denegarPrestamo(int idPrestamo);
 	
 	Prestamo obtenerPrestamoID(int idPrestamo);
