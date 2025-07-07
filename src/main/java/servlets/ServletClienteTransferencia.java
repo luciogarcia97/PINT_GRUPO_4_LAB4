@@ -2,10 +2,6 @@ package servlets;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -29,13 +25,12 @@ import negocio.ClienteNegocio;
 import negocio.CuentaNegocio;
 import negocio.TipoCuentaNegocio;
 import negocio.UsuarioNegocio;
+import negocio.MovimientoNegocio;
 import negocioImpl.CuentaNegocioImpl;
 import negocioImpl.TipoCuentaNegocioImpl;
 import negocioImpl.UsuarioNegocioImpl;
 import negocioImpl.ClienteNegociolmpl;
-
-import entidades.Cuenta;
-import negocio.CuentaNegocio;
+import negocioImpl.MovimientoNegocioImpl;
 
 
 @WebServlet("/ServletClienteTransferencia")
@@ -46,6 +41,7 @@ public class ServletClienteTransferencia extends HttpServlet {
 	private CuentaNegocio cuentaNegocio;
 	private TipoCuentaNegocio tipoCuentaNegocio;
 	private UsuarioNegocio usuarioNegocio;
+	private MovimientoNegocio movimientoNegocio;
 	
     public ServletClienteTransferencia() {
         super();
@@ -53,6 +49,7 @@ public class ServletClienteTransferencia extends HttpServlet {
         this.cuentaNegocio = new CuentaNegocioImpl();
         this.tipoCuentaNegocio = new TipoCuentaNegocioImpl();
         this.usuarioNegocio = new UsuarioNegocioImpl();
+        this.movimientoNegocio = new MovimientoNegocioImpl();
     }
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -104,11 +101,23 @@ public class ServletClienteTransferencia extends HttpServlet {
     		Cuenta cuentaOrigen = cuentaNegocio.buscarPorID(idCuenta);
     		Cuenta cuentaDestino = cuentaNegocio.buscarIdConCbu(cbu);
     		
+    		Boolean debitoResultado = false;
     		BigDecimal saldoFinal = cuentaOrigen.getSaldo().subtract(monto);
-    		cuentaNegocio.modificarSaldo(cuentaOrigen.getIdCuenta(), saldoFinal);
+    		debitoResultado = cuentaNegocio.modificarSaldo(cuentaOrigen.getIdCuenta(), saldoFinal);
     		
+    		Boolean acreditacionResultado = false;
     		saldoFinal = cuentaDestino.getSaldo().add(monto);
-    		cuentaNegocio.modificarSaldo(cuentaDestino.getIdCuenta(), saldoFinal);
+    		acreditacionResultado = cuentaNegocio.modificarSaldo(cuentaDestino.getIdCuenta(), saldoFinal);
+    		
+    		// Si se registro todo correctamente, registro el movimiento
+    		if(acreditacionResultado && debitoResultado) {
+    			String detalle = "Transferencia: " + cuentaDestino.getCbu();
+    		    boolean movimientoRegistrado = movimientoNegocio.registrarMovimientoTransferencia(cuentaOrigen.getIdCuenta(), cuentaDestino.getIdCuenta(), monto, detalle);
+    		
+    		    if (!movimientoRegistrado) {
+    		        System.out.println("Advertencia: No se pudieron registrar los movimientos de transferencia");
+    		    }
+    		}
     		
     		// Va directo al servlet para volver a cargar al usuario
     		response.sendRedirect("ServletClienteUsuario?saldoInsuficiente=1");

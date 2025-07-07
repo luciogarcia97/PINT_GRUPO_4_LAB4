@@ -3,6 +3,7 @@ package servlets;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.math.BigDecimal;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -21,10 +22,13 @@ import negocio.ClienteNegocio;
 import negocio.CuentaNegocio;
 import negocio.PrestamoNegocio;
 import negocio.TipoCuentaNegocio;
+import negocio.MovimientoNegocio;
 import negocioImpl.CuentaNegocioImpl;
 import negocioImpl.ClienteNegociolmpl;
 import negocioImpl.PrestamoNegocioImpl;
 import negocioImpl.TipoCuentaNegocioImpl;
+import negocioImpl.MovimientoNegocioImpl;
+
 
 @WebServlet("/ServletClienteDatos")
 public class ServletClienteDatos extends HttpServlet {
@@ -33,6 +37,7 @@ public class ServletClienteDatos extends HttpServlet {
     private CuentaNegocio cuentaNegocio;
     private PrestamoNegocio prestamoNegocio;
     private TipoCuentaNegocio tipoCuentaNegocio;
+    private MovimientoNegocio movimientoNegocio;
     
     public ServletClienteDatos() {
         super(); 
@@ -40,6 +45,7 @@ public class ServletClienteDatos extends HttpServlet {
         this.cuentaNegocio = new CuentaNegocioImpl();
         this.prestamoNegocio = new PrestamoNegocioImpl();
         this.tipoCuentaNegocio = new TipoCuentaNegocioImpl();
+        this.movimientoNegocio = new MovimientoNegocioImpl();
     }
 
 	

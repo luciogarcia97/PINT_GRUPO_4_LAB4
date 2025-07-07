@@ -40,8 +40,7 @@ public class ServletClienteMovimiento extends HttpServlet {
         this.clienteNegocio = new ClienteNegociolmpl();
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	
     	Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
     	if(usuarioLogueado != null) {
@@ -57,12 +56,14 @@ public class ServletClienteMovimiento extends HttpServlet {
 		List<Cuenta> cuentas = cuentaNegocio.obtenerCuentasPorCliente(usuarioLogueado.getId_cliente());
 	    request.setAttribute("cuentas", cuentas);
         
-        if (request.getParameter("listar") != null) {        	
+        if (request.getParameter("listar") != null) {     	
                        
             try {
                 int idCuenta = Integer.parseInt(request.getParameter("idCuenta"));                
                 
                 List<Movimiento> listaMovimientos = movimientoNegocio.obtenerMovimientosPorCuenta(idCuenta);
+                
+                System.out.println("Entre al listar cuando cargamos los movimientos");
                         
                                 
                 request.setAttribute("listaMovimientos", listaMovimientos);

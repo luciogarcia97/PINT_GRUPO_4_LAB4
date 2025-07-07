@@ -44,7 +44,7 @@ public class PrestamoNegocioImpl implements PrestamoNegocio {
 		}
 
 
-
+		@Override
 		public boolean aceptarPrestamo(int idPrestamo) {
 			return prestamoDao.aceptarPrestamo(idPrestamo);
 		

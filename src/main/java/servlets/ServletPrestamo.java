@@ -3,6 +3,7 @@ package servlets;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.math.BigDecimal;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -15,21 +16,23 @@ import javax.servlet.http.HttpServletResponse;
 import entidades.Prestamo;
 
 import entidades.Usuario;
+import negocio.MovimientoNegocio;
+import negocio.PrestamoNegocio;
+import negocioImpl.MovimientoNegocioImpl;
 
 import negocioImpl.PrestamoNegocioImpl;
 
 @WebServlet("/ServletPrestamo")
 public class ServletPrestamo extends HttpServlet {
+	
 	private static final long serialVersionUID = 1L;
-	private PrestamoNegocioImpl prestamoNegocio;
-
-	
-	
+	private PrestamoNegocio prestamoNegocio;
+	private MovimientoNegocio movimientoNegocio;
 	
 	public ServletPrestamo() {
         super();
          this.prestamoNegocio = new PrestamoNegocioImpl();
-        
+         this.movimientoNegocio = new MovimientoNegocioImpl();
     }
 	
 	
@@ -123,11 +126,23 @@ public class ServletPrestamo extends HttpServlet {
 			int idPrestamo = Integer.parseInt(request.getParameter("idPrestamo"));
 			boolean resultado = false;
 			Prestamo prestamo = new Prestamo();
-			if (prestamoNegocio.aceptarPrestamo(idPrestamo)) {			 
-				List<Prestamo> listaPrestamos = prestamoNegocio.obtenerPrestamos();
-				request.setAttribute("listaPrestamos", listaPrestamos);
+			
+			if (prestamoNegocio.aceptarPrestamo(idPrestamo)) {
 				prestamo=prestamoNegocio.obtenerPrestamoID(idPrestamo);
 				resultado = prestamoNegocio.impactar_prestamo_cuenta(prestamo.getId_cuenta(), prestamo.getImporte_solicitado());
+				
+				// Si se registro la aprobacion del prestamo se registra el movimiento de saldo al cliente
+				if (resultado) {
+					boolean movimientoRegistrado = movimientoNegocio.registrarMovimientoAltaPrestamo(prestamo.getId_cuenta(), BigDecimal.valueOf(prestamo.getImporte_solicitado()), prestamo.getId_prestamo());
+			            
+		            if (!movimientoRegistrado) {
+		                System.out.println("Advertencia: No se pudo registrar el movimiento del préstamo");
+		            }
+				}
+				
+				List<Prestamo> listaPrestamos = prestamoNegocio.obtenerPrestamos();
+				request.setAttribute("listaPrestamos", listaPrestamos);
+				
 				RequestDispatcher rd = request.getRequestDispatcher("/administrarPrestamos.jsp");
 				rd.forward(request, response);
 			} else {
@@ -140,20 +155,18 @@ public class ServletPrestamo extends HttpServlet {
 		}
 		if(request.getParameter("btnPagarCuota") != null) {
 			boolean resultado = false;
-			 int idCuenta = Integer.parseInt(request.getParameter("cuentaPago"));
-			  String datosCuota = request.getParameter("cuotaSeleccion");
-		        String[] datosCuotaArray = datosCuota.split("\\|");
-		        int idCuota = Integer.parseInt(datosCuotaArray[0]);
-		        double monto = Double.parseDouble(datosCuotaArray[1]);
+			int idCuenta = Integer.parseInt(request.getParameter("cuentaPago"));
+			String datosCuota = request.getParameter("cuotaSeleccion");
+			String[] datosCuotaArray = datosCuota.split("\\|");
+			int idCuota = Integer.parseInt(datosCuotaArray[0]);
+			double monto = Double.parseDouble(datosCuotaArray[1]);
 		     
-		     resultado = prestamoNegocio.pagarCuota(idCuota, idCuenta, monto);
+		    resultado = prestamoNegocio.pagarCuota(idCuota, idCuenta, monto);
 		     
-		     request.setAttribute("resultado", resultado);
-				RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
-				rd.forward(request, response);
-		     
-		     
-		       
+		    request.setAttribute("resultado", resultado);
+			RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
+			rd.forward(request, response);
+
 		}
 	}
 }
