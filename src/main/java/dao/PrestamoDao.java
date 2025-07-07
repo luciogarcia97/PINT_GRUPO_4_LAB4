@@ -13,7 +13,6 @@ public interface PrestamoDao {
 
 	List<Prestamo> obtenerPrestamos();
 
-
 	boolean denegarPrestamo(int idPrestamo);
 
 	boolean aceptarPrestamo(int idPrestamo);
@@ -26,10 +25,7 @@ public interface PrestamoDao {
 	
 	Prestamo obtenerPrestamoIDCuenta(int idCliente);
 	
-	boolean pagarCuota(int idCuota,int idCuenta,double monto);
-
-
-
-
+	boolean pagarCuota(int idCuota,int idCuenta,double monto);	
+	
 
 }

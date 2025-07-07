@@ -57,19 +57,35 @@
 		<div class="container mt-4">
 	
 		
-			<div class="d-flex justify-content-center gap-3">
+			<div class="d-flex justify-content-center gap-3 pb-4">
 				<a href="ServletClienteMovimiento" class="btn btn-primary">Ver Movimientos</a>
 				<a href="ServletClientePrestamo" class="btn btn-primary">Préstamos</a>
 				<a href="ServletClienteTransferencia" class="btn btn-primary"> Transferencias</a>			
 				<a href="ServletClienteDatos" class="btn btn-primary">Mis Datos</a>
-			</div>		
+			</div>
+			
+			<div>
+				 <% if (request.getAttribute("error") != null) { %>
+	                <div class="alert alert-danger" role="alert" >
+	                    <%= request.getAttribute("error") %>
+	                </div>
+	            <% } %>
+	            
+	            <% if (request.getAttribute("mensaje") != null) { %>
+				    <div class="alert alert-success" role="alert">
+				        <%= request.getAttribute("mensaje") %>
+				    </div>
+				<% } %>			
+			
+			</div>			
+					
 		
 		<div id="prestamos" class="panel" style="display: block">
 				<h4>Solicitar Préstamo</h4>
-				<form action="ServletPrestamo" method="post">
+				<form action="ServletClientePrestamo" method="post">
 					<div class="mb-3">
-						<label for="cuentaPrestamo" class="form-label">Cuenta Destino</label> <select class="form-select" id="cuentaPrestamo"
-							name="cuentaPrestamo">
+						<label for="cuentaDestino" class="form-label">Cuenta Destino</label> <select class="form-select" id="cuentaPrestamo"
+							name="cuentaDestino">
 							<% if (cuentas != null) {
 	                			for (Cuenta cuenta : cuentas) { %>
 							<option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %>
@@ -80,18 +96,17 @@
 						</select>
 					</div>
 					<div class="mb-3">
-						<label for="montoPrestamo" class="form-label">Monto
-							solicitado</label> <input type="number" class="form-control"
+						<label for="montoPrestamo" class="form-label">Monto	solicitado</label>
+						 <input type="number" class="form-control" min="0" max="500000" step="0.01"
 							id="montoPrestamo" name="montoPrestamo">
 					</div>
 					<div class="mb-3">
-						<label for="cuotasPrestamo" class="form-label">Cantidad de
-							cuotas</label> <select class="form-select" id="cuotasPrestamo"
-							name="cuotasPrestamo">
-							<option>3</option>
-							<option>6</option>
-							<option>12</option>
-						</select>
+						<label for="cuotasPrestamo" class="form-label">Cantidad de	cuotas</label> 
+							<select class="form-select" id="cuotasPrestamo"	name="cuotasPrestamo" required>
+								<option value="3">3</option>
+								<option value="6">6</option>
+								<option value="12">12</option>
+							</select>
 					</div>
 					<button type="submit" class="btn btn-success"
 						name="btnSolicitarPrestamo">Pedir Préstamo</button>

@@ -75,11 +75,12 @@ public class ServletClienteMovimiento extends HttpServlet {
                 RequestDispatcher rd = request.getRequestDispatcher("/usuarioClienteMovimientos.jsp");
                 rd.forward(request, response);
                 
+                
             } catch (NumberFormatException e) {
                 request.setAttribute("error", "ID de cuenta inválido.");                
                 
                 RequestDispatcher rd = request.getRequestDispatcher("/usuarioClienteMovimientos.jsp");
-                rd.forward(request, response);
+                rd.forward(request, response);             
             }              
         
         }        	

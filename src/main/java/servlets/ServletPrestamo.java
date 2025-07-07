@@ -53,52 +53,7 @@ public class ServletPrestamo extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		
-		if (request.getParameter("btnSolicitarPrestamo") != null) {
-	        try {
-	            Usuario usuario = (Usuario) request.getSession().getAttribute("usuarioLogueado");
-	            if (usuario == null) {
-	                response.sendRedirect("index.jsp");
-	                return;
-	            }
-
-	            int idCliente = usuario.getId_cliente();
-	            int idCuenta = Integer.parseInt(request.getParameter("cuentaPrestamo"));
-	            double monto = Double.parseDouble(request.getParameter("montoPrestamo"));
-	            int cuotas = Integer.parseInt(request.getParameter("cuotasPrestamo"));
-
-	            Prestamo prestamo = new Prestamo();
-	            prestamo.setId_cliente(idCliente);
-	            prestamo.setId_cuenta(idCuenta);
-	            prestamo.setFecha_solicitud(LocalDate.now());
-	            prestamo.setImporte_solicitado(monto);
-	            prestamo.setPlazo_pago_mes(cuotas);
-	            prestamo.setImporte_por_cuota(monto / cuotas);
-	            prestamo.setCantidad_cuotas(cuotas);
-	            prestamo.setEstado("Pendiente");
-	            prestamo.setEliminado(false);
-
-	            
-	            boolean resultado = prestamoNegocio.insertar(prestamo);
-
-	            if (resultado) {
-	                request.setAttribute("mensaje", "Préstamo solicitado correctamente.");
-	            } else {
-	                request.setAttribute("error", "Error al solicitar el préstamo.");
-	            }
-
-	            RequestDispatcher rd = request.getRequestDispatcher("usuarioCliente.jsp");
-	            rd.forward(request, response);
-
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            request.setAttribute("error", "Ocurrió un error interno.");
-	            RequestDispatcher rd = request.getRequestDispatcher("usuarioCliente.jsp");
-	            rd.forward(request, response);
-	        }
-	    }
-		
-		if(request.getParameter("btnDenegarPrestamo")!= null) {
+if(request.getParameter("btnDenegarPrestamo")!= null) {
 			
 			int idPrestamo = Integer.parseInt(request.getParameter("idPrestamo"));
 					
@@ -120,7 +75,7 @@ public class ServletPrestamo extends HttpServlet {
 			        RequestDispatcher rd = request.getRequestDispatcher("/administrarPrestamos.jsp");
 			        rd.forward(request, response);
 				}	
-		}
+		}	
 		
 		if(request.getParameter("btnAceptarPrestamo")!= null) {
 			int idPrestamo = Integer.parseInt(request.getParameter("idPrestamo"));
@@ -153,20 +108,6 @@ public class ServletPrestamo extends HttpServlet {
 				rd.forward(request, response);
 			}	
 		}
-		if(request.getParameter("btnPagarCuota") != null) {
-			boolean resultado = false;
-			int idCuenta = Integer.parseInt(request.getParameter("cuentaPago"));
-			String datosCuota = request.getParameter("cuotaSeleccion");
-			String[] datosCuotaArray = datosCuota.split("\\|");
-			int idCuota = Integer.parseInt(datosCuotaArray[0]);
-			double monto = Double.parseDouble(datosCuotaArray[1]);
-		     
-		    resultado = prestamoNegocio.pagarCuota(idCuota, idCuenta, monto);
-		     
-		    request.setAttribute("resultado", resultado);
-			RequestDispatcher rd = request.getRequestDispatcher("/usuarioCliente.jsp");
-			rd.forward(request, response);
-
-		}
+		
 	}
 }
