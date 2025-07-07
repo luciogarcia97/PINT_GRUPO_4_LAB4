@@ -52,14 +52,14 @@
 			
 				int saldoInsuficiente = 0;
 					
-				if(request.getAttribute("saldo") != null) {				  
-					saldoInsuficiente = Integer.parseInt(request.getAttribute("saldo").toString());
+				if(request.getAttribute("saldoInsuficiente") != null) {				  
+					saldoInsuficiente = Integer.parseInt(request.getAttribute("saldoInsuficiente").toString());
 				 }
 					
 				int cbuInexistente = 0;
 					
-				if(request.getAttribute("cbu") != null) {				   
-					cbuInexistente = Integer.parseInt(request.getAttribute("cbu").toString());
+				if(request.getAttribute("cbuInexistente") != null) {				   
+					cbuInexistente = Integer.parseInt(request.getAttribute("cbuInexistente").toString());
 				 }
 			%>	
 			

@@ -79,19 +79,45 @@ public class ServletClienteTransferencia extends HttpServlet {
     		int idCuenta = Integer.parseInt(request.getParameter("idCuenta"));       	     	
     		String cbu = request.getParameter("txtCbu").toString();       	
     		BigDecimal monto = new BigDecimal(request.getParameter("txtMonto"));
+    		BigDecimal cero = new BigDecimal("0.00");
     		
+    		
+    		Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
+    		Cliente cliente = clienteNegocio.BuscarPorID(usuarioLogueado.getId_cliente());
     		
     		//Valida si la cuenta tiene el dinero suficiente:
-    		if(cuentaNegocio.tieneSaldoSuficiente(idCuenta, monto) == false)
+    		if(cuentaNegocio.tieneSaldoSuficiente(idCuenta, monto) == false || monto.compareTo(cero) <= 0)
     		{
-    			response.sendRedirect("ServletClienteUsuario?saldoInsuficiente=1");
+    			      		
+        		request.setAttribute("cliente", cliente);
+
+        		// Cargar las cuentas del cliente para el desplegable
+        		List<Cuenta> cuentasCliente = cuentaNegocio.obtenerCuentasPorCliente(cliente.getIdCliente());
+        		request.setAttribute("cuentasCliente", cuentasCliente);
+        		
+        		request.setAttribute("saldoInsuficiente", 1);
+        		
+        		RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioClienteTransferencias.jsp");
+        		dispatcher.forward(request, response);
+        		
     		    return;
     		}
     		
     		//Valida si el CBU existe:
     		if(cuentaNegocio.existeCBU(cbu) == false)
     		{
-    			response.sendRedirect("ServletClienteUsuario?cbuInexistente=1");
+    			
+        		request.setAttribute("cliente", cliente);
+
+        		// Cargar las cuentas del cliente para el desplegable
+        		List<Cuenta> cuentasCliente = cuentaNegocio.obtenerCuentasPorCliente(cliente.getIdCliente());
+        		request.setAttribute("cuentasCliente", cuentasCliente);
+        		
+        		request.setAttribute("cbuInexistente", 1);
+        		
+        		RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioClienteTransferencias.jsp");
+        		dispatcher.forward(request, response);
+        		
     			return;
     		}
     		
@@ -118,8 +144,6 @@ public class ServletClienteTransferencia extends HttpServlet {
     		}
     		
     		// Recargar datos y mostrar la página de transferencias
-    		Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
-    		Cliente cliente = clienteNegocio.BuscarPorID(usuarioLogueado.getId_cliente());
     		request.setAttribute("cliente", cliente);
 
     		// Cargar las cuentas del cliente para el desplegable
