@@ -72,7 +72,6 @@ public class ServletClienteDatos extends HttpServlet {
 			List<PrestamoCuota> cuotas = new ArrayList<>();
 			Prestamo prestamo = new Prestamo();
 			prestamo = prestamoNegocio.obtenerPrestamoIDCuenta(cliente.getIdCliente());
-			System.out.println("ID del préstamo vigente: " + prestamo.getId_prestamo());
 
 			cuotas = prestamoNegocio.obtenerCuotas(prestamo.getId_prestamo());
 			request.setAttribute("cuotas", cuotas);
@@ -84,7 +83,6 @@ public class ServletClienteDatos extends HttpServlet {
 			List<TipoCuenta> tiposCuenta = tipoCuentaNegocio.obtenerTiposCuenta();
 			request.setAttribute("tiposCuenta", tiposCuenta);
 			
-			System.out.println("Cantidad de cuotas encontradas: " + cuotas.size());
 			for (PrestamoCuota pc : cuotas) {
 			    System.out.println("Cuota: " + pc.getNumCuota() + ", Monto: " + pc.getMonto());
 			}

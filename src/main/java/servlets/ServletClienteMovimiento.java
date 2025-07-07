@@ -43,15 +43,13 @@ public class ServletClienteMovimiento extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	
     	Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
-    	if(usuarioLogueado != null) {
-    		Cliente cliente = clienteNegocio.BuscarPorID(usuarioLogueado.getId_cliente());
-			request.setAttribute("cliente", cliente);
-    	}
-		
 		if (usuarioLogueado == null) {
 			response.sendRedirect("index.jsp");
 			return;
 		}
+		
+		Cliente cliente = clienteNegocio.BuscarPorID(usuarioLogueado.getId_cliente());
+		request.setAttribute("cliente", cliente);
 				
 		List<Cuenta> cuentas = cuentaNegocio.obtenerCuentasPorCliente(usuarioLogueado.getId_cliente());
 	    request.setAttribute("cuentas", cuentas);

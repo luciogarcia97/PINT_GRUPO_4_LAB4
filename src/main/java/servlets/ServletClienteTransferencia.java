@@ -55,21 +55,19 @@ public class ServletClienteTransferencia extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
-		if(usuarioLogueado != null) {
-    		Cliente cliente = clienteNegocio.BuscarPorID(usuarioLogueado.getId_cliente());
-			request.setAttribute("cliente", cliente);
-    	}
+	    if (usuarioLogueado == null) {
+	        response.sendRedirect("index.jsp");
+	        return;
+	    }
 		
-		
-		if (usuarioLogueado == null) {
-			response.sendRedirect("index.jsp");
-			return;
-		}
-		
-		RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioClienteTransferencias.jsp");
-		dispatcher.forward(request, response);
-		
-		
+	    Cliente cliente = clienteNegocio.BuscarPorID(usuarioLogueado.getId_cliente());
+	    request.setAttribute("cliente", cliente);
+	    
+	    List<Cuenta> cuentasCliente = cuentaNegocio.obtenerCuentasPorCliente(cliente.getIdCliente());
+	    request.setAttribute("cuentasCliente", cuentasCliente);
+	    
+	    RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioClienteTransferencias.jsp");
+	    dispatcher.forward(request, response);
 	}
 
 	
@@ -111,7 +109,7 @@ public class ServletClienteTransferencia extends HttpServlet {
     		
     		// Si se registro todo correctamente, registro el movimiento
     		if(acreditacionResultado && debitoResultado) {
-    			String detalle = "Transferencia: " + cuentaDestino.getCbu();
+    			String detalle = "CBU: " + cuentaDestino.getCbu();
     		    boolean movimientoRegistrado = movimientoNegocio.registrarMovimientoTransferencia(cuentaOrigen.getIdCuenta(), cuentaDestino.getIdCuenta(), monto, detalle);
     		
     		    if (!movimientoRegistrado) {
@@ -119,8 +117,17 @@ public class ServletClienteTransferencia extends HttpServlet {
     		    }
     		}
     		
-    		// Va directo al servlet para volver a cargar al usuario
-    		response.sendRedirect("ServletClienteUsuario?saldoInsuficiente=1");
+    		// Recargar datos y mostrar la página de transferencias
+    		Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
+    		Cliente cliente = clienteNegocio.BuscarPorID(usuarioLogueado.getId_cliente());
+    		request.setAttribute("cliente", cliente);
+
+    		// Cargar las cuentas del cliente para el desplegable
+    		List<Cuenta> cuentasCliente = cuentaNegocio.obtenerCuentasPorCliente(cliente.getIdCliente());
+    		request.setAttribute("cuentasCliente", cuentasCliente);
+
+    		RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioClienteTransferencias.jsp");
+    		dispatcher.forward(request, response);
 	        
     	}
 		

@@ -417,5 +417,87 @@ public class PrestamoDaolmpl implements PrestamoDao {
 
 		return resultado;
 	}
+	
+	@Override
+	public Prestamo obtenerPrestamoPorIdCuota(int idCuota) {
+		Prestamo prestamo = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+
+		try {
+			String query = "select id_prestamo from prestamo_cuota pc where pc.id_prestamo_cuota = ?";
+			pst = cn.prepareStatement(query);
+			pst.setInt(1, idCuota);
+
+			rs = pst.executeQuery();
+
+			if (rs.next()) {
+				prestamo = obtenerPrestamoID(rs.getInt("id_prestamo"));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pst != null)
+					pst.close();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return prestamo;
+	}
+	
+	@Override
+	public boolean generarCuotasPrestamo(int idPrestamo, int cantidadCuotas, double montoPorCuota) {
+	    PreparedStatement pst = null;
+	    boolean resultado = false;
+	    
+	    try {
+	        String query = "INSERT INTO prestamo_cuota (id_prestamo, numero_cuota, monto, fecha_vencimiento, pagada) VALUES (?, ?, ?, ?, 0)";
+	        pst = cn.prepareStatement(query);
+	        
+	        // Hago un insert en lote
+	        for (int i = 1; i <= cantidadCuotas; i++) {
+	            pst.setInt(1, idPrestamo);
+	            pst.setInt(2, i);
+	            pst.setDouble(3, montoPorCuota);
+	            
+	            // Fecha de vencimiento: cada mes a partir de hoy
+	            LocalDate fechaVencimiento = LocalDate.now().plusMonths(i);
+	            pst.setDate(4, Date.valueOf(fechaVencimiento));
+	            
+	            pst.addBatch();
+	        }
+	        
+	        int[] resultados = pst.executeBatch(); // Ejecutar todas las inserciones
+	        
+	        // Verificar que todas las cuotas se insertaron correctamente
+	        if (resultados.length == cantidadCuotas) {
+	            cn.commit();
+	            resultado = true;
+	        }
+	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        try {
+	            cn.rollback();
+	        } catch (SQLException e1) {
+	            e1.printStackTrace();
+	        }
+	    } finally {
+	        try {
+	            if (pst != null) pst.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    
+	    return resultado;
+	}
 
 }

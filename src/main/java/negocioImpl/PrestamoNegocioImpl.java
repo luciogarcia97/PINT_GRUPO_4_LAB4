@@ -33,9 +33,6 @@ public class PrestamoNegocioImpl implements PrestamoNegocio {
 		public List<Prestamo> obtenerPrestamos(){
 			return prestamoDao.obtenerPrestamos();
 		}
-		
-		
-
 
 		@Override 
 		public boolean denegarPrestamo(int idPrestamo) {
@@ -91,7 +88,13 @@ public class PrestamoNegocioImpl implements PrestamoNegocio {
 			return prestamoDao.pagarCuota(idCuota, idCuenta, monto);
 		}
 
-
-
-	
+		@Override
+		public Prestamo obtenerPrestamoPorIdCuota(int idCuota) {
+			return prestamoDao.obtenerPrestamoPorIdCuota(idCuota);
+		}
+		
+		@Override
+		public boolean generarCuotasPrestamo(int idPrestamo, int cantidadCuotas, double montoPorCuota) {
+		    return prestamoDao.generarCuotasPrestamo(idPrestamo, cantidadCuotas, montoPorCuota);
+		}
 }

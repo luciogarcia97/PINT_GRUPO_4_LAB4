@@ -110,8 +110,11 @@ private static final long serialVersionUID = 1L;
                 
                 if (resultado) {
                 	
+                	// Obtenemos el ID de la cuenta recien creada
+                    int idCuentaCreada = cuentaNegocio.obtenerUltimaIdCuenta();
+                	
                 	//Registramos el movimiento de alta de cuenta
-                	boolean movimientoRegistrado = movimientoNegocio.registrarMovimientoAltaCuenta(nuevaCuenta.getIdCuenta(), BigDecimal.valueOf(10000.00));
+                	boolean movimientoRegistrado = movimientoNegocio.registrarMovimientoAltaCuenta(idCuentaCreada, BigDecimal.valueOf(10000.00));
             	    
             	    if (!movimientoRegistrado) {
             	        System.out.println("Advertencia: No se pudo registrar el movimiento de alta de cuenta");

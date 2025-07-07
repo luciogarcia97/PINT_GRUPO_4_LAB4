@@ -27,6 +27,8 @@ public interface PrestamoNegocio {
 
 	boolean pagarCuota(int idCuota,int idCuenta,double monto);
 	
-	public boolean aceptarPrestamo(int idPrestamo);
+	Prestamo obtenerPrestamoPorIdCuota(int idCuota);
 	
+	boolean generarCuotasPrestamo(int idPrestamo, int cantidadCuotas, double montoPorCuota);
+
 }

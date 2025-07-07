@@ -145,5 +145,10 @@ public class CuentaNegocioImpl implements CuentaNegocio {
 	{
 		return cuentaDao.buscarIdConCbu(cbu);
 	}
-
+	
+	@Override
+	public int obtenerUltimaIdCuenta() {
+	    return cuentaDao.obtenerUltimaIdCuenta();
+	}
+	
 }
