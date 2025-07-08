@@ -498,5 +498,69 @@ public class PrestamoDaolmpl implements PrestamoDao {
 	    
 	    return resultado;
 	}
+	
+	public List<Prestamo> obtenerPrestamosConCuotasPendientes(int idCliente){
+		List<Prestamo> prestamos = new ArrayList<>();
+	    PreparedStatement pst = null;
+	    ResultSet rs = null;
+	    Connection cn = null;
+	    
+	    try {
+	        cn = Conexion.getConexion().getSQLConexion();
+	        String query = """
+	            select 
+					p.id_prestamo, 
+					p.id_cliente,
+					p.id_cuenta,
+					p.fecha_solicitud,
+					p.fecha_aprobacion,
+					p.importe_solicitado, 
+					p.plazo_pago_meses, p.importe_por_cuota, p.cantidad_cuotas, 
+					p.estado,
+					p.eliminado
+				from prestamo p 
+				inner join prestamo_cuota pc on p.id_prestamo = pc.id_prestamo 
+				where p.id_cliente = ? 
+				      and p.fecha_aprobacion is not null
+				      and p.eliminado = 0 
+				      and pc.pagada = 0
+				  group by id_prestamo
+				    order by p.fecha_aprobacion;
+		    """;
+	            
+	        pst = cn.prepareStatement(query);
+	        pst.setInt(1, idCliente);
+	        rs = pst.executeQuery();
+	        
+	        while (rs.next()) {
+	            Prestamo prestamo = new Prestamo();
+	            prestamo.setId_prestamo(rs.getInt("id_prestamo"));
+	            prestamo.setId_cliente(rs.getInt("id_cliente"));
+	            prestamo.setId_cuenta(rs.getInt("id_cuenta"));
+	            prestamo.setFecha_solicitud(rs.getObject("fecha_solicitud", LocalDate.class));
+	            prestamo.setFecha_aprobacion(rs.getObject("fecha_aprobacion", LocalDate.class));
+	            prestamo.setImporte_solicitado(rs.getDouble("importe_solicitado"));
+	            prestamo.setPlazo_pago_mes(rs.getInt("plazo_pago_meses"));
+	            prestamo.setImporte_por_cuota(rs.getDouble("importe_por_cuota"));
+	            prestamo.setCantidad_cuotas(rs.getInt("cantidad_cuotas"));
+	            prestamo.setEstado(rs.getString("estado"));
+	            prestamo.setEliminado(rs.getBoolean("eliminado"));
+	            
+	            prestamos.add(prestamo);
+	        }
+	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pst != null) pst.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    
+	    return prestamos;
+	}
 
 }

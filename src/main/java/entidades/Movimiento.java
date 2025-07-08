@@ -12,8 +12,10 @@ public class Movimiento {
     private String detalle;
     private BigDecimal importe;
     private Integer idPrestamo;
+    private String tipoDescripcion;
     
-    public Movimiento() {
+
+	public Movimiento() {
     }
     
     public Movimiento(int idCuenta, int idTipoMovimiento, LocalDate fecha, String detalle, BigDecimal importe, Integer idPrestamo) {
@@ -79,6 +81,14 @@ public class Movimiento {
 
     public void setIdPrestamo(Integer idPrestamo) {
         this.idPrestamo = idPrestamo;
+    }
+
+    public String getTipoDescripcion() {
+    	return tipoDescripcion;
+    }
+    
+    public void setTipoDescripcion(String tipoDescripcion) {
+    	this.tipoDescripcion = tipoDescripcion;
     }
 
     @Override

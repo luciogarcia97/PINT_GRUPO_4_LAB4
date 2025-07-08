@@ -30,5 +30,7 @@ public interface PrestamoNegocio {
 	Prestamo obtenerPrestamoPorIdCuota(int idCuota);
 	
 	boolean generarCuotasPrestamo(int idPrestamo, int cantidadCuotas, double montoPorCuota);
+	
+	List<Prestamo> obtenerPrestamosConCuotasPendientes(int idCliente);
 
 }

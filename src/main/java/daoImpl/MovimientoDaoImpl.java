@@ -63,7 +63,21 @@ public class MovimientoDaoImpl implements MovimientoDao {
         Connection conexion = Conexion.getConexion().getSQLConexion();
 
         try {
-            String query = "SELECT * FROM movimiento WHERE id_cuenta = ? ORDER BY fecha DESC, id_movimiento DESC";
+        	String query = """
+        			select 
+        				m.id_movimiento,
+        				m.id_cuenta,
+        				m.id_tipo_movimiento, 
+        				m.fecha, 
+        				m.detalle, 
+        				m.importe, 
+        				m.id_prestamo,
+        				mt.descripcion tipo_descripcion
+        			from movimiento m
+        			inner join movimiento_tipo mt on mt.id_tipo_movimiento = m.id_tipo_movimiento
+        			where m.id_cuenta = ?
+        			order by m.fecha desc, m.id_movimiento desc;""";
+        	
             pst = conexion.prepareStatement(query);
             pst.setInt(1, idCuenta);
             rs = pst.executeQuery();
@@ -194,6 +208,7 @@ public class MovimientoDaoImpl implements MovimientoDao {
         movimiento.setFecha(rs.getDate("fecha").toLocalDate());
         movimiento.setDetalle(rs.getString("detalle"));
         movimiento.setImporte(rs.getBigDecimal("importe"));
+        movimiento.setTipoDescripcion(rs.getString("tipo_descripcion"));
         
         int idPrestamo = rs.getInt("id_prestamo");
         if (!rs.wasNull()) {

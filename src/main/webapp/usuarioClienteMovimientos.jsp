@@ -149,7 +149,7 @@
 								<% for (Movimiento mov : listaMovimientos) { %>
 								<tr>
 									<td><%= mov.getFecha() %></td>
-									<td>Tipo <%= mov.getIdTipoMovimiento() %></td>
+									<td><%= mov.getTipoDescripcion() %></td>
 									<td><%= mov.getDetalle() %></td>
 									<td
 										class="<%= mov.getImporte().doubleValue() >= 0 ? "text-success" : "text-danger" %>">$<%= mov.getImporte() %></td>
