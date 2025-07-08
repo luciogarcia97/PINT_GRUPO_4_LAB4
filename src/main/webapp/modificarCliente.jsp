@@ -3,6 +3,10 @@
 <%@ page import="entidades.Cliente"%>
 <%@ page import="negocio.ClienteNegocio"%>
 <%@ page import="negocioImpl.ClienteNegociolmpl"%>
+<%@ page import="entidades.Provincia"%>
+<%@ page import="entidades.Localidad"%>
+<%@ page import="java.util.List"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,6 +21,15 @@
 </head>
 <body>
 	<%
+	
+	ClienteNegocio clienteNegocio;
+	clienteNegocio = new ClienteNegociolmpl();
+	
+	
+	List<Provincia> listaProvincia = clienteNegocio.listarProvincias();
+    
+    List<Localidad> listaLocalidades = clienteNegocio.listarLocalidades();
+    
 	
 	Cliente cliente = (Cliente) request.getAttribute("cliente");
 
@@ -168,21 +181,43 @@
 						value="<%= cliente != null ? cliente.getDireccion() : "" %>"
 						required>
 				</div>
-
+				
 				<div class="mb-3 col-md-6">
-					<label for="localidad" class="form-label">Localidad</label> <input
-						type="text" name="txtLocalidad" class="form-control"
-						id="localidad" placeholder="Localidad"
-						value="<%= cliente != null ? cliente.getLocalidad() : "" %>"
-						required>
-				</div>
+		                <label for="localidad" class="form-label">Provincia</label>
+		                 <select id="ddlLocalidades" name="txtProvincia" class="form-control" required>		                
+		                 <option value="<%= cliente != null ? cliente.getProvincia() : "" %>" selected><%= cliente != null ? cliente.getProvincia() : "" %></option>
+		                 
+		                  <%
+						    if (listaProvincia != null) {
+						        for (Provincia prov : listaProvincia) {
+						  %>
+						            <option value="<%= prov.getNombre() %>"><%= prov.getNombre() %></option>
+						  <%
+						        }
+						    }
+						  %>
+		                 
+		                 </select>
+		            </div>
+				
+				
 				<div class="mb-3 col-md-6">
-					<label for="provincia" class="form-label">Provincia</label> <input
-						type="text" name="txtProvincia" class="form-control"
-						id="provincia" placeholder="Provincia"
-						value="<%= cliente != null ? cliente.getProvincia() : "" %>"
-						required>
-				</div>
+		                <label for="localidad" class="form-label">Localidad</label>
+		                 <select id="ddlLocalidades" name="txtLocalidad" class="form-control" required>		                
+		                 <option value="<%= cliente != null ? cliente.getLocalidad() : "" %>" selected><%= cliente != null ? cliente.getLocalidad() : "" %></option>
+		                 
+		                  <%
+						    if (listaLocalidades != null) {
+						        for (Localidad loc : listaLocalidades) {
+						  %>
+						            <option value="<%= loc.getNombre() %>"><%= loc.getNombre() %></option>
+						  <%
+						        }
+						    }
+						  %>
+		                 
+		                 </select>
+		            </div>
 
 				<div class="mb-3 col-md-6">
 					<label for="correo" class="form-label">Email</label> <input
