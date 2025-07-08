@@ -53,17 +53,15 @@ public class ServletClienteMovimiento extends HttpServlet {
 				
 		List<Cuenta> cuentas = cuentaNegocio.obtenerCuentasPorCliente(usuarioLogueado.getId_cliente());
 	    request.setAttribute("cuentas", cuentas);
+	    	  	    
         
-        if (request.getParameter("listar") != null) {     	
+        if (request.getParameter("listar")!= null) {     	
                        
             try {
-                int idCuenta = Integer.parseInt(request.getParameter("idCuenta"));                
+                int idCuenta = Integer.parseInt(request.getParameter("idCuenta"));               
                 
                 List<Movimiento> listaMovimientos = movimientoNegocio.obtenerMovimientosPorCuenta(idCuenta);
-                
-                System.out.println("Entre al listar cuando cargamos los movimientos");
-                        
-                                
+                                              
                 request.setAttribute("listaMovimientos", listaMovimientos);
                 request.setAttribute("cuentas", cuentas);
                 request.setAttribute("cuentaSeleccionada", idCuenta);
@@ -74,17 +72,16 @@ public class ServletClienteMovimiento extends HttpServlet {
                 rd.forward(request, response);
                 
                 
-            } catch (NumberFormatException e) {
-                request.setAttribute("error", "ID de cuenta inválido.");                
-                
+            } catch (NumberFormatException e) {           	
+            	request.setAttribute("mensaje", "¡Seleccione una cuenta para ver sus movimientos!");
                 RequestDispatcher rd = request.getRequestDispatcher("/usuarioClienteMovimientos.jsp");
-                rd.forward(request, response);             
+                rd.forward(request, response);                           
             }              
         
         }        	
         	
         RequestDispatcher rd = request.getRequestDispatcher("/usuarioClienteMovimientos.jsp");
-        rd.forward(request, response);               
+        rd.forward(request, response);              
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
