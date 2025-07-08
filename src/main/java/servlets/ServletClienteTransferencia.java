@@ -89,9 +89,9 @@ public class ServletClienteTransferencia extends HttpServlet {
     		BigDecimal cero = new BigDecimal("0.00"); 
     		Cliente cliente = clienteNegocio.BuscarPorID(usuarioLogueado.getId_cliente());
     		
-    		String montoParam = request.getParameter("txtMonto");
+    		String txtMonto = request.getParameter("txtMonto");
 	    	BigDecimal monto = new BigDecimal("0.00"); 
-	    		if (montoParam == null || montoParam.trim().isEmpty())
+	    		if (txtMonto == null || txtMonto.trim().isEmpty())
     		{
     			//Valida si es null o un string vacio
 	    		request.setAttribute("cliente", cliente);
@@ -109,7 +109,7 @@ public class ServletClienteTransferencia extends HttpServlet {
     		}
     		else
     		{
-    			monto = new BigDecimal(montoParam);
+    			monto = new BigDecimal(txtMonto);
     		}
     		
     		
