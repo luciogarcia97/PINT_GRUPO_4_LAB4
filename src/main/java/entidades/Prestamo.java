@@ -7,7 +7,7 @@ public class Prestamo {
 	private int id_cliente;
 	private int id_cuenta;
 	private LocalDate fecha_solicitud;
-	private String fecha_aprobacion;
+	private LocalDate fecha_aprobacion;
 	private double importe_solicitado;
 	private int plazo_pago_mes;
 	private double importe_por_cuota;
@@ -41,10 +41,10 @@ public class Prestamo {
 	public void setFecha_solicitud(LocalDate localDate) {
 		this.fecha_solicitud = localDate;
 	}
-	public String getFecha_aprobacion() {
+	public LocalDate getFecha_aprobacion() {
 		return fecha_aprobacion;
 	}
-	public void setFecha_aprobacion(String fecha_aprobacion) {
+	public void setFecha_aprobacion(LocalDate fecha_aprobacion) {
 		this.fecha_aprobacion = fecha_aprobacion;
 	}
 	public double getImporte_solicitado() {

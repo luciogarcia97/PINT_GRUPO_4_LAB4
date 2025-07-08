@@ -359,7 +359,7 @@ salida: BEGIN
         LEAVE salida;
     END IF;
   
-    UPDATE prestamo SET estado = 'aceptado' WHERE id_prestamo = idPrestamo;
+    UPDATE prestamo SET estado='aceptado',fecha_aprobacion=DATE(CURRENT_TIMESTAMP()) WHERE id_prestamo = idPrestamo;
 
     COMMIT;
     SET resultado = 1;

@@ -97,4 +97,9 @@ public class PrestamoNegocioImpl implements PrestamoNegocio {
 		public boolean generarCuotasPrestamo(int idPrestamo, int cantidadCuotas, double montoPorCuota) {
 		    return prestamoDao.generarCuotasPrestamo(idPrestamo, cantidadCuotas, montoPorCuota);
 		}
+		
+		@Override
+		public List<Prestamo> obtenerPrestamosConCuotasPendientes(int idCliente){
+			return prestamoDao.obtenerPrestamosConCuotasPendientes(idCliente);
+		}
 }
