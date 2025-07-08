@@ -74,8 +74,8 @@
 				<%
 				    List<Cuenta> cuentas = (List<Cuenta>) request.getAttribute("cuentas");
 				%>
-		
-		
+			
+				
 			<div id="movimientos" class="panel">
 					<h4>Movimientos de Cuenta</h4>
 		
@@ -90,13 +90,12 @@
 									<% if (cuentas != null) {
 										Integer cuentaSeleccionada = (Integer) request.getAttribute("cuentaSeleccionada");
 										for (Cuenta cuenta : cuentas) { 					                       
-					                        boolean selected = (cuentaSeleccionada != null && cuentaSeleccionada.equals(cuenta.getIdCuenta()));
+					                        boolean selected = (cuentaSeleccionada != null && cuentaSeleccionada.equals(cuenta.getIdCuenta()));					                        
 					                %>
 									<option value="<%= cuenta.getIdCuenta() %>"
-										<%= selected ? "selected" : "" %>><%= cuenta.getNumeroCuenta() %>
-										- $<%= cuenta.getSaldo() %></option>
-									<% 	} 
-					                   }
+										<%= selected ? "selected" : "" %>><%= cuenta.getNumeroCuenta() %></option>
+							  		<% 	} 
+					                   } 
 									%>
 								</select>
 							</div>
@@ -108,9 +107,32 @@
 							</div>
 						</div>
 					</form>
+					<%
+						// Mostrar saldo actual solo si hay cuenta seleccionada
+						Integer cuentaSeleccionada = (Integer) request.getAttribute("cuentaSeleccionada");
+						if (cuentas != null && cuentaSeleccionada != null) {
+							for (Cuenta cuenta : cuentas) {
+								if (cuentaSeleccionada.equals(cuenta.getIdCuenta())) {
+					%>	
+						
+						<div class="mt-3">
+							<div class="alert alert-primary" role="alert">
+								<i class="bi bi-wallet2"></i>
+								Saldo actual: <strong>$<%= cuenta.getSaldo() %></strong>
+							</div>
+						</div>
+						
+					<%
+									break;
+								}
+							}
+						}
+					%>
+										
 		
 					<% List<Movimiento> listaMovimientos = (List<Movimiento>) request.getAttribute("listaMovimientos");
-				   if (listaMovimientos != null && !listaMovimientos.isEmpty()) { %>
+				  		 if (listaMovimientos != null && !listaMovimientos.isEmpty()) {
+				  	%>
 					<hr>
 					<h5>Historial de Movimientos</h5>
 					<div class="table-responsive">

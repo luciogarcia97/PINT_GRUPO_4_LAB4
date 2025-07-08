@@ -47,6 +47,9 @@ public class ServletClienteMovimiento extends HttpServlet {
 			response.sendRedirect("index.jsp");
 			return;
 		}
+		request.getSession().setAttribute("usuarioLogueado", usuarioLogueado);
+		
+		
 		
 		Cliente cliente = clienteNegocio.BuscarPorID(usuarioLogueado.getId_cliente());
 		request.setAttribute("cliente", cliente);
@@ -92,7 +95,8 @@ public class ServletClienteMovimiento extends HttpServlet {
         if (usuario == null) {
             response.sendRedirect("index.jsp");
             return;
-        }
+        }      
+		request.getSession().setAttribute("usuarioLogueado", usuario);
         
         if (request.getParameter("btnFiltrarFechas") != null) {
             filtrarPorFechas(request, response, usuario);

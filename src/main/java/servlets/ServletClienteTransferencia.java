@@ -55,10 +55,11 @@ public class ServletClienteTransferencia extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
-	    if (usuarioLogueado == null) {
-	        response.sendRedirect("index.jsp");
-	        return;
-	    }
+		if (usuarioLogueado == null) {
+			response.sendRedirect("index.jsp");
+			return;
+		}
+		request.getSession().setAttribute("usuarioLogueado", usuarioLogueado);
 		
 	    Cliente cliente = clienteNegocio.BuscarPorID(usuarioLogueado.getId_cliente());
 	    request.setAttribute("cliente", cliente);
@@ -73,22 +74,26 @@ public class ServletClienteTransferencia extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		if (request.getParameter("btnTransferencia") != null)
-    	{
+		Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
+		if (usuarioLogueado == null) {
+			response.sendRedirect("index.jsp");
+			return;
+		}
+		request.getSession().setAttribute("usuarioLogueado", usuarioLogueado);		
+		
+		
+		if (request.getParameter("btnTransferencia") != null) {    	
     		
     		int idCuenta = Integer.parseInt(request.getParameter("idCuenta"));       	     	
     		String cbu = request.getParameter("txtCbu").toString();       	
     		BigDecimal monto = new BigDecimal(request.getParameter("txtMonto"));
-    		BigDecimal cero = new BigDecimal("0.00");
+    		BigDecimal cero = new BigDecimal("0.00");    		
     		
-    		
-    		Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
     		Cliente cliente = clienteNegocio.BuscarPorID(usuarioLogueado.getId_cliente());
     		
     		//Valida si la cuenta tiene el dinero suficiente:
-    		if(cuentaNegocio.tieneSaldoSuficiente(idCuenta, monto) == false || monto.compareTo(cero) <= 0)
-    		{
-    			      		
+    		if(cuentaNegocio.tieneSaldoSuficiente(idCuenta, monto) == false || monto.compareTo(cero) <= 0) {
+    		    			      		
         		request.setAttribute("cliente", cliente);
 
         		// Cargar las cuentas del cliente para el desplegable
@@ -104,8 +109,7 @@ public class ServletClienteTransferencia extends HttpServlet {
     		}
     		
     		//Valida si el CBU existe:
-    		if(cuentaNegocio.existeCBU(cbu) == false)
-    		{
+    		if(cuentaNegocio.existeCBU(cbu) == false) {    		
     			
         		request.setAttribute("cliente", cliente);
 
