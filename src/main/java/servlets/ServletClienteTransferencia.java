@@ -85,11 +85,33 @@ public class ServletClienteTransferencia extends HttpServlet {
 		if (request.getParameter("btnTransferencia") != null) {    	
     		
     		int idCuenta = Integer.parseInt(request.getParameter("idCuenta"));       	     	
-    		String cbu = request.getParameter("txtCbu").toString();       	
-    		BigDecimal monto = new BigDecimal(request.getParameter("txtMonto"));
-    		BigDecimal cero = new BigDecimal("0.00");    		
-    		
+    		String cbu = request.getParameter("txtCbu").toString();  
+    		BigDecimal cero = new BigDecimal("0.00"); 
     		Cliente cliente = clienteNegocio.BuscarPorID(usuarioLogueado.getId_cliente());
+    		
+    		String montoParam = request.getParameter("txtMonto");
+	    	BigDecimal monto = new BigDecimal("0.00"); 
+	    		if (montoParam == null || montoParam.trim().isEmpty())
+    		{
+    			//Valida si es null o un string vacio
+	    		request.setAttribute("cliente", cliente);
+
+	        	// Cargar las cuentas del cliente para el desplegable
+	        	List<Cuenta> cuentasCliente = cuentaNegocio.obtenerCuentasPorCliente(cliente.getIdCliente());
+	        	request.setAttribute("cuentasCliente", cuentasCliente);
+	        		
+	        	request.setAttribute("montoInvalido", 1);
+	        		
+	        	RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioClienteTransferencias.jsp");
+	        	dispatcher.forward(request, response);
+	        		
+	    		return;			
+    		}
+    		else
+    		{
+    			monto = new BigDecimal(montoParam);
+    		}
+    		
     		
     		//Valida si la cuenta tiene el dinero suficiente:
     		if(cuentaNegocio.tieneSaldoSuficiente(idCuenta, monto) == false || monto.compareTo(cero) <= 0) {

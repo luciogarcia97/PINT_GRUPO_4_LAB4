@@ -61,6 +61,12 @@
 				if(request.getAttribute("cbuInexistente") != null) {				   
 					cbuInexistente = Integer.parseInt(request.getAttribute("cbuInexistente").toString());
 				 }
+				
+				int montoInvalido = 0;
+				
+				if(request.getAttribute("montoInvalido") != null) {				   
+					montoInvalido = Integer.parseInt(request.getAttribute("montoInvalido").toString());
+				 }
 			%>	
 			
 			
@@ -116,6 +122,19 @@
 					<div class="alert alert-danger alert-dismissible fade show"
 						role="alert">
 						<strong>Error:</strong> El CBU ingresado es inexistente.
+						<button type="button" class="btn-close" data-bs-dismiss="alert"
+							aria-label="Close"></button>
+					</div>
+					<%
+				    }
+				    %>
+				    
+				    <%
+					if(montoInvalido != 0){
+				    %>
+					<div class="alert alert-danger alert-dismissible fade show"
+						role="alert">
+						<strong>Error:</strong> Debe ingresar un monto.
 						<button type="button" class="btn-close" data-bs-dismiss="alert"
 							aria-label="Close"></button>
 					</div>
