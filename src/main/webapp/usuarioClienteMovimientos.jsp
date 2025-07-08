@@ -55,23 +55,20 @@
 				<a href="ServletClientePrestamo" class="btn btn-primary">Préstamos</a>
 				<a href="ServletClienteTransferencia" class="btn btn-primary"> Transferencias</a>			
 				<a href="ServletClienteDatos" class="btn btn-primary">Mis Datos</a>
-			</div>		
-
-
-
+			</div>	
 
 		<div>
-		
 				<% 
-				    String error = (String) request.getAttribute("error");
-				    if (error != null && !error.isEmpty()) {
-			    %>
-					<div class="alert alert-danger alert-dismissible fade show mt-3"role="alert">
-						<i class="bi bi-exclamation-triangle-fill"></i>
-						<%= error %>
-						<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-					</div>
-				<% } %>		
+				    String mensaje = (String) request.getAttribute("mensaje");
+				    if (mensaje != null && !mensaje.trim().isEmpty()) {
+				%>
+				    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+				        <i class="bi bi-check-circle-fill"></i>
+				        <%= mensaje %>
+				        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+				    </div>
+				<% } %>
+					
 					
 			
 				<%
@@ -82,7 +79,8 @@
 			<div id="movimientos" class="panel">
 					<h4>Movimientos de Cuenta</h4>
 		
-					<form action="ServletClienteMovimiento" method="get">
+					<form action="ServletClienteMovimiento" method="get">				
+					
 						
 						<div class="row mb-3">
 							<div class="col-md-6">
