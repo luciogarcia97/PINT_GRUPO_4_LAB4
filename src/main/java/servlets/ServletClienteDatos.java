@@ -52,11 +52,11 @@ public class ServletClienteDatos extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
-		
 		if (usuarioLogueado == null) {
 			response.sendRedirect("index.jsp");
 			return;
 		}
+		request.getSession().setAttribute("usuarioLogueado", usuarioLogueado);	
 		
 		// Carga todos los datos del cliente
 		cargarDatosCompletos(request, response, usuarioLogueado);

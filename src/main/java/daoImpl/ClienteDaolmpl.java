@@ -4,6 +4,7 @@ import dao.ClienteDao;
 import dao.Conexion;
 import entidades.Cliente;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -74,49 +75,49 @@ public class ClienteDaolmpl implements ClienteDao {
 		return idGenerado;
 	}
 
+	
 	@Override
 	public Cliente BuscarPorID(int id) {
-		PreparedStatement pst = null;
-		ResultSet rs = null;
-		Connection conexion = Conexion.getConexion().getSQLConexion();
-		Cliente cliente = null;
+	    PreparedStatement pst = null;
+	    ResultSet rs = null;
+	    Connection conexion = null;
+	    Cliente cliente = null;
 
-		try {
-			String query = "SELECT id_cliente, dni, cuil, nombre, apellido, sexo, nacionalidad, fecha_nacimiento, direccion, localidad, provincia, correo_electronico FROM cliente WHERE id_cliente = ?";
-			pst = conexion.prepareStatement(query);
-			pst.setInt(1, id);
-			rs = pst.executeQuery();
+	    try {
+	        conexion = Conexion.getConexion().getSQLConexion(); 
+	        String query = "SELECT id_cliente, dni, cuil, nombre, apellido, sexo, nacionalidad, fecha_nacimiento, direccion, localidad, provincia, correo_electronico FROM cliente WHERE id_cliente = ?";
+	        pst = conexion.prepareStatement(query);
+	        pst.setInt(1, id);
+	        rs = pst.executeQuery();
 
-			if (rs.next()) {
-				cliente = new Cliente();
-				cliente.setIdCliente(rs.getInt("id_cliente"));
-				cliente.setDni(rs.getInt("dni"));
-				cliente.setCuil(rs.getString("cuil"));
-				cliente.setNombre(rs.getString("nombre"));
-				cliente.setApellido(rs.getString("apellido"));
-				cliente.setSexo(rs.getString("sexo"));
-				cliente.setNacionalidad(rs.getString("nacionalidad"));
-				cliente.setFechaNacimiento(rs.getString("fecha_nacimiento"));
-				cliente.setDireccion(rs.getString("direccion"));
-				cliente.setLocalidad(rs.getString("localidad"));
-				cliente.setProvincia(rs.getString("provincia"));
-				cliente.setCorreoElectronico(rs.getString("correo_electronico"));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (pst != null)
-					pst.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
+	        if (rs.next()) {
+	            cliente = new Cliente();
+	            cliente.setIdCliente(rs.getInt("id_cliente"));
+	            cliente.setDni(rs.getInt("dni"));
+	            cliente.setCuil(rs.getString("cuil"));
+	            cliente.setNombre(rs.getString("nombre"));
+	            cliente.setApellido(rs.getString("apellido"));
+	            cliente.setSexo(rs.getString("sexo"));
+	            cliente.setNacionalidad(rs.getString("nacionalidad"));
+	            cliente.setFechaNacimiento(rs.getString("fecha_nacimiento"));
+	            cliente.setDireccion(rs.getString("direccion"));
+	            cliente.setLocalidad(rs.getString("localidad"));
+	            cliente.setProvincia(rs.getString("provincia"));
+	            cliente.setCorreoElectronico(rs.getString("correo_electronico"));
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pst != null) pst.close();	           
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
 
-		return cliente;
-	}
+	    return cliente;
+	}	
 
 	@Override
 	public boolean ModificarCliente(Cliente cliente) {

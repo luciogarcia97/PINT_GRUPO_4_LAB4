@@ -87,6 +87,14 @@
 	                 </div>
                	 <% } %> 
                	 
+               	  <% if (request.getAttribute("denegado") != null) { %>
+	                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
+	                    <i class="bi bi-exclamation-triangle me-2"></i>
+	                        <%= request.getAttribute("denegado") %>
+	                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+	                 </div>
+               	 <% } %>   	               	 
+               	 
                	 <% if (request.getAttribute("exito") != null) { %>
 				    <div class="alert alert-success" role="alert">				    
 				        <%= request.getAttribute("exito") %>
@@ -138,14 +146,14 @@
 										<td>
 										<% if(!p.getEstado().equals("denegado") && !p.getEstado().equals("aceptado")){%>
 										 <div class="d-flex gap-1">
-										 <form   action="ServletPrestamo?denegar=1" method="post"
-											class="d-inline">
-										 <input type="hidden" name="idPrestamo"
-											value="<%= p.getId_prestamo() %>" />														
-										 <button type="submit" class="btn btn-sm btn-outline-danger"
-											title="Denegar Prestamo" name="btnDenegarPrestamo">
-											<i class="bi bi-trash"></i>
-										 </button>
+										 <form   action="ServletPrestamo?denegar=1" method="post" class="d-inline">
+											 <input type="hidden" name="idPrestamo"
+												value="<%= p.getId_prestamo() %>" />														
+											 <button type="submit" class="btn btn-sm btn-outline-danger" 
+											 	onclick="return confirm('¿Estás seguro que deseas denegar este préstamo?')"
+												title="Denegar Prestamo" name="btnDenegarPrestamo">
+												<i class="bi bi-trash"></i>
+											 </button>
 										 
 										 </form>
 										 
@@ -154,6 +162,7 @@
 										 <input type="hidden" name="idPrestamo"
 											value="<%= p.getId_prestamo() %>" />														
 										 <button type="submit" class="btn btn-sm btn-outline-success"
+										 	onclick="return confirm('¿Estás seguro que deseas aceptar este préstamo?')"
 											title="Aceptar Prestamo" name="btnAceptarPrestamo">
 											<i class="bi bi-arrow-through-heart-fill"></i>
 										 </button>

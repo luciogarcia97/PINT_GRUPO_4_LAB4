@@ -53,7 +53,6 @@
 		%>	
 		
 		
-		
 		<div class="container mt-4">
 	
 		
@@ -91,13 +90,14 @@
 							<option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %>
 								-
 								<%= cuenta.getSaldo() %></option>
-							<% }
-	            } %>
+							<% 		}
+	           					 } 
+	           				%>
 						</select>
 					</div>
 					<div class="mb-3">
 						<label for="montoPrestamo" class="form-label">Monto	solicitado</label>
-						 <input type="number" class="form-control" min="0" max="500000" step="0.01"
+						 <input type="number" class="form-control" min="0" max="500000" step="0.01" placeholder="0"
 							id="montoPrestamo" name="montoPrestamo">
 					</div>
 					<div class="mb-3">
@@ -115,7 +115,7 @@
 	
 			<div id="pagoPrestamos" class="panel" style="display: block">
 				<h4>Pago de prestamos</h4>
-				<form method="post" action="ServletPrestamo">
+				<form method="post" action="ServletClientePrestamo">
 					<div class="mb-3">
 						<label for="cuotaSeleccion" class="form-label">Seleccione
 							Cuota</label> <select class="form-select" id="cuotaSeleccion"

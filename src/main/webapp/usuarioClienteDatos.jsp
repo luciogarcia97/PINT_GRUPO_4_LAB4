@@ -4,12 +4,13 @@
 <%@ page import="entidades.*"%>
 <%
     // Autenticación de cliente
-   Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
+    Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
     if (usuarioLogueado == null) {
         response.sendRedirect("index.jsp");
         return;
     }      
 %>
+
 
 <!DOCTYPE html>
 <html lang="es">

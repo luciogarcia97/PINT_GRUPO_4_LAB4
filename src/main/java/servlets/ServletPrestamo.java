@@ -64,11 +64,12 @@ public class ServletPrestamo extends HttpServlet {
 			        
 			        request.setAttribute("listaPrestamos", listaPrestamos);
 			        
+			        request.setAttribute("denegado", "¡Préstamo denegado!");
 			        RequestDispatcher rd = request.getRequestDispatcher("/administrarPrestamos.jsp");
 			        rd.forward(request, response);
 			 } else {
 					
-					request.setAttribute("error", "No se pudo denegar el prestamo.");
+					request.setAttribute("error", "No se pudo denegar el préstamo.");
                     List<Prestamo> listaPrestamos = prestamoNegocio.obtenerPrestamos();
 			        request.setAttribute("listaPrestamos", listaPrestamos);
 			        
