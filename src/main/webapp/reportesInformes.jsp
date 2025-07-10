@@ -4,6 +4,15 @@
 <%@ page import="java.util.Map"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="java.util.Date"%>
+<%@ page import="entidades.Usuario" %>
+<%
+    // Verificar autenticación de admin
+    Usuario adminLogueado = (Usuario) session.getAttribute("adminLogueado");
+    if (adminLogueado == null) {
+        response.sendRedirect("index.jsp");
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -373,7 +382,7 @@
 		</div>
 	</div>
 
-	<footer class="bg-light text-center text-muted py-3 mt-auto">
+	<footer class="bg-light text-center text-muted py-3 mt-5">
 		<div class="container">
 			<span>© 2025 Banco UTN – Todos los derechos reservados</span>
 		</div>

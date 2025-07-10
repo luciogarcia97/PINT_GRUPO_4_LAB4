@@ -3,6 +3,16 @@
 <%@ page import="entidades.Cliente"%>
 <%@ page import="entidades.Usuario" %>
 <%@ page import="entidades.Prestamo" %>
+<%
+    // Verificar autenticación de admin
+    Usuario adminLogueado = (Usuario) session.getAttribute("adminLogueado");
+    if (adminLogueado == null) {
+        response.sendRedirect("index.jsp");
+        return;
+    }
+%>
+
+
 
 <!DOCTYPE html>
 <html lang="es">

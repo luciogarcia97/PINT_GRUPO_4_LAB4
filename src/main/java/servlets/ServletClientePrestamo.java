@@ -53,7 +53,7 @@ public class ServletClientePrestamo extends HttpServlet {
 			response.sendRedirect("index.jsp");
 			return;
 		}
-		request.getSession().setAttribute("usuarioLogueado", usuarioLogueado);
+		request.getSession().setAttribute("usuarioLogueado", usuarioLogueado);		
 
 		Cliente cliente = clienteNegocio.BuscarPorID(usuarioLogueado.getId_cliente());
 		request.setAttribute("cliente", cliente);
