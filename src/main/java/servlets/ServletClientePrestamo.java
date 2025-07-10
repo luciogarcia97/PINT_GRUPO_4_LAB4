@@ -60,14 +60,17 @@ public class ServletClientePrestamo extends HttpServlet {
 
 		List<Cuenta> cuentas = cuentaNegocio.obtenerCuentasPorCliente(usuarioLogueado.getId_cliente());
 		request.setAttribute("cuentas", cuentas);
+		
+		List<Prestamo> prestamosConCuotasPendientes = prestamoNegocio.obtenerPrestamosConCuotasPendientes(usuarioLogueado.getId_cliente());
+		request.setAttribute("prestamosConCuotasPendientes", prestamosConCuotasPendientes);
 
 		RequestDispatcher rd = request.getRequestDispatcher("/usuarioClientePrestamos.jsp");
 		rd.forward(request, response);
+		
 
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
 		if (usuarioLogueado == null) {
@@ -81,6 +84,41 @@ public class ServletClientePrestamo extends HttpServlet {
 
 		List<Cuenta> cuentas = cuentaNegocio.obtenerCuentasPorCliente(usuarioLogueado.getId_cliente());
 		request.setAttribute("cuentas", cuentas);
+		
+	    List<Prestamo> prestamosConCuotasPendientes = prestamoNegocio.obtenerPrestamosConCuotasPendientes(usuarioLogueado.getId_cliente());
+	    request.setAttribute("prestamosConCuotasPendientes", prestamosConCuotasPendientes);
+		
+	    
+	    if (request.getParameter("btnPagarCuota") != null) {
+			boolean resultado = false;
+			int idCuenta = Integer.parseInt(request.getParameter("cuentaPago"));
+			String datosCuota = request.getParameter("cuotaSeleccion");
+			String[] datosCuotaArray = datosCuota.split("\\|");
+			int idCuota = Integer.parseInt(datosCuotaArray[0]);
+			double monto = Double.parseDouble(datosCuotaArray[1]);
+
+			resultado = prestamoNegocio.pagarCuota(idCuota, idCuenta, monto);
+
+			if (resultado) {
+				Prestamo prestamo = prestamoNegocio.obtenerPrestamoPorIdCuota(idCuota);
+				Boolean resultadoMovimiento = false;
+
+				resultadoMovimiento = movimientoNegocio.registrarMovimientoPagoCuota(idCuenta,
+						BigDecimal.valueOf(monto), prestamo.getId_prestamo());
+				
+				if (resultadoMovimiento) {
+				    request.setAttribute("mensaje", "¡Cuota pagada exitosamente!");
+				} else {
+				    request.setAttribute("error", "Error al pagar la cuota. Verifique su saldo.");
+				}
+			}
+		    prestamosConCuotasPendientes = prestamoNegocio.obtenerPrestamosConCuotasPendientes(usuarioLogueado.getId_cliente());
+		    request.setAttribute("prestamosConCuotasPendientes", prestamosConCuotasPendientes);
+			request.setAttribute("resultado", resultado);
+			RequestDispatcher rd = request.getRequestDispatcher("/usuarioClientePrestamos.jsp");
+			rd.forward(request, response);
+			return;
+		}
 
 		if (request.getParameter("btnSolicitarPrestamo") != null) {
 
@@ -125,33 +163,18 @@ public class ServletClientePrestamo extends HttpServlet {
 			}
 		}
 
-		if (request.getParameter("btnPagarCuota") != null) {
-			boolean resultado = false;
-			int idCuenta = Integer.parseInt(request.getParameter("cuentaPago"));
-			String datosCuota = request.getParameter("cuotaSeleccion");
-			String[] datosCuotaArray = datosCuota.split("\\|");
-			int idCuota = Integer.parseInt(datosCuotaArray[0]);
-			double monto = Double.parseDouble(datosCuotaArray[1]);
-
-			resultado = prestamoNegocio.pagarCuota(idCuota, idCuenta, monto);
-
-			if (resultado) {
-				Prestamo prestamo = prestamoNegocio.obtenerPrestamoPorIdCuota(idCuota);
-				Boolean resultadoMovimiento = false;
-
-				resultadoMovimiento = movimientoNegocio.registrarMovimientoPagoCuota(idCuenta,
-						BigDecimal.valueOf(monto), prestamo.getId_prestamo());
-
-				if (!resultadoMovimiento) {
-					System.out.println("Advertencia: No se pudieron registrar los movimientos de transferencia");
-				}
-			}
-
-			request.setAttribute("resultado", resultado);
-			RequestDispatcher rd = request.getRequestDispatcher("/usuarioClientePrestamos.jsp");
-			rd.forward(request, response);
-			return;
-		}
+		String prestamoSeleccionado = request.getParameter("prestamoSeleccionado");
+	    if (prestamoSeleccionado != null && !prestamoSeleccionado.isEmpty()) {
+	        int idPrestamo = Integer.parseInt(prestamoSeleccionado);
+	        List<PrestamoCuota> cuotasPendientes = prestamoNegocio.obtenerCuotas(idPrestamo);
+	        request.setAttribute("cuotasPendientes", cuotasPendientes);
+	        request.setAttribute("prestamoSeleccionadoId", prestamoSeleccionado);
+	        
+	        RequestDispatcher rd = request.getRequestDispatcher("/usuarioClientePrestamos.jsp");
+	        rd.forward(request, response);
+	        return;
+	    }
+	    
 	}
 
 }
