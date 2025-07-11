@@ -4,12 +4,13 @@
 <%@ page import="entidades.*"%>
 <%
     // Autenticación de cliente
-   Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
+    Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
     if (usuarioLogueado == null) {
         response.sendRedirect("index.jsp");
         return;
     }      
 %>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -49,7 +50,9 @@
 	<main class="flex-grow-1">
 	
 		<%
-		   List<Cuenta> cuentas = (List<Cuenta>) request.getAttribute("cuentas");
+			List<Cuenta> cuentas = (List<Cuenta>) request.getAttribute("cuentas");
+				   		
+			List<TipoCuenta> tiposCuenta = (List<TipoCuenta>) request.getAttribute("tiposCuenta");		
 		%>
 		
 		<div class="container mt-4">	
@@ -96,8 +99,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<% 
-		                    List<TipoCuenta> tiposCuenta = (List<TipoCuenta>) request.getAttribute("tiposCuenta");
+							<% 	    
 		                    for (Cuenta cuenta : cuentas) { 
 		                    %>
 							<tr>

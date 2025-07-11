@@ -1,6 +1,8 @@
 package negocioImpl;
 
 import java.sql.Date;
+import java.util.List;
+import java.util.Map;
 
 import dao.ReporteDao;
 import daoImpl.ReporteDaoImpl;
@@ -37,6 +39,12 @@ public class ReporteNegocioImpl implements ReporteNegocio {
 	public int clientesActivos(Date fechaInicio, Date fechaFin) {
 		
 		return reporteDao.clientesActivos(fechaInicio, fechaFin);
+	}
+
+	@Override
+	public List<Map<String, Object>> obtenerDatosDetallados(String tipoReporte, Date fechaInicio, Date fechaFin) {
+		
+		return reporteDao.obtenerDatosDetallados(tipoReporte, fechaInicio, fechaFin);
 	}
 
 }

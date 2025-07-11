@@ -52,11 +52,11 @@ public class ServletClienteDatos extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
-		
 		if (usuarioLogueado == null) {
 			response.sendRedirect("index.jsp");
 			return;
 		}
+		request.getSession().setAttribute("usuarioLogueado", usuarioLogueado);	
 		
 		// Carga todos los datos del cliente
 		cargarDatosCompletos(request, response, usuarioLogueado);
@@ -71,8 +71,10 @@ public class ServletClienteDatos extends HttpServlet {
 			// Obtiene cuotas del prestamo vigente
 			List<PrestamoCuota> cuotas = new ArrayList<>();
 			Prestamo prestamo = new Prestamo();
-			prestamo = prestamoNegocio.obtenerPrestamoIDCuenta(cliente.getIdCliente());
-
+			if(prestamoNegocio.obtenerPrestamoIDCuenta(cliente.getIdCliente()) != null)
+				{
+					prestamo = prestamoNegocio.obtenerPrestamoIDCuenta(cliente.getIdCliente());
+				}
 			cuotas = prestamoNegocio.obtenerCuotas(prestamo.getId_prestamo());
 			request.setAttribute("cuotas", cuotas);
 			// Obtiene las cuentas del cliente

@@ -49,6 +49,7 @@ public class CuentaDaoImpl implements CuentaDao {
 			try {
 				if (pst != null)
 					pst.close();
+					
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -227,12 +228,12 @@ public class CuentaDaoImpl implements CuentaDao {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} finally {
-			try {
-			if (pst != null)
-				pst.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+				try {
+				if (pst != null)
+					pst.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 		}
 
 		return resultado;

@@ -116,12 +116,44 @@
 								    if(errorModificar){
 						 %>
 							<div class="alert alert-danger" role="alert">
-								¡No se puede modificar un cliente que ya está eliminado¡
+								¡No se puede modificar un cliente que ya está eliminado!
+							</div>
+					
+						<% 	  }
+							}		        
+						%>
+						
+						<% 
+							 boolean errorModificarNull = false;		        	
+							 if(request.getAttribute("errorModificarNull") != null) {
+								    errorModificarNull = (boolean)request.getAttribute("errorModificarNull");
+								        	
+								    if(errorModificarNull){
+						 %>
+							<div class="alert alert-danger" role="alert">
+								¡No se puede modificar un cliente Id.Cliente nulo!
 							</div>
 					
 						<% 	  }
 							}		        
 						%>						
+						
+						
+					    <% 
+							 boolean NoModificado = false;		        	
+								if(request.getAttribute("NoModificado") != null) {
+									 NoModificado = (boolean)request.getAttribute("NoModificado");
+										        	
+									 if(NoModificado){
+						 %>
+							<div class="alert alert-danger" role="alert">
+								"No se pudo modificar, los datos no pudieron ser establecidos."
+							</div>
+							
+						<% 	  }
+							}		        
+						%>										
+												
 						
 						<% 
 							 boolean exitoBorrar = false;		        	
