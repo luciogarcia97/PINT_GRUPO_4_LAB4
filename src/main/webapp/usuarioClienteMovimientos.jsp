@@ -55,34 +55,32 @@
 				<a href="ServletClientePrestamo" class="btn btn-primary">Préstamos</a>
 				<a href="ServletClienteTransferencia" class="btn btn-primary"> Transferencias</a>			
 				<a href="ServletClienteDatos" class="btn btn-primary">Mis Datos</a>
-			</div>		
-
-
-
+			</div>	
 
 		<div>
-		
 				<% 
-				    String error = (String) request.getAttribute("error");
-				    if (error != null && !error.isEmpty()) {
-			    %>
-					<div class="alert alert-danger alert-dismissible fade show mt-3"role="alert">
-						<i class="bi bi-exclamation-triangle-fill"></i>
-						<%= error %>
-						<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-					</div>
-				<% } %>		
+				    String mensaje = (String) request.getAttribute("mensaje");
+				    if (mensaje != null && !mensaje.trim().isEmpty()) {
+				%>
+				    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+				        <i class="bi bi-check-circle-fill"></i>
+				        <%= mensaje %>
+				        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+				    </div>
+				<% } %>
+					
 					
 			
 				<%
 				    List<Cuenta> cuentas = (List<Cuenta>) request.getAttribute("cuentas");
 				%>
-		
-		
+			
+				
 			<div id="movimientos" class="panel">
 					<h4>Movimientos de Cuenta</h4>
 		
-					<form action="ServletClienteMovimiento" method="get">
+					<form action="ServletClienteMovimiento" method="get">				
+					
 						
 						<div class="row mb-3">
 							<div class="col-md-6">
@@ -92,13 +90,12 @@
 									<% if (cuentas != null) {
 										Integer cuentaSeleccionada = (Integer) request.getAttribute("cuentaSeleccionada");
 										for (Cuenta cuenta : cuentas) { 					                       
-					                        boolean selected = (cuentaSeleccionada != null && cuentaSeleccionada.equals(cuenta.getIdCuenta()));
+					                        boolean selected = (cuentaSeleccionada != null && cuentaSeleccionada.equals(cuenta.getIdCuenta()));					                        
 					                %>
 									<option value="<%= cuenta.getIdCuenta() %>"
-										<%= selected ? "selected" : "" %>><%= cuenta.getNumeroCuenta() %>
-										- $<%= cuenta.getSaldo() %></option>
-									<% 	} 
-					                   }
+										<%= selected ? "selected" : "" %>><%= cuenta.getNumeroCuenta() %></option>
+							  		<% 	} 
+					                   } 
 									%>
 								</select>
 							</div>
@@ -110,9 +107,32 @@
 							</div>
 						</div>
 					</form>
+					<%
+						// Mostrar saldo actual solo si hay cuenta seleccionada
+						Integer cuentaSeleccionada = (Integer) request.getAttribute("cuentaSeleccionada");
+						if (cuentas != null && cuentaSeleccionada != null) {
+							for (Cuenta cuenta : cuentas) {
+								if (cuentaSeleccionada.equals(cuenta.getIdCuenta())) {
+					%>	
+						
+						<div class="mt-3">
+							<div class="alert alert-primary" role="alert">
+								<i class="bi bi-wallet2"></i>
+								Saldo actual: <strong>$<%= cuenta.getSaldo() %></strong>
+							</div>
+						</div>
+						
+					<%
+									break;
+								}
+							}
+						}
+					%>
+										
 		
 					<% List<Movimiento> listaMovimientos = (List<Movimiento>) request.getAttribute("listaMovimientos");
-				   if (listaMovimientos != null && !listaMovimientos.isEmpty()) { %>
+				  		 if (listaMovimientos != null && !listaMovimientos.isEmpty()) {
+				  	%>
 					<hr>
 					<h5>Historial de Movimientos</h5>
 					<div class="table-responsive">
@@ -129,7 +149,7 @@
 								<% for (Movimiento mov : listaMovimientos) { %>
 								<tr>
 									<td><%= mov.getFecha() %></td>
-									<td>Tipo <%= mov.getIdTipoMovimiento() %></td>
+									<td><%= mov.getTipoDescripcion() %></td>
 									<td><%= mov.getDetalle() %></td>
 									<td
 										class="<%= mov.getImporte().doubleValue() >= 0 ? "text-success" : "text-danger" %>">$<%= mov.getImporte() %></td>

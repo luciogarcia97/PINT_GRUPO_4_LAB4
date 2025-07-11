@@ -77,18 +77,18 @@ public class ServletCliente extends HttpServlet {
 			Cliente cliente = new Cliente();
 			Boolean resultado = false;
 			int resultado1 = -1;			
-			
-			cliente.setNombre(request.getParameter("txtNombre"));
-			cliente.setApellido(request.getParameter("txtApellido"));
-			cliente.setSexo(request.getParameter("txtSexo"));
-			cliente.setNacionalidad(request.getParameter("txtNacionalidad"));			
-			cliente.setDireccion(request.getParameter("txtDireccion"));
-			cliente.setLocalidad(request.getParameter("ddlLocalidades"));
-			cliente.setProvincia(request.getParameter("ddlProvincias"));
-			cliente.setCorreoElectronico(request.getParameter("txtCorreo"));
-			cliente.setEliminado(false);			
-			
+						
 			try {
+				
+				cliente.setNombre(request.getParameter("txtNombre"));
+				cliente.setApellido(request.getParameter("txtApellido"));
+				cliente.setSexo(request.getParameter("txtSexo"));
+				cliente.setNacionalidad(request.getParameter("txtNacionalidad"));			
+				cliente.setDireccion(request.getParameter("txtDireccion"));
+				cliente.setLocalidad(request.getParameter("ddlLocalidades"));
+				cliente.setProvincia(request.getParameter("ddlProvincias"));
+				cliente.setCorreoElectronico(request.getParameter("txtCorreo"));
+				cliente.setEliminado(false);				
 				
 				Validaciones.verificarDniInvalido(request.getParameter("txtDni"));				
 				cliente.setDni(Integer.parseInt(request.getParameter("txtDni")));
@@ -197,18 +197,40 @@ public class ServletCliente extends HttpServlet {
 			
 			Cliente c = new Cliente();			
 			
-			// Creo cliente con los atributos del ID que viene por parametro			
-			c.setIdCliente(Integer.parseInt(request.getParameter("idCliente")));			 
-			c.setNombre(request.getParameter("txtNombre"));
-			c.setApellido(request.getParameter("txtApellido"));
-			c.setSexo(request.getParameter("txtSexo"));
-			c.setNacionalidad(request.getParameter("txtNacionalidad"));				
-			c.setDireccion(request.getParameter("txtDireccion"));
-			c.setLocalidad(request.getParameter("txtLocalidad"));
-			c.setProvincia(request.getParameter("txtProvincia"));
-			c.setCorreoElectronico(request.getParameter("txtEmail"));
+			try {				
+				 
+				// Creo cliente con los atributos del ID que viene por parametro			
+				c.setIdCliente(Integer.parseInt(request.getParameter("idCliente")));			 
+				c.setNombre(request.getParameter("txtNombre"));
+				c.setApellido(request.getParameter("txtApellido"));
+				c.setSexo(request.getParameter("txtSexo"));
+				c.setNacionalidad(request.getParameter("txtNacionalidad"));				
+				c.setDireccion(request.getParameter("txtDireccion"));
+				c.setLocalidad(request.getParameter("txtLocalidad"));
+				c.setProvincia(request.getParameter("txtProvincia"));
+				c.setCorreoElectronico(request.getParameter("txtEmail"));
+				
+				
+			} catch (Exception e) {
+				request.setAttribute("NoModificado", true);
+				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
+				request.setAttribute("listaClientes", listaClientes);
+				RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");				
+				rd.forward(request, response);	
+				return;			
+			}
 			
 			clienteModificar = clienteNegocio.BuscarPorID(c.getIdCliente());
+			
+			if (clienteModificar == null) {
+				request.setAttribute("errorModificarNull", true);
+				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
+				request.setAttribute("listaClientes", listaClientes);
+				RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
+				rd.forward(request, response);
+				return;
+			}
+						
 			
 			//validar si ya esta eliminado no puedo modificar			
 			if(clienteNegocio.verificoClienteEliminado(Integer.parseInt(request.getParameter("idCliente")))) {

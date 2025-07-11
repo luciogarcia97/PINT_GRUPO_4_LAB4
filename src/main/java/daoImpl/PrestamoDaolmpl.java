@@ -19,8 +19,7 @@ import java.util.List;
 
 import com.mysql.jdbc.CallableStatement;
 
-public class PrestamoDaolmpl implements PrestamoDao {
-	private Connection cn = Conexion.getConexion().getSQLConexion();
+public class PrestamoDaolmpl implements PrestamoDao {	
 
 	@Override
 	public boolean insertar(Prestamo prestamo) {
@@ -61,137 +60,103 @@ public class PrestamoDaolmpl implements PrestamoDao {
 			try {
 				if (ps != null)
 					ps.close();
-				if (cn != null)
-					cn.close();
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 
 		return estado;
-	}
-
-	@Override
-	public List<Prestamo> obtenerPrestamos() {
-		List<Prestamo> listaPrestamos = new ArrayList<>();
-		PreparedStatement pst = null;
-		ResultSet rs = null;
-
-		try {
-			String query = "SELECT id_prestamo, id_cliente, id_cuenta, fecha_solicitud, importe_solicitado, plazo_pago_meses, importe_por_cuota, cantidad_cuotas, estado, eliminado FROM prestamo";
-			pst = cn.prepareStatement(query);
-			rs = pst.executeQuery();
-
-			while (rs.next()) {
-
-				Prestamo prestamo = new Prestamo();
-				prestamo.setId_prestamo(rs.getInt("id_prestamo"));
-				prestamo.setId_cliente(rs.getInt("id_cliente"));
-				prestamo.setId_cuenta(rs.getInt("id_cuenta"));
-				prestamo.setFecha_solicitud(LocalDate.now());
-				prestamo.setImporte_solicitado(rs.getInt("importe_solicitado"));
-				prestamo.setPlazo_pago_mes(rs.getInt("plazo_pago_meses"));
-				prestamo.setImporte_por_cuota(rs.getInt("importe_por_cuota"));
-				prestamo.setCantidad_cuotas(rs.getInt("cantidad_cuotas"));
-				prestamo.setEstado(rs.getString("estado"));
-				prestamo.setEliminado(rs.getBoolean("eliminado"));
-				listaPrestamos.add(prestamo);
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (pst != null)
-					pst.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return listaPrestamos;
-	}
-
-	@Override
-	public boolean denegarPrestamo(int idPrestamo) {
-		PreparedStatement pst = null;
-
-		boolean resultado = false;
-		try {
-			String query = "UPDATE prestamo SET estado = ? WHERE id_prestamo = ?";
-			pst = cn.prepareStatement(query);
-			pst.setString(1, "denegado");
-			pst.setInt(2, idPrestamo);
-
-			if (pst.executeUpdate() > 0) {
-				cn.commit();
-				resultado = true;
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			try {
-				cn.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-		} finally {
-			try {
-				if (pst != null)
-					pst.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return resultado;
-
-	}
-
-	/*@Override
-	public boolean aceptarPrestamo(int idPrestamo) {
-		PreparedStatement pst = null;
-
-		boolean resultado = false;
-		try {
-			String query = "UPDATE prestamo SET estado = ? WHERE id_prestamo = ?";
-			pst = cn.prepareStatement(query);
-			pst.setString(1, "aceptado");
-			pst.setInt(2, idPrestamo);
-
-			if (pst.executeUpdate() > 0) {
-				cn.commit();
-				resultado = true;
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			try {
-				cn.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-		} finally {
-			try {
-				if (pst != null)
-					pst.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return resultado;
-
-	}*/
+	}	
 	
 	@Override
+	public List<Prestamo> obtenerPrestamos() {
+	    List<Prestamo> listaPrestamos = new ArrayList<>();
+	    Connection cn = null;
+	    PreparedStatement pst = null;
+	    ResultSet rs = null;
+
+	    try {
+	        cn = Conexion.getConexion().getSQLConexion();
+	        String query = "SELECT id_prestamo, id_cliente, id_cuenta, fecha_solicitud, importe_solicitado, plazo_pago_meses, importe_por_cuota, cantidad_cuotas, estado, eliminado FROM prestamo";
+	        pst = cn.prepareStatement(query);
+	        rs = pst.executeQuery();
+
+	        while (rs.next()) {
+	            Prestamo prestamo = new Prestamo();
+	            prestamo.setId_prestamo(rs.getInt("id_prestamo"));
+	            prestamo.setId_cliente(rs.getInt("id_cliente"));
+	            prestamo.setId_cuenta(rs.getInt("id_cuenta"));
+	            prestamo.setFecha_solicitud(rs.getDate("fecha_solicitud").toLocalDate()); 
+	            prestamo.setImporte_solicitado(rs.getDouble("importe_solicitado"));
+	            prestamo.setPlazo_pago_mes(rs.getInt("plazo_pago_meses"));
+	            prestamo.setImporte_por_cuota(rs.getDouble("importe_por_cuota"));
+	            prestamo.setCantidad_cuotas(rs.getInt("cantidad_cuotas"));
+	            prestamo.setEstado(rs.getString("estado"));
+	            prestamo.setEliminado(rs.getBoolean("eliminado"));
+	            listaPrestamos.add(prestamo);
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pst != null) pst.close();	             
+	        } catch (SQLException e) {
+	            e.printStackTrace();  
+	        }
+	    }
+
+	    return listaPrestamos;
+	}
+	
+	@Override
+	public boolean denegarPrestamo(int idPrestamo) {
+	    boolean resultado = false;
+	    Connection cn = null;
+	    PreparedStatement pst = null;
+
+	    try {
+	        cn = Conexion.getConexion().getSQLConexion();
+	        String query = "UPDATE prestamo SET estado = ? WHERE id_prestamo = ?";
+	        pst = cn.prepareStatement(query);
+	        pst.setString(1, "denegado");
+	        pst.setInt(2, idPrestamo);
+
+	        if (pst.executeUpdate() > 0) {
+	            cn.commit();
+	            resultado = true;
+	        } else {
+	            cn.rollback();
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        try {
+	            if (cn != null) cn.rollback();
+	        } catch (SQLException e1) {
+	            e1.printStackTrace();
+	        }
+	    } finally {
+	        try {
+	            if (pst != null) pst.close();	           
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return resultado;
+	}	
+
+	@Override
 	public boolean aceptarPrestamo(int idPrestamo) {
+	    Connection cn = null;
 	    CallableStatement cs = null;
 	    boolean resultado = false;
 
 	    try {
+	        cn = Conexion.getConexion().getSQLConexion();
 	        String call = "{CALL aceptar_prestamo_valida_cliente_activo(?, ?)}";
 	        cs = (CallableStatement) cn.prepareCall(call);
 	        cs.setInt(1, idPrestamo);
@@ -210,76 +175,76 @@ public class PrestamoDaolmpl implements PrestamoDao {
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	        try {
-	            cn.rollback();
+	            if (cn != null) cn.rollback();
 	        } catch (SQLException e1) {
 	            e1.printStackTrace();
 	        }
 	    } finally {
 	        try {
-	            if (cs != null) cs.close();
+	            if (cs != null) cs.close();	            
 	        } catch (SQLException e) {
 	            e.printStackTrace();
 	        }
 	    }
 
 	    return resultado;
-	}
-
+	}	
 	
-	
-
 	@Override
 	public Prestamo obtenerPrestamoID(int idPrestamo) {
+	    Prestamo prestamo = null;
+	    Connection cn = null;
+	    PreparedStatement pst = null;
+	    ResultSet rs = null;
 
-		Prestamo prestamo = new Prestamo();
-		PreparedStatement pst = null;
-		ResultSet rs = null;
+	    try {
+	        cn = Conexion.getConexion().getSQLConexion();
+	        String query = "SELECT id_prestamo, id_cliente, id_cuenta, fecha_solicitud, importe_solicitado, plazo_pago_meses, importe_por_cuota, cantidad_cuotas, estado, eliminado FROM prestamo WHERE id_prestamo = ?";
+	        pst = cn.prepareStatement(query);
+	        pst.setInt(1, idPrestamo);
 
-		try {
-			String query = "SELECT id_prestamo, id_cliente, id_cuenta, fecha_solicitud, importe_solicitado, plazo_pago_meses, importe_por_cuota, cantidad_cuotas, estado, eliminado FROM prestamo WHERE id_prestamo = ?";
-			;
-			pst = cn.prepareStatement(query);
-			pst.setInt(1, idPrestamo);
+	        rs = pst.executeQuery();
 
-			rs = pst.executeQuery();
+	        if (rs.next()) {
+	            prestamo = new Prestamo();
+	            prestamo.setId_prestamo(rs.getInt("id_prestamo"));
+	            prestamo.setId_cliente(rs.getInt("id_cliente"));
+	            prestamo.setId_cuenta(rs.getInt("id_cuenta"));
+	            prestamo.setFecha_solicitud(rs.getDate("fecha_solicitud").toLocalDate());
+	            prestamo.setImporte_solicitado(rs.getInt("importe_solicitado"));
+	            prestamo.setPlazo_pago_mes(rs.getInt("plazo_pago_meses"));
+	            prestamo.setImporte_por_cuota(rs.getInt("importe_por_cuota"));
+	            prestamo.setCantidad_cuotas(rs.getInt("cantidad_cuotas"));
+	            prestamo.setEstado(rs.getString("estado"));
+	            prestamo.setEliminado(rs.getBoolean("eliminado"));
+	        }
 
-			if (rs.next()) {
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pst != null) pst.close();	            
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
 
-				prestamo.setId_prestamo(rs.getInt("id_prestamo"));
-				prestamo.setId_cliente(rs.getInt("id_cliente"));
-				prestamo.setId_cuenta(rs.getInt("id_cuenta"));
-				prestamo.setFecha_solicitud(LocalDate.now());
-				prestamo.setImporte_solicitado(rs.getInt("importe_solicitado"));
-				prestamo.setPlazo_pago_mes(rs.getInt("plazo_pago_meses"));
-				prestamo.setImporte_por_cuota(rs.getInt("importe_por_cuota"));
-				prestamo.setCantidad_cuotas(rs.getInt("cantidad_cuotas"));
-				prestamo.setEstado(rs.getString("estado"));
-				prestamo.setEliminado(rs.getBoolean("eliminado"));
-
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (pst != null)
-					pst.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return prestamo;
+	    return prestamo;
 	}
+	
+	
+	
+	
 
 	@Override
 	public boolean impactar_prestamo_cuenta(int idCuenta, double dinero) {
 		PreparedStatement pst = null;
-
+		Connection cn = null;
+		
 		boolean resultado = false;
 		try {
+			cn = Conexion.getConexion().getSQLConexion();
 			String query = "UPDATE cuenta SET saldo = saldo + ? WHERE id_cuenta = ?";
 			pst = cn.prepareStatement(query);
 			pst.setDouble(1, dinero);
@@ -314,10 +279,14 @@ public class PrestamoDaolmpl implements PrestamoDao {
 		List<PrestamoCuota> cuotas = new ArrayList<>();
 		PreparedStatement pst = null;
 		ResultSet rs = null;
+		Connection cn = null;
 
 		try {
-			String query = "SELECT id_prestamo_cuota,id_prestamo,numero_cuota,monto,fecha_vencimiento,fecha_pago, pagada FROM prestamo_cuota WHERE id_prestamo = ? and pagada = 0";
-			;
+			cn = Conexion.getConexion().getSQLConexion();
+			String query = "SELECT id_prestamo_cuota,id_prestamo,numero_cuota,monto,"
+					      + "fecha_vencimiento,fecha_pago, pagada "
+					      + "FROM prestamo_cuota WHERE id_prestamo = ? and pagada = 0";
+			
 			pst = cn.prepareStatement(query);
 			pst.setInt(1, idPrestamo);
 
@@ -360,10 +329,12 @@ public class PrestamoDaolmpl implements PrestamoDao {
 		Prestamo prestamo = null;
 		PreparedStatement pst = null;
 		ResultSet rs = null;
+		Connection cn = null;
 
 		try {
+			cn = Conexion.getConexion().getSQLConexion();
 			String query = "SELECT id_prestamo, id_cliente, id_cuenta, fecha_solicitud, importe_solicitado, plazo_pago_meses, importe_por_cuota, cantidad_cuotas, estado, eliminado FROM prestamo WHERE id_cliente = ? AND eliminado =0 ";
-			;
+			
 			pst = cn.prepareStatement(query);
 			pst.setInt(1, idCliente);
 
@@ -404,10 +375,11 @@ public class PrestamoDaolmpl implements PrestamoDao {
 	@Override
 	public boolean pagarCuota(int idCuota, int idCuenta, double monto) {
 		PreparedStatement pst = null;
-
+		Connection cn = null;
 		boolean resultado = false;
 
 		try {
+			cn = Conexion.getConexion().getSQLConexion();
 			String query = "CALL sp_pagar_cuota(?, ?, ?)";
 			pst = cn.prepareStatement(query);
 			pst.setInt(1, idCuota);
@@ -446,8 +418,10 @@ public class PrestamoDaolmpl implements PrestamoDao {
 		Prestamo prestamo = null;
 		PreparedStatement pst = null;
 		ResultSet rs = null;
+		Connection cn = null;
 
 		try {
+			cn = Conexion.getConexion().getSQLConexion();
 			String query = "select id_prestamo from prestamo_cuota pc where pc.id_prestamo_cuota = ?";
 			pst = cn.prepareStatement(query);
 			pst.setInt(1, idCuota);
@@ -479,8 +453,10 @@ public class PrestamoDaolmpl implements PrestamoDao {
 	public boolean generarCuotasPrestamo(int idPrestamo, int cantidadCuotas, double montoPorCuota) {
 	    PreparedStatement pst = null;
 	    boolean resultado = false;
+	    Connection cn = null;
 	    
 	    try {
+	    	cn = Conexion.getConexion().getSQLConexion();
 	        String query = "INSERT INTO prestamo_cuota (id_prestamo, numero_cuota, monto, fecha_vencimiento, pagada) VALUES (?, ?, ?, ?, 0)";
 	        pst = cn.prepareStatement(query);
 	        
@@ -521,6 +497,70 @@ public class PrestamoDaolmpl implements PrestamoDao {
 	    }
 	    
 	    return resultado;
+	}
+	
+	public List<Prestamo> obtenerPrestamosConCuotasPendientes(int idCliente){
+		List<Prestamo> prestamos = new ArrayList<>();
+	    PreparedStatement pst = null;
+	    ResultSet rs = null;
+	    Connection cn = null;
+	    
+	    try {
+	        cn = Conexion.getConexion().getSQLConexion();
+	        String query = """
+	            select 
+					p.id_prestamo, 
+					p.id_cliente,
+					p.id_cuenta,
+					p.fecha_solicitud,
+					p.fecha_aprobacion,
+					p.importe_solicitado, 
+					p.plazo_pago_meses, p.importe_por_cuota, p.cantidad_cuotas, 
+					p.estado,
+					p.eliminado
+				from prestamo p 
+				inner join prestamo_cuota pc on p.id_prestamo = pc.id_prestamo 
+				where p.id_cliente = ? 
+				      and p.fecha_aprobacion is not null
+				      and p.eliminado = 0 
+				      and pc.pagada = 0
+				  group by id_prestamo
+				    order by p.fecha_aprobacion;
+		    """;
+	            
+	        pst = cn.prepareStatement(query);
+	        pst.setInt(1, idCliente);
+	        rs = pst.executeQuery();
+	        
+	        while (rs.next()) {
+	            Prestamo prestamo = new Prestamo();
+	            prestamo.setId_prestamo(rs.getInt("id_prestamo"));
+	            prestamo.setId_cliente(rs.getInt("id_cliente"));
+	            prestamo.setId_cuenta(rs.getInt("id_cuenta"));
+	            prestamo.setFecha_solicitud(rs.getObject("fecha_solicitud", LocalDate.class));
+	            prestamo.setFecha_aprobacion(rs.getObject("fecha_aprobacion", LocalDate.class));
+	            prestamo.setImporte_solicitado(rs.getDouble("importe_solicitado"));
+	            prestamo.setPlazo_pago_mes(rs.getInt("plazo_pago_meses"));
+	            prestamo.setImporte_por_cuota(rs.getDouble("importe_por_cuota"));
+	            prestamo.setCantidad_cuotas(rs.getInt("cantidad_cuotas"));
+	            prestamo.setEstado(rs.getString("estado"));
+	            prestamo.setEliminado(rs.getBoolean("eliminado"));
+	            
+	            prestamos.add(prestamo);
+	        }
+	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pst != null) pst.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    
+	    return prestamos;
 	}
 
 }

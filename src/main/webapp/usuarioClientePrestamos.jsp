@@ -53,7 +53,6 @@
 		%>	
 		
 		
-		
 		<div class="container mt-4">
 	
 		
@@ -91,13 +90,14 @@
 							<option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %>
 								-
 								<%= cuenta.getSaldo() %></option>
-							<% }
-	            } %>
+							<% 		}
+	           					 } 
+	           				%>
 						</select>
 					</div>
 					<div class="mb-3">
 						<label for="montoPrestamo" class="form-label">Monto	solicitado</label>
-						 <input type="number" class="form-control" min="0" max="500000" step="0.01"
+						 <input type="number" class="form-control" min="0" max="500000" step="0.01" placeholder="0"
 							id="montoPrestamo" name="montoPrestamo">
 					</div>
 					<div class="mb-3">
@@ -114,45 +114,74 @@
 			</div>
 	
 			<div id="pagoPrestamos" class="panel" style="display: block">
-				<h4>Pago de prestamos</h4>
-				<form method="post" action="ServletPrestamo">
-					<div class="mb-3">
-						<label for="cuotaSeleccion" class="form-label">Seleccione
-							Cuota</label> <select class="form-select" id="cuotaSeleccion"
-							name="cuotaSeleccion">
-							<% 
-	                    if (request.getAttribute("cuotas") != null) {
-	                    	List<PrestamoCuota> cuotas = (List<PrestamoCuota>)request.getAttribute("cuotas");
-	                    	for(PrestamoCuota cuota : cuotas){	                   
-	                    %>
-							<option value="<%= cuota.getIdCuota() %>|<%= cuota.getMonto() %>"><%= cuota.getMonto() %>
-								- fecha de vencimiento -<%=  cuota.getFechaVencimiento() %></option>
-							<%
-	                    	}
-	                    }
-	                    %>
-	
-						</select>
-					</div>
-					<div class="mb-3">
-						<label for="cuentaPago" class="form-label">Cuenta de Pago</label> <select
-							class="form-select" id="cuentaPago" name="cuentaPago">
-							<% 
-	                    if (cuentas != null) {
-	                        for (Cuenta cuenta : cuentas) {
-	                    %>
-							<option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %>
-								-
-								<%= cuenta.getSaldo() %></option>
-							<%
-	                        }
-	                    }
-	                    %>
-						</select>
-					</div>
-					<button type="submit" class="btn btn-success" name="btnPagarCuota">Pagar Cuota</button>
-				</form>
-			</div>	
+			    <h4>Pago de prestamos</h4>
+			    <form method="post" action="ServletClientePrestamo">
+			        <div class="mb-3">
+			            <label for="prestamoSeleccionado" class="form-label">Préstamo</label>
+			            <select class="form-select" id="prestamoSeleccionado" name="prestamoSeleccionado" onchange="this.form.submit()">
+			                <option value="">Seleccione un préstamo</option>
+			                <%
+			                List<Prestamo> prestamosConCuotasPendientes = (List<Prestamo>) request.getAttribute("prestamosConCuotasPendientes");
+			                String prestamoSeleccionadoId = (String) request.getAttribute("prestamoSeleccionadoId");
+			                if (prestamosConCuotasPendientes != null) {
+			                    for (Prestamo prestamo : prestamosConCuotasPendientes) {
+			                        String selected = (prestamoSeleccionadoId != null && prestamoSeleccionadoId.equals(String.valueOf(prestamo.getId_prestamo()))) ? "selected" : "";
+			                %>
+			                    <option value="<%= prestamo.getId_prestamo() %>" <%= selected %>>
+			                        Préstamo #<%= prestamo.getId_prestamo() %> - $<%= String.format("%.2f", prestamo.getImporte_solicitado()) %>
+			                    </option>
+			                <% 
+			                    }
+			                }
+			                %>
+			            </select>
+			        </div>
+			
+			        <div class="mb-3">
+			            <label for="cuotaSeleccion" class="form-label">Cuota a pagar</label>
+			            <select class="form-select" id="cuotaSeleccion" name="cuotaSeleccion" <%= (request.getAttribute("cuotasPendientes") == null) ? "disabled" : "" %>>
+			                <%
+			                List<PrestamoCuota> cuotasPendientes = (List<PrestamoCuota>) request.getAttribute("cuotasPendientes");
+			                if (cuotasPendientes != null && !cuotasPendientes.isEmpty()) {
+			                    for (PrestamoCuota cuota : cuotasPendientes) {
+			                %>
+			                    <option value="<%= cuota.getIdCuota() %>|<%= cuota.getMonto() %>">
+			                        Cuota <%= cuota.getNumCuota() %> - $<%= String.format("%.2f", cuota.getMonto()) %> - Vence: <%= cuota.getFechaVencimiento() %>
+			                    </option>
+			                <%
+			                    }
+			                } else {
+			                %>
+			                    <option value="">Primero seleccione un préstamo</option>
+			                <%
+			                }
+			                %>
+			            </select>
+			        </div>
+			
+			        <div class="mb-3">
+			            <label for="cuentaPago" class="form-label">Cuenta de Pago</label>
+			            <select class="form-select" id="cuentaPago" name="cuentaPago">
+			                <%
+			                if (cuentas != null) {
+			                    for (Cuenta cuenta : cuentas) {
+			                %>
+			                    <option value="<%= cuenta.getIdCuenta() %>">
+			                        <%= cuenta.getNumeroCuenta() %> - $<%= String.format("%.2f", cuenta.getSaldo()) %>
+			                    </option>
+			                <%
+			                    }
+			                }
+			                %>
+			            </select>
+			        </div>
+			
+			        <button type="submit" class="btn btn-success" name="btnPagarCuota" 
+			                <%= (request.getAttribute("cuotasPendientes") == null) ? "disabled" : "" %>>
+			            Pagar Cuota
+			        </button>
+			    </form>
+			</div>
 	</div>	
   </main> 
 
