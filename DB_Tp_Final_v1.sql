@@ -367,6 +367,44 @@ END salida$$
 DELIMITER ;
 
 
+-- CORRECCIONES EN TABLA Y CONSTRAIN FK
+ALTER TABLE transferencia 
+CHANGE COLUMN id_tipo_movimiento id_movimiento INT(11);
+
+ALTER TABLE transferencia 
+ADD CONSTRAINT fk_transferencia_movimiento 
+FOREIGN KEY (id_movimiento) REFERENCES movimiento(id_movimiento);
+
+--SP HISTORIAL DE TRANSFERENCIAS
+DELIMITER $
+CREATE PROCEDURE sp_historial_transferencias_cliente(
+    IN p_id_cliente INT
+)
+BEGIN
+    SELECT 
+        t.id_transferencia,
+        t.id_movimiento,
+        t.cuenta_origen,
+        t.cuenta_destino,
+        m.fecha,
+        m.detalle,
+        m.importe,
+        co.numero_cuenta as num_cuenta_origen,
+        cd.numero_cuenta as num_cuenta_destino,
+        CONCAT(co.numero_cuenta, ' → ', cd.numero_cuenta) as transferencia_detalle,
+        mt.descripcion as tipo_movimiento,
+        CONCAT(cli.nombre, ' ', cli.apellido) as cliente_nombre
+    FROM movimiento m
+    INNER JOIN cuenta co ON m.id_cuenta = co.id_cuenta
+    INNER JOIN cliente cli ON co.id_cliente = cli.id_cliente
+    INNER JOIN movimiento_tipo mt ON m.id_tipo_movimiento = mt.id_tipo_movimiento
+    INNER JOIN transferencia t ON m.id_movimiento = t.id_movimiento
+    LEFT JOIN cuenta cd ON t.cuenta_destino = cd.id_cuenta
+    WHERE co.id_cliente = p_id_cliente
+    AND t.cuenta_origen = co.id_cuenta
+    ORDER BY m.fecha DESC;
+END$
+DELIMITER ;
 
 
 
