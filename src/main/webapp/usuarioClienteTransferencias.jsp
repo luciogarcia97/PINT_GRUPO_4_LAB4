@@ -163,18 +163,27 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
-										<td>01/01/2025</td>
-										<td>$15.000</td>
-										<td>***4352</td>
-										<td>
-									</tr>
-									<tr>
-										<td>05/03/2025</td>
-										<td>$30.000</td>
-										<td>***6672</td>
-		
-									</tr>
+			 <%
+			  List<Transferencia> historial = (List<Transferencia>) request.getAttribute("historial");
+			   
+                    if (historial != null && !historial.isEmpty()) {
+                        for (Transferencia transferencia : historial) {
+                %>
+                    <tr>
+									<td><%=transferencia.getFecha()%></td>
+									<td><%=transferencia.getImporte()%></td>
+									<td><%=transferencia.getCuenta_destino()%></td>
+								</tr>
+                <%
+                        }
+                    } else {
+                %>
+                    <tr>
+                        <td colspan="3" class="text-center">No hay transferencias registradas</td>
+                    </tr>
+                <%
+                    }
+                %>
 								</tbody>
 		
 							</table>

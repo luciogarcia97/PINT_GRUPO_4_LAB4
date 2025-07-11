@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -19,15 +20,19 @@ import daoImpl.CuentaDaoImpl;
 import daoImpl.TipoCuentaDaoImpl;
 import entidades.Cliente;
 import entidades.Cuenta;
+import entidades.Movimiento;
 import entidades.TipoCuenta;
+import entidades.Transferencia;
 import entidades.Usuario;
 import negocio.ClienteNegocio;
 import negocio.CuentaNegocio;
 import negocio.TipoCuentaNegocio;
+import negocio.TransferenciaNegocio;
 import negocio.UsuarioNegocio;
 import negocio.MovimientoNegocio;
 import negocioImpl.CuentaNegocioImpl;
 import negocioImpl.TipoCuentaNegocioImpl;
+import negocioImpl.TransferenciaNegocioImpl;
 import negocioImpl.UsuarioNegocioImpl;
 import negocioImpl.ClienteNegociolmpl;
 import negocioImpl.MovimientoNegocioImpl;
@@ -42,6 +47,7 @@ public class ServletClienteTransferencia extends HttpServlet {
 	private TipoCuentaNegocio tipoCuentaNegocio;
 	private UsuarioNegocio usuarioNegocio;
 	private MovimientoNegocio movimientoNegocio;
+	private TransferenciaNegocio transferenciaNegocio;
 	
     public ServletClienteTransferencia() {
         super();
@@ -50,6 +56,7 @@ public class ServletClienteTransferencia extends HttpServlet {
         this.tipoCuentaNegocio = new TipoCuentaNegocioImpl();
         this.usuarioNegocio = new UsuarioNegocioImpl();
         this.movimientoNegocio = new MovimientoNegocioImpl();
+        this.transferenciaNegocio =new TransferenciaNegocioImpl();
     }
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -65,6 +72,12 @@ public class ServletClienteTransferencia extends HttpServlet {
 	    
 	    List<Cuenta> cuentasCliente = cuentaNegocio.obtenerCuentasPorCliente(cliente.getIdCliente());
 	    request.setAttribute("cuentasCliente", cuentasCliente);
+	    
+	    if (cuentasCliente != null && !cuentasCliente.isEmpty()) {
+	    	
+	    	List<Transferencia> historialTransferencias = transferenciaNegocio.mostrar_historial_transferencia(cliente.getIdCliente());
+	    	request.setAttribute("historial", historialTransferencias);
+	    }
 	    
 	    RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioClienteTransferencias.jsp");
 	    dispatcher.forward(request, response);
@@ -84,21 +97,25 @@ public class ServletClienteTransferencia extends HttpServlet {
     		//Valida si la cuenta tiene el dinero suficiente:
     		if(cuentaNegocio.tieneSaldoSuficiente(idCuenta, monto) == false)
     		{
-    			response.sendRedirect("ServletClienteUsuario?saldoInsuficiente=1");
+    			response.sendRedirect("ServletClienteTransferencia?saldoInsuficiente=1");
+    		
     		    return;
     		}
+    		
     		
     		//Valida si el CBU existe:
     		if(cuentaNegocio.existeCBU(cbu) == false)
     		{
-    			response.sendRedirect("ServletClienteUsuario?cbuInexistente=1");
+    			response.sendRedirect("ServletClienteTransferencia?cbuInexistente=1");
+    			
     			return;
     		}
     		
     		//Resta el monto al saldo de la cuenta origen y lo suma en la cuenta destino a la que le pertenezca ese CBU:
     		Cuenta cuentaOrigen = cuentaNegocio.buscarPorID(idCuenta);
     		Cuenta cuentaDestino = cuentaNegocio.buscarIdConCbu(cbu);
-    		
+    		boolean movimientoRegistrado= false;
+    		boolean transferenciaRegistrada=false;
     		Boolean debitoResultado = false;
     		BigDecimal saldoFinal = cuentaOrigen.getSaldo().subtract(monto);
     		debitoResultado = cuentaNegocio.modificarSaldo(cuentaOrigen.getIdCuenta(), saldoFinal);
@@ -110,12 +127,22 @@ public class ServletClienteTransferencia extends HttpServlet {
     		// Si se registro todo correctamente, registro el movimiento
     		if(acreditacionResultado && debitoResultado) {
     			String detalle = "CBU: " + cuentaDestino.getCbu();
-    		    boolean movimientoRegistrado = movimientoNegocio.registrarMovimientoTransferencia(cuentaOrigen.getIdCuenta(), cuentaDestino.getIdCuenta(), monto, detalle);
+    		    movimientoRegistrado = movimientoNegocio.registrarMovimientoTransferencia(cuentaOrigen.getIdCuenta(), cuentaDestino.getIdCuenta(), monto, detalle);
     		
     		    if (!movimientoRegistrado) {
     		        System.out.println("Advertencia: No se pudieron registrar los movimientos de transferencia");
     		    }
     		}
+    			Movimiento movimiento = new Movimiento();
+        		 movimiento=transferenciaNegocio.obtener_movimiento_idCuentaOrigen(cuentaOrigen.getIdCuenta());
+        		transferenciaRegistrada=transferenciaNegocio.registrar_transferencia(idCuenta, cuentaDestino.getIdCuenta(), movimiento.getIdMovimiento());
+    		
+    	
+    			List<Transferencia> historialTransferencias= new ArrayList<Transferencia>();
+    			historialTransferencias= transferenciaNegocio.mostrar_historial_transferencia(cuentaOrigen.getIdCliente());
+    			request.setAttribute("historial", historialTransferencias);
+
+    		
     		
     		// Recargar datos y mostrar la página de transferencias
     		Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuarioLogueado");
