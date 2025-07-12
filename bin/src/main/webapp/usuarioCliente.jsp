@@ -115,7 +115,13 @@
             <div class="mb-3">
                 <label for="cbuDestino" class="form-label">CBU Destino</label>
                 <input type="text" class="form-control" id="cbuDestino" placeholder="Ingrese CBU">
+                <button class="btn btn-secondary" type="button" onclick="buscarTitularCBU()">Buscar</button>
             </div>
+            
+            <div id="infoTitular" class="alert alert-info d-none">
+             Titular: <strong id="nombreTitular"></strong>
+            </div>
+
             <div class="mb-3">
                 <label for="montoTransferencia" class="form-label">Monto</label>
                 <input type="number" class="form-control" id="montoTransferencia" placeholder="$XXXX">
@@ -291,6 +297,37 @@
         }
     }    
     
+    
+    function buscarTitularCBU() {
+        const cbu = document.getElementById("cbuDestino").value;
+
+        if (cbu.trim() === "") {
+            alert("Por favor, ingrese un CBU.");
+            return;
+        }
+
+        fetch("ServletBuscarTitularCBU", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: "cbu=" + encodeURIComponent(cbu)
+        })
+        .then(response => response.json())
+        .then(data => {
+            const infoDiv = document.getElementById("infoTitular");
+            const nombreSpan = document.getElementById("nombreTitular");
+
+            if (data.error) {
+                infoDiv.classList.add("d-none");
+                alert("CBU no encontrado.");
+            } else {
+                nombreSpan.textContent = data.nombre + " " + data.apellido;
+                infoDiv.classList.remove("d-none");
+            }
+        })
+        .catch(error => {
+            console.error("Error al buscar el titular:", error);
+        });
+    }
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
