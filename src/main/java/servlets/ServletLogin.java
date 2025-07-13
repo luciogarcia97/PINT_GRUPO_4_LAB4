@@ -51,10 +51,10 @@ public class ServletLogin extends HttpServlet {
 							  response.sendRedirect("ServletCliente?listar=1");
 		                } else {
 		                    request.getSession().setAttribute("usuarioLogueado", usuarioLog);
-						      response.sendRedirect("ServletClienteMovimiento?listar=1");
-						    }
-		                }	
-				      break;    
+						    response.sendRedirect("ServletClienteMenu");
+						}
+		             }	
+				 break;    
 				 }
 				
 			}

@@ -58,10 +58,21 @@
 		<div class="container mt-4">	
 		
 			<div class="d-flex justify-content-center gap-3">
-				<a href="ServletClienteMovimiento" class="btn btn-primary">Ver Movimientos</a>
-				<a href="ServletClientePrestamo" class="btn btn-primary">Préstamos</a>
-				<a href="ServletClienteTransferencia" class="btn btn-primary"> Transferencias</a>			
-				<a href="ServletClienteDatos" class="btn btn-primary">Mis Datos</a>
+				<a href="ServletClienteMenu" class="btn btn-primary btn-lg rounded-pill">
+  					<i class="bi bi-list me-2"></i> Menú
+				</a>
+				<a href="ServletClienteMovimiento" class="btn btn-primary btn-lg rounded-pill">
+	                <i class="bi bi-journal-bookmark-fill me-2"></i> Ver movimientos
+	            </a>
+	            <a href="ServletClientePrestamo" class="btn btn-primary btn-lg rounded-pill">
+	                <i class="bi bi-cash-stack me-2"></i> Préstamos
+	            </a>
+	            <a href="ServletClienteTransferencia" class="btn btn-primary btn-lg rounded-pill">
+	                <i class="bi bi-currency-dollar me-2"></i> Transferencias
+	            </a>
+	            <a href="ServletClienteDatos" class="btn btn-primary btn-lg rounded-pill">
+	                <i class="bi bi-person-circle me-2"></i> Mis datos
+	            </a>
 			</div>	
 			
 			<div id="datos" style="background-color: rgb(104, 109, 250); display: block">
