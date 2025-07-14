@@ -124,7 +124,7 @@
 										<option value="transferencias">Transferencias
 											Realizadas</option>
 										<option value="prestamos">Préstamos Otorgados</option>
-										<option value="clientes">Clientes Activos</option>
+										<option value="clientes">Clientes activos con cuentas activas</option>
 									</select>
 								</div>
 							</div>
