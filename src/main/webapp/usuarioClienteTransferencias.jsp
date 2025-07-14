@@ -88,8 +88,9 @@
                     </div>
                 <% } %>
 
-                <!-- Formulario de transferencia -->
-                <form id="formTransferencia" action="ServletClienteTransferencia" method="post" onsubmit="return false;">
+               
+                <form id="formTransferencia" action="ServletClienteTransferencia" method="post">
+                <input type="hidden" name="btnTransferencia" value="1">
                     <div class="mb-3">
                         <label for="cuentaOrigen" class="form-label">Cuenta Origen</label>
                         <select class="form-select" id="idCuenta" name="idCuenta">
@@ -116,7 +117,7 @@
                         Titular: <span id="nombreTitular"></span>
                     </div>
 
-                    <button type="button" class="btn btn-success" onclick="validarYMostrarModal()">Realizar Transferencia</button>
+                    <button type="button"  class="btn btn-success" onclick="validarYMostrarModal()">Realizar Transferencia</button>
                 </form>
 
                 <hr>
@@ -156,7 +157,7 @@
         </div>
     </main>
 
-    <!-- Modal de confirmación -->
+   
     <div class="modal fade" id="modalConfirmacion" tabindex="-1" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -228,7 +229,8 @@
             });
         }
 
-        document.getElementById("btnConfirmarTransferencia").addEventListener("click", function () {
+        document.getElementById("btnConfirmarTransferencia").addEventListener("click", function (e) {
+            e.preventDefault(); 
             document.getElementById("formTransferencia").submit();
         });
     </script>

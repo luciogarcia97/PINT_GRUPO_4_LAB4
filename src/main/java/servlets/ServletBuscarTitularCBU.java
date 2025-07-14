@@ -44,7 +44,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 	    response.setContentType("application/json");
 	    response.setCharacterEncoding("UTF-8");
 
-	    PrintWriter out = response.getWriter(); // ← AÑADÍ ESTA LÍNEA
+	    PrintWriter out = response.getWriter(); 
 
 	    if (cuentaNegocio.existeCBU(cbu)) {
 	        Cuenta cuenta = cuentaNegocio.buscarIdConCbu(cbu);
