@@ -92,20 +92,28 @@
 		
 		<div id="prestamos" class="panel" style="display: block">
 				<h4>Solicitar Préstamo</h4>
-				<form action="ServletClientePrestamo" method="post">
-					<div class="mb-3">
-						<label for="cuentaDestino" class="form-label">Cuenta Destino</label> <select class="form-select" id="cuentaPrestamo"
-							name="cuentaDestino">
-							<% if (cuentas != null) {
-	                			for (Cuenta cuenta : cuentas) { %>
-							<option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %>
-								-
-								<%= cuenta.getSaldo() %></option>
-							<% 		}
-	           					 } 
-	           				%>
-						</select>
-					</div>
+				<form action="ServletClientePrestamo" method="post">					
+				
+					
+					<% if (cuentas != null && !cuentas.isEmpty()) { %>
+						<div class="mb-3">
+							<label for="cuentaDestino" class="form-label">Cuenta Destino</label> 
+							<select class="form-select" id="cuentaPrestamo" name="cuentaDestino">
+								<% for (Cuenta cuenta : cuentas) { %>
+									<option value="<%= cuenta.getIdCuenta() %>">
+										<%= cuenta.getNumeroCuenta() %> - <%= cuenta.getSaldo() %>
+									</option>
+								<% } %>
+							</select>
+						</div>
+					<% } else { %>
+						<div class="alert alert-warning" role="alert">
+							⚠️ Todavía no tenés cuentas disponibles para seleccionar como destino.
+						</div>
+					<% } %>
+													
+					
+					
 					<div class="mb-3">
 						<label for="montoPrestamo" class="form-label">Monto	solicitado</label>
 						 <input type="text" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/^(\d*\.\d{0,2}).*$/, '$1').replace(/(\..*)\./g, '$1');"

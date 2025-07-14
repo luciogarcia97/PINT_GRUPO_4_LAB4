@@ -157,7 +157,7 @@ public class ServletClientePrestamo extends HttpServlet {
 
 			} catch (Exception e) {
 				e.printStackTrace();
-				request.setAttribute("error", "Ocurrió un error interno.");
+				request.setAttribute("error", "Ocurrió un error no puede solicitar préstamos.");
 				RequestDispatcher rd = request.getRequestDispatcher("/usuarioClientePrestamos.jsp");
 				rd.forward(request, response);
 			}

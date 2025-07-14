@@ -153,20 +153,28 @@
 				    }
 				    %>
 		
-					<form action="ServletClienteTransferencia" method="post">
-						<div class="mb-3">
-							<label for="cuentaOrigen" class="form-label">Cuenta Origen</label>
-		
-							<select class="form-select" id="idCuenta" name="idCuenta">
-								<% if (cuentas != null) {
-				                for (Cuenta cuenta : cuentas) { %>
-								<option value="<%= cuenta.getIdCuenta() %>"><%= cuenta.getNumeroCuenta() %>
-									-
-									<%= cuenta.getSaldo() %></option>
-								<% }
-			            	} %>
-							</select>
-						</div>
+					<form action="ServletClienteTransferencia" method="post">						
+						
+						
+						<% if (cuentas != null && !cuentas.isEmpty()) { %>
+							<div class="mb-3">
+								<label for="cuentaOrigen" class="form-label">Cuenta Origen</label>
+								<select class="form-select" id="idCuenta" name="idCuenta">
+									<% for (Cuenta cuenta : cuentas) { %>
+										<option value="<%= cuenta.getIdCuenta() %>">
+											<%= cuenta.getNumeroCuenta() %> - <%= cuenta.getSaldo() %>
+										</option>
+									<% } %>
+								</select>
+							</div>
+						<% } else { %>
+							<div class="alert alert-warning" role="alert">
+								⚠️ Todavía no tiene cuentas asociadas para realizar una transferencia.
+							</div>
+						<% } %>
+												
+						
+						
 						<div class="mb-3">
 							<label for="cbuDestino" class="form-label">CBU Destino</label> <input
 								type="number" class="form-control" name="txtCbu" id="cbuDestino"
