@@ -73,12 +73,13 @@ public class ServletClienteMovimiento extends HttpServlet {
                 
                 RequestDispatcher rd = request.getRequestDispatcher("/usuarioClienteMovimientos.jsp");
                 rd.forward(request, response);
-                
+                return;
                 
             } catch (NumberFormatException e) {           	
             	request.setAttribute("mensaje", "¡Seleccione una cuenta para ver sus movimientos!");
                 RequestDispatcher rd = request.getRequestDispatcher("/usuarioClienteMovimientos.jsp");
-                rd.forward(request, response);                           
+                rd.forward(request, response);
+                return;
             }              
         
         }        	

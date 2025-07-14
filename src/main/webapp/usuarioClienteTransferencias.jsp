@@ -170,12 +170,12 @@
 						<div class="mb-3">
 							<label for="cbuDestino" class="form-label">CBU Destino</label> <input
 								type="number" class="form-control" name="txtCbu" id="cbuDestino"
-								placeholder="Ingrese CBU">
+								placeholder="Ingrese CBU" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
 						</div>
 						<div class="mb-3">
 							<label for="montoTransferencia" class="form-label">Monto</label> <input
 								type="number" name="txtMonto" class="form-control"
-								id="montoTransferencia" placeholder="$XXXX">
+								id="montoTransferencia" placeholder="$XXXX" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
 						</div>
 						<button type="submit" name="btnTransferencia"
 							class="btn btn-success">Realizar Transferencia</button>
