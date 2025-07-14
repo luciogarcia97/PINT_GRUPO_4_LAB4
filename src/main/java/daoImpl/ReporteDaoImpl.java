@@ -72,7 +72,7 @@ public class ReporteDaoImpl implements ReporteDao {
 					SELECT COUNT(*) AS total_transferencias FROM movimiento m
 					JOIN movimiento_tipo mt ON m.id_tipo_movimiento = mt.id_tipo_movimiento
 					WHERE mt.descripcion = 'Transferencia'
-					  AND m.detalle LIKE 'Transferencia a%'
+					  AND m.detalle LIKE 'Transferencia%'
 					  AND m.fecha BETWEEN ? AND ? """;
 
 			pst = conexion.prepareStatement(query);
