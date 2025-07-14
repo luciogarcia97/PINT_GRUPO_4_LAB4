@@ -115,10 +115,8 @@
 		         
 		        <% 	  }
 		        	}		        
-		        %> 
-		      		        		        
-		        
-		       </div>    		             
+		        %>     		        
+		    		          		             
 		
 		        <div class="row">
 		            <div class="mb-3 col-md-6">
@@ -198,21 +196,23 @@
 		            </div>
 		            <div class="mb-3 col-md-6">
 		                <label for="telefono" class="form-label">Teléfono</label>
-		                <input type="number" class="form-control" id="telefono" name="txtTelefono" placeholder="Teléfono"
+		                <input type="number" class="form-control" id="telefono" name="txtTelefono" placeholder="Teléfono" min="0"
 		                    oninput="this.value = this.value.slice(0, 11);" required>
 		            </div>
 		
 		            <div class="mb-3 col-md-6">
 		                <label for="dni" class="form-label">DNI</label>
-		                <input type="number" class="form-control" id="dni" name="txtDni" placeholder="DNI"
+		                <input type="number" class="form-control" id="dni" name="txtDni" placeholder="DNI" min="0"
 		                    oninput="this.value = this.value.slice(0, 8);" required>
 		            </div>
 		            <div class="mb-3 col-md-6">
 		                <label for="cuil" class="form-label">CUIL</label>
-		                <input type="number" class="form-control" id="cuil" name="txtCuil" placeholder="CUIL"
+		                <input type="number" class="form-control" id="cuil" name="txtCuil" placeholder="CUIL" min="0"
 		                    oninput="this.value = this.value.slice(0, 11);" required>
 		            </div>
-		         </div> 
+		         </div>
+		       
+		        </div>   
 		         
 		       <div class="inicio">
           
