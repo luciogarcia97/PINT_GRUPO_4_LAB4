@@ -127,8 +127,7 @@ public class ServletCliente extends HttpServlet {
 				
 				request.setAttribute("dni", 1);
 				request.setAttribute("clienteEditado", cliente);
-				RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
-				rd.forward(request, response);	
+				cargarDesplegablesRegistrar (request,response);					
 				return;
 			}
 			
@@ -137,8 +136,7 @@ public class ServletCliente extends HttpServlet {
 				
 				request.setAttribute("cuil", 1);
 				request.setAttribute("clienteEditado", cliente);
-				RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
-				rd.forward(request, response);
+				cargarDesplegablesRegistrar (request,response);				
 				return;
 			}
 			
@@ -306,7 +304,14 @@ public class ServletCliente extends HttpServlet {
 				request.setAttribute("exitoModificado", true);
 			    RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
 			    rd.forward(request, response);
-			} 			
+			}  else {
+			    List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
+			    request.setAttribute("listaClientes", listaClientes);
+			    request.setAttribute("NoModificado", true);
+			    RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
+			    rd.forward(request, response);
+			    return; 
+			}			
 		}		
 		
 		
