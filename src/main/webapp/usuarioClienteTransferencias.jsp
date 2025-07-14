@@ -108,6 +108,20 @@
 	                <i class="bi bi-person-circle me-2"></i> Mis datos
 	            </a>
 			</div>	
+			
+			<%
+			    String exito = (String) request.getAttribute("exito");
+			    if (exito != null && !exito.isEmpty()) {
+			%>
+			    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+			        <i class="bi bi-check-circle-fill"></i>
+			        <%= exito %>
+			        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			    </div>
+			<%
+			    }
+			%>			
+			
 		
 		
 			<div id="transferencias" class="panel" style="display: block">
