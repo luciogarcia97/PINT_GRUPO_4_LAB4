@@ -116,6 +116,7 @@
                 <label for="cbuDestino" class="form-label">CBU Destino</label>
                 <input type="text" class="form-control" id="cbuDestino" placeholder="Ingrese CBU">
                 <button class="btn btn-secondary" type="button" onclick="buscarTitularCBU()">Buscar</button>
+                
             </div>
             
             <div id="infoTitular" class="alert alert-info d-none">

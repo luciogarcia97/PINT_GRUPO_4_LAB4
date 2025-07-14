@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.jasper.tagplugins.jstl.core.Out;
 
 import entidades.Cliente;
 import entidades.Cuenta;
@@ -35,28 +34,27 @@ public class ServletBuscarTitularCBU extends HttpServlet {
 
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
+		   String cbu = request.getParameter("cbu");
 
-	
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		 String cbu = request.getParameter("cbu");
-
-		 response.setContentType("application/json");
+		    response.setContentType("application/json");
 		    response.setCharacterEncoding("UTF-8");
 
-	        if (cuentaNegocio.existeCBU(cbu)) {
-	            Cuenta cuenta = cuentaNegocio.buscarIdConCbu(cbu);
-	            Cliente cliente = clienteNegocio.BuscarPorID(cuenta.getIdCliente());
+		    PrintWriter out = response.getWriter();
 
-	            String json = "{ \"nombre\": \"" + cliente.getNombre() + "\", \"apellido\": \"" + cliente.getApellido() + "\" }";
-	            out.print(json);  
-	        } else {
-	            out.print("{ \"error\": \"CBU no encontrado\" }"); 
-	        }
+		    if (cuentaNegocio.existeCBU(cbu)) {
+		        Cuenta cuenta = cuentaNegocio.buscarIdConCbu(cbu);
+		        Cliente cliente = clienteNegocio.BuscarPorID(cuenta.getIdCliente());
 
-	        out.flush(); 
-	}
+		        String json = "{ \"nombre\": \"" + cliente.getNombre() + "\", " +
+		                      "\"apellido\": \"" + cliente.getApellido() + "\", " +
+		                      "\"dni\": \"" + cliente.getDni() + "\" }";
+
+		        out.print(json);
+		    } else {
+		        out.print("{ \"error\": \"CBU no encontrado\" }");
+		    }
+
+		    out.flush();
+		}
 
 }
