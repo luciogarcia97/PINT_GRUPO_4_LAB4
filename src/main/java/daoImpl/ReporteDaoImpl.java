@@ -240,9 +240,9 @@ public class ReporteDaoImpl implements ReporteDao {
 
 						WHERE 
 							mt1.descripcion = 'Transferencia'
-							AND m1.detalle LIKE 'Transferencia a%'
+							AND m1.detalle LIKE 'Transferencia%'
 							AND mt2.descripcion = 'Transferencia'
-							AND m2.detalle LIKE 'Transferencia recibida de%'
+							AND m2.detalle LIKE 'Transferencia%'
 							AND m1.id_movimiento <> m2.id_movimiento
 							AND m1.fecha BETWEEN ? AND ?
 						ORDER BY m1.fecha DESC
