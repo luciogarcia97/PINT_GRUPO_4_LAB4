@@ -26,8 +26,7 @@ public class ServletLogin extends HttpServlet {
         this.usuarioNegocio = new UsuarioNegocioImpl();
         
     }
-
-	
+/////
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		if(request.getParameter("btnLogin") != null) {			
