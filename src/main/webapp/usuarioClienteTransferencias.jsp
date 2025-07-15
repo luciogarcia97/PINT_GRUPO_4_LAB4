@@ -90,27 +90,37 @@
 
                
                 <form id="formTransferencia" action="ServletClienteTransferencia" method="post">
-                <input type="hidden" name="btnTransferencia" value="1">
-                    <div class="mb-3">
-                        <label for="cuentaOrigen" class="form-label">Cuenta Origen</label>
-                        <select class="form-select" id="idCuenta" name="idCuenta">
-                            <% if (cuentas != null) {
-                                for (Cuenta cuenta : cuentas) { %>
-                                <option value="<%= cuenta.getIdCuenta() %>">
-                                    <%= cuenta.getNumeroCuenta() %> - $<%= cuenta.getSaldo() %>
-                                </option>
-                            <% }} %>
-                        </select>
-                    </div>
+                <input type="hidden" name="btnTransferencia" value="1">            
+                                            
+                    
+                    <% if (cuentas != null && !cuentas.isEmpty()) { %>
+							<div class="mb-3">
+								<label for="cuentaOrigen" class="form-label">Cuenta Origen</label>
+								<select class="form-select" id="idCuenta" name="idCuenta">
+									<% for (Cuenta cuenta : cuentas) { %>
+										<option value="<%= cuenta.getIdCuenta() %>">
+											<%= cuenta.getNumeroCuenta() %> - <%= cuenta.getSaldo() %>
+										</option>
+									<% } %>
+								</select>
+							</div>
+						<% } else { %>
+							<div class="alert alert-warning" role="alert">
+								⚠️ Todavía no tiene cuentas asociadas para realizar una transferencia.
+							</div>
+						<% } %>
 
+                   
                     <div class="mb-3">
                         <label for="cbuDestino" class="form-label">CBU Destino</label>
-                        <input type="number" class="form-control" name="txtCbu" id="cbuDestino" placeholder="Ingrese CBU">
+                        <input type="text" class="form-control" name="txtCbu" id="cbuDestino" placeholder="Ingrese CBU"
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/^(\d*\.\d{0,2}).*$/, '$1').replace(/(\..*)\./g, '$1');">
                     </div>
 
                     <div class="mb-3">
                         <label for="montoTransferencia" class="form-label">Monto</label>
-                        <input type="number" name="txtMonto" class="form-control" id="montoTransferencia" placeholder="$XXXX">
+                        <input type="text" name="txtMonto" class="form-control" id="montoTransferencia" placeholder="$XXXX"
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/^(\d*\.\d{0,2}).*$/, '$1').replace(/(\..*)\./g, '$1');">
                     </div>
 
                     <div id="infoTitular" class="alert alert-info d-none">
