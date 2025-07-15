@@ -23,7 +23,7 @@ public class ReporteDaoImpl implements ReporteDao {
 		Double suma = 0.0;
 
 		try {
-			//Query para sumar todos los depositos
+			// Query para sumar todos los depositos
 			String query = """
 					SELECT SUM(m.importe) AS total_depositos FROM movimiento m
 					JOIN movimiento_tipo mt ON m.id_tipo_movimiento = mt.id_tipo_movimiento
@@ -39,7 +39,7 @@ public class ReporteDaoImpl implements ReporteDao {
 			if (rs.next()) {
 				suma = rs.getDouble("total_depositos");
 				if (rs.wasNull()) {
-			 		suma = 0.0;
+					suma = 0.0;
 				}
 			}
 
@@ -67,7 +67,7 @@ public class ReporteDaoImpl implements ReporteDao {
 		int cantidad = 0;
 
 		try {
-			// Query para contar solo las transferencias de egreso
+			// Query para contar solo las transferencias
 			String query = """
 					SELECT COUNT(*) AS total_transferencias FROM movimiento m
 					JOIN movimiento_tipo mt ON m.id_tipo_movimiento = mt.id_tipo_movimiento
@@ -150,7 +150,7 @@ public class ReporteDaoImpl implements ReporteDao {
 		int cantidad = 0;
 
 		try {
-			//Query para contar clientes activos
+			// Query para contar clientes activos
 			String query = """
 					SELECT COUNT(DISTINCT c.id_cliente) AS total_clientes_activos FROM cliente c
 					JOIN cuenta cu ON c.id_cliente = cu.id_cliente
@@ -192,12 +192,12 @@ public class ReporteDaoImpl implements ReporteDao {
 
 		try {
 			String query = "";
-			
+
 			switch (tipoReporte) {
-				case "depositos":
-					// Query que obtiene los detalles de los depositos
-					query = """
-						SELECT 
+			case "depositos":
+				// Query que obtiene los detalles de los depositos
+				query = """
+						SELECT
 							CONCAT(cl.nombre, ' ', cl.apellido) AS 'Cliente',
 							c.numero_cuenta AS 'Número de Cuenta',
 							m.importe AS 'Monto',
@@ -211,47 +211,35 @@ public class ReporteDaoImpl implements ReporteDao {
 						  AND m.fecha BETWEEN ? AND ?
 						ORDER BY m.fecha DESC
 						""";
-					break;
-					
-				case "transferencias":
-					// Quety para las transferencias que trae datos de movimientos, cliente y cuentas
-					query = """
+				break;
+
+			case "transferencias":
+				// Quety para las transferencias que trae datos de movimientos, cliente y
+				// cuentas
+				query = """
 						SELECT 
-							CONCAT(c1.nombre, ' ', c1.apellido) AS 'Cliente',
-							m1.importe AS 'Monto',
-							cu2.numero_cuenta AS 'Número de Cuenta Destino',
-							m1.detalle AS 'Detalle',
-							m1.fecha AS 'Fecha'
+						    CONCAT(c1.nombre, ' ', c1.apellido) AS 'Cliente',
+						    m.importe AS 'Monto',
+						    cu.numero_cuenta AS 'Número de Cuenta Origen',
+						    m.detalle AS 'Detalle',
+						    m.fecha AS 'Fecha'
 						FROM 
-							movimiento m1
-						JOIN 
-							movimiento_tipo mt1 ON m1.id_tipo_movimiento = mt1.id_tipo_movimiento
-						JOIN 
-							cuenta cu1 ON m1.id_cuenta = cu1.id_cuenta
-						JOIN 
-							cliente c1 ON cu1.id_cliente = c1.id_cliente
-
-						JOIN 
-							movimiento m2 ON m1.fecha = m2.fecha AND m1.importe = m2.importe
-						JOIN 
-							movimiento_tipo mt2 ON m2.id_tipo_movimiento = mt2.id_tipo_movimiento
-						JOIN 
-							cuenta cu2 ON m2.id_cuenta = cu2.id_cuenta
-
+						    movimiento m
+						JOIN movimiento_tipo mt ON m.id_tipo_movimiento = mt.id_tipo_movimiento
+						JOIN cuenta cu ON m.id_cuenta = cu.id_cuenta
+						JOIN cliente c1 ON cu.id_cliente = c1.id_cliente
 						WHERE 
-							mt1.descripcion = 'Transferencia'
-							AND m1.detalle LIKE 'Transferencia%'
-							AND mt2.descripcion = 'Transferencia'
-							AND m2.detalle LIKE 'Transferencia%'							
-							AND m1.fecha BETWEEN ? AND ?
-						ORDER BY m1.fecha DESC
-						""";
-					break;
-					
-				case "prestamos":
-					// Query que trae los datos de prestamos aprobados
-					query = """
-						SELECT 
+						    mt.descripcion = 'Transferencia'
+						    AND m.detalle LIKE 'Transferencia%'
+						    AND m.fecha BETWEEN ? AND ?
+						ORDER BY m.fecha DESC;
+						""";			
+				break;
+
+			case "prestamos":
+				// Query que trae los datos de prestamos aprobados
+				query = """
+						SELECT
 							CONCAT(cl.nombre, ' ', cl.apellido) AS 'Cliente',
 							c.numero_cuenta AS 'Número de Cuenta',
 							p.importe_solicitado AS 'Monto Solicitado',
@@ -266,12 +254,12 @@ public class ReporteDaoImpl implements ReporteDao {
 						  AND p.fecha_aprobacion BETWEEN ? AND ?
 						ORDER BY p.fecha_aprobacion DESC
 						""";
-					break;
-					
-				case "clientes":
-					// Query para traer datos de los clientes activos
-					query = """
-						SELECT 
+				break;
+
+			case "clientes":
+				// Query para traer datos de los clientes activos
+				query = """
+						SELECT
 							CONCAT(cl.nombre, ' ', cl.apellido) AS 'Cliente',
 							c.numero_cuenta AS 'Número de Cuenta',
 							ct.nombre AS 'Tipo de Cuenta',
@@ -281,12 +269,12 @@ public class ReporteDaoImpl implements ReporteDao {
 						FROM cliente cl
 						JOIN cuenta c ON cl.id_cliente = c.id_cliente
 						JOIN cuenta_tipo ct ON c.id_tipo_cuenta = ct.id
-						WHERE c.activa = 1 
+						WHERE c.activa = 1
 						  AND c.fecha_creacion BETWEEN ? AND ?
 						  AND cl.eliminado = 0
 						ORDER BY c.fecha_creacion DESC
 						""";
-					break;
+				break;
 			}
 
 			pst = conexion.prepareStatement(query);
