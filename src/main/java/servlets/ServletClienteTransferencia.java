@@ -182,7 +182,7 @@ public class ServletClienteTransferencia extends HttpServlet {
 			Boolean debitoResultado = false;
 			BigDecimal saldoFinal = cuentaOrigen.getSaldo().subtract(monto);
 			debitoResultado = cuentaNegocio.modificarSaldo(cuentaOrigen.getIdCuenta(), saldoFinal);
-
+			
 			Boolean acreditacionResultado = false;
 			saldoFinal = cuentaDestino.getSaldo().add(monto);
 			acreditacionResultado = cuentaNegocio.modificarSaldo(cuentaDestino.getIdCuenta(), saldoFinal);
@@ -206,7 +206,7 @@ public class ServletClienteTransferencia extends HttpServlet {
 			historialTransferencias = transferenciaNegocio.mostrar_historial_transferencia(cuentaOrigen.getIdCliente());
 			request.setAttribute("historial", historialTransferencias);
 
-			// Recargar datos y mostrar la página de transferencias
+			// Recargar los datos y mostrar la página de transferencias
 			request.setAttribute("cliente", cliente);
 
 			// Cargar las cuentas del cliente para el desplegable
