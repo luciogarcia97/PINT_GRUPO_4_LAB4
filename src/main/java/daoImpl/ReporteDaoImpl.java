@@ -27,7 +27,7 @@ public class ReporteDaoImpl implements ReporteDao {
 			String query = """
 					SELECT SUM(m.importe) AS total_depositos FROM movimiento m
 					JOIN movimiento_tipo mt ON m.id_tipo_movimiento = mt.id_tipo_movimiento
-					WHERE mt.descripcion = 'Depósito'
+					WHERE m.detalle LIKE 'Depósito%'
 					  AND m.fecha BETWEEN ? AND ? """;
 
 			pst = conexion.prepareStatement(query);
@@ -207,7 +207,7 @@ public class ReporteDaoImpl implements ReporteDao {
 						JOIN movimiento_tipo mt ON m.id_tipo_movimiento = mt.id_tipo_movimiento
 						JOIN cuenta c ON m.id_cuenta = c.id_cuenta
 						JOIN cliente cl ON c.id_cliente = cl.id_cliente
-						WHERE mt.descripcion = 'Depósito'
+						WHERE m.detalle LIKE 'Depósito%'
 						  AND m.fecha BETWEEN ? AND ?
 						ORDER BY m.fecha DESC
 						""";

@@ -16,9 +16,7 @@ import negocio.CuentaNegocio;
 import negocioImpl.ClienteNegociolmpl;
 import negocioImpl.CuentaNegocioImpl;
 
-/**
- * Servlet implementation class ServletBuscarTitularCBU
- */
+
 @WebServlet("/ServletBuscarTitularCBU")
 public class ServletBuscarTitularCBU extends HttpServlet {
 	private static final long serialVersionUID = 1L;

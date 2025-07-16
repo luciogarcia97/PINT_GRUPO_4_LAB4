@@ -13,9 +13,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
+import entidades.Cliente;
 import entidades.Cuenta;
 import entidades.TipoCuenta;
+import negocio.ClienteNegocio;
+import negocio.CuentaNegocio;
+import negocio.MovimientoNegocio;
+import negocio.TipoCuentaNegocio;
 import negocioImpl.CuentaNegocioImpl;
 import negocioImpl.TipoCuentaNegocioImpl;
 import negocioImpl.ClienteNegociolmpl;
@@ -25,10 +29,10 @@ import negocioImpl.MovimientoNegocioImpl;
 public class ServletCuenta extends HttpServlet {
 private static final long serialVersionUID = 1L;
     
-    private CuentaNegocioImpl cuentaNegocio;
-    private TipoCuentaNegocioImpl tipoCuentaNegocio;
-    private ClienteNegociolmpl clienteNegocio;
-    private MovimientoNegocioImpl movimientoNegocio;
+    private CuentaNegocio cuentaNegocio;
+    private TipoCuentaNegocio tipoCuentaNegocio;
+    private ClienteNegocio clienteNegocio;
+    private MovimientoNegocio movimientoNegocio;
     
     public ServletCuenta() {
         super();
@@ -331,6 +335,7 @@ private static final long serialVersionUID = 1L;
         if(request.getParameter("reactivar") != null) {
             try {
                 int idCuenta = Integer.parseInt(request.getParameter("idReactivar"));
+                int idCliente = Integer.parseInt(request.getParameter("idCliente"));
                 
                 Cuenta cuenta = cuentaNegocio.obtenerCuentaPorId(idCuenta);
                 if (cuenta == null) {
@@ -338,6 +343,13 @@ private static final long serialVersionUID = 1L;
                     cargarListado(request, response);
                     return;
                 }
+                
+                Cliente cliente = clienteNegocio.BuscarPorID(idCliente);
+                if (cliente.getEliminado()) {
+                	request.setAttribute("error", "Cliente fue dado de baja");
+                    cargarListado(request, response);
+                    return;                	
+                }                
                 
                 if (!cuentaNegocio.puedeCrearCuenta(cuenta.getIdCliente())) {
                     request.setAttribute("error", "No se puede reactivar: el cliente ya tiene 3 cuentas activas");

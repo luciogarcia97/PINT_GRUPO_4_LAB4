@@ -85,7 +85,7 @@ public class ClienteDaolmpl implements ClienteDao {
 
 	    try {
 	        conexion = Conexion.getConexion().getSQLConexion(); 
-	        String query = "SELECT id_cliente, dni, cuil, nombre, apellido, sexo, nacionalidad, fecha_nacimiento, direccion, localidad, provincia, correo_electronico FROM cliente WHERE id_cliente = ?";
+	        String query = "SELECT id_cliente, dni, cuil, nombre, apellido, sexo, nacionalidad, fecha_nacimiento, direccion, localidad, provincia, correo_electronico, eliminado FROM cliente WHERE id_cliente = ?";
 	        pst = conexion.prepareStatement(query);
 	        pst.setInt(1, id);
 	        rs = pst.executeQuery();
@@ -104,6 +104,7 @@ public class ClienteDaolmpl implements ClienteDao {
 	            cliente.setLocalidad(rs.getString("localidad"));
 	            cliente.setProvincia(rs.getString("provincia"));
 	            cliente.setCorreoElectronico(rs.getString("correo_electronico"));
+	            cliente.setEliminado(rs.getBoolean("eliminado"));
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();

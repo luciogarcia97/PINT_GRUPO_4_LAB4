@@ -170,7 +170,8 @@
                                                 
                                                 <%if(!c.isActiva() == true ){ %>
                                                 <form action="ServletCuenta?reactivar=1" method="post" class="d-inline">
-                                                	<input type="hidden" name="idReactivar" value="<%= c.getIdCuenta() %>" />                               
+                                                	<input type="hidden" name="idReactivar" value="<%= c.getIdCuenta() %>" />
+                                                	<input type="hidden" name="idCliente" value="<%= c.getIdCliente() %>" />                                                   	                             
                                                 	<button type="submit" class="btn btn-sm btn-success" name="btnActivarCuenta" title="Activar cuenta"	onclick="return confirm('¿Estás seguro de que deseas reactivar esta cuenta?')">
                                                     	<i class="bi bi-x-circle"></i>
                                                     Activar
@@ -181,7 +182,7 @@
 										          %>
 										         <%if(!c.isActiva() == false ){ %>
                                                 <form action="ServletCuenta?eliminar=1" method="post" class="d-inline">
-                                                	<input type="hidden" name="idEliminar" value="<%= c.getIdCuenta() %>" />                               
+                                                	<input type="hidden" name="idEliminar" value="<%= c.getIdCuenta() %>" />                                                	                                             	                                                 	                              
                                                 	<button type="submit" class="btn btn-sm btn-danger" name="btnEliminarCuenta" title="Desactivar cuenta" 	onclick="return confirm('¿Estás seguro de que deseas desactivar esta cuenta?')">
                                                     	<i class="bi bi-x-circle"></i>
                                                     Desactivar
