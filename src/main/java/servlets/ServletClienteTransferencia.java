@@ -156,7 +156,7 @@ public class ServletClienteTransferencia extends HttpServlet {
 				return;
 			}
 			
-			//Revisa si la cuenta no esta dada de baja
+			//Revisa si la cuenta no esta dada de baja o no le permite transferir
 			Cuenta cuentaDestino = cuentaNegocio.buscarIdConCbu(cbu);
 			if(cuentaDestino.isActiva() == false)
 			{		
