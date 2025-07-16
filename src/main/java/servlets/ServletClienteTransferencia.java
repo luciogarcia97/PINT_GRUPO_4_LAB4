@@ -104,6 +104,7 @@ public class ServletClienteTransferencia extends HttpServlet {
 
 			String txtMonto = request.getParameter("txtMonto");
 			BigDecimal monto = new BigDecimal("0.00");
+
 			if (txtMonto == null || txtMonto.trim().isEmpty()) {
 				// Valida si es null o un string vacio
 				request.setAttribute("cliente", cliente);
@@ -121,9 +122,9 @@ public class ServletClienteTransferencia extends HttpServlet {
 			} else {
 				monto = new BigDecimal(txtMonto);
 			}
+			
 
-			// Valida si la cuenta tiene el dinero suficiente:
-
+			// Valida si la cuenta tiene el dinero suficiente
 			if (cuentaNegocio.tieneSaldoSuficiente(idCuenta, monto) == false || monto.compareTo(cero) <= 0) {
 
 				request.setAttribute("cliente", cliente);
@@ -155,11 +156,11 @@ public class ServletClienteTransferencia extends HttpServlet {
 
 				return;
 			}
-			
-			//Revisa si la cuenta no esta dada de baja o no le permite transferir
+
+			// Revisa si la cuenta no esta dada de baja o no le permite transferir			
 			Cuenta cuentaDestino = cuentaNegocio.buscarIdConCbu(cbu);
-			if(cuentaDestino.isActiva() == false)
-			{		
+			if (cuentaDestino.isActiva() == false) {
+
 				request.setAttribute("cliente", cliente);
 
 				// Cargar las cuentas del cliente para el desplegable
@@ -171,18 +172,35 @@ public class ServletClienteTransferencia extends HttpServlet {
 				RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioClienteTransferencias.jsp");
 				dispatcher.forward(request, response);
 
-				return;	
+				return;
 			}
+			
+			//invalida la transferencia al mismo cbu
+			String cbuOrigen = request.getParameter("cbuOrigen");			
+			Cuenta cuentaCbuDestino = cuentaNegocio.buscarIdConCbu(cbu);				
+				
+			if(cuentaCbuDestino.getCbu().equals(cbuOrigen)) {
+					request.setAttribute("cliente", cliente);
+					
+					List<Cuenta> cuentasCliente = cuentaNegocio.obtenerCuentasPorCliente(cliente.getIdCliente());
+					request.setAttribute("cuentasCliente", cuentasCliente);
+
+					request.setAttribute("mismoCbu", 1);
+
+					RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioClienteTransferencias.jsp");
+					dispatcher.forward(request, response);
+					return;					
+				}				
 			
 			// Resta el monto al saldo de la cuenta origen y lo suma en la cuenta destino a
 			// la que le pertenezca ese CBU:
-			Cuenta cuentaOrigen = cuentaNegocio.buscarPorID(idCuenta);			
+			Cuenta cuentaOrigen = cuentaNegocio.buscarPorID(idCuenta);
 			boolean movimientoRegistrado = false;
 			boolean transferenciaRegistrada = false;
 			Boolean debitoResultado = false;
 			BigDecimal saldoFinal = cuentaOrigen.getSaldo().subtract(monto);
 			debitoResultado = cuentaNegocio.modificarSaldo(cuentaOrigen.getIdCuenta(), saldoFinal);
-			
+
 			Boolean acreditacionResultado = false;
 			saldoFinal = cuentaDestino.getSaldo().add(monto);
 			acreditacionResultado = cuentaNegocio.modificarSaldo(cuentaDestino.getIdCuenta(), saldoFinal);

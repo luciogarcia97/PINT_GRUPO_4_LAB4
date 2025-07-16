@@ -42,6 +42,7 @@
             int saldoInsuficiente = request.getAttribute("saldoInsuficiente") != null ? Integer.parseInt(request.getAttribute("saldoInsuficiente").toString()) : 0;
             int cbuInexistente = request.getAttribute("cbuInexistente") != null ? Integer.parseInt(request.getAttribute("cbuInexistente").toString()) : 0;
             int montoInvalido = request.getAttribute("montoInvalido") != null ? Integer.parseInt(request.getAttribute("montoInvalido").toString()) : 0;
+            int mismoCbu = request.getAttribute("mismoCbu") != null ? Integer.parseInt(request.getAttribute("mismoCbu").toString()) : 0;
             String error = (String) request.getAttribute("error");
         %>
 
@@ -98,6 +99,21 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 <% } %>
+                
+                  <% if(mismoCbu != 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Error:</strong> No podes mandar y recibir al mismo CBU.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <% } %> 
+                
+                <% String exito = (String) request.getAttribute("exito"); %>
+					<% if (exito != null && !exito.isEmpty()) { %>
+						 <div class="alert alert-success alert-dismissible fade show" role="alert">
+						      <%= exito %>
+						      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+						  </div>
+				<% } %>               
 
                
                 <form id="formTransferencia" action="ServletClienteTransferencia" method="post">
@@ -107,19 +123,20 @@
                     <% if (cuentas != null && !cuentas.isEmpty()) { %>
 							<div class="mb-3">
 								<label for="cuentaOrigen" class="form-label">Cuenta Origen</label>
-								<select class="form-select" id="idCuenta" name="idCuenta">
+								<select class="form-select" id="idCuenta" name="idCuenta">								
 									<% for (Cuenta cuenta : cuentas) { %>
-										<option value="<%= cuenta.getIdCuenta() %>">
+										<option value="<%= cuenta.getIdCuenta() %>" data-cbu="<%= cuenta.getCbu() %>">
 											<%= cuenta.getNumeroCuenta() %> - <%= cuenta.getSaldo() %>
 										</option>
 									<% } %>
 								</select>
+								<input type="hidden" name="cbuOrigen" id="cbuOrigen">
 							</div>
 						<% } else { %>
 							<div class="alert alert-warning" role="alert">
 								⚠️ Todavía no tiene cuentas asociadas para realizar una transferencia.
 							</div>
-						<% } %>
+						<% } %>										
 
                    
                     <div class="mb-3">
@@ -140,7 +157,24 @@
 
                     <button type="button"  class="btn btn-success" onclick="validarYMostrarModal()">Realizar Transferencia</button>
                 </form>
-
+                
+                
+                <script>
+				    document.addEventListener("DOMContentLoaded", function () {
+				        const selectCuenta = document.getElementById("idCuenta");
+				        const inputCbu = document.getElementById("cbuOrigen");
+				
+				        function actualizarCbu() {
+				            const selectedOption = selectCuenta.options[selectCuenta.selectedIndex];
+				            inputCbu.value = selectedOption.getAttribute("data-cbu");
+				        }
+				
+				        actualizarCbu(); // Lo setea al cargar la página
+				        selectCuenta.addEventListener("change", actualizarCbu); // Lo actualiza al cambiar
+				    });
+				</script>            
+                
+                
                 <hr>
                 <h5>Historial de Transferencias</h5>
                 <div class="col-11">
