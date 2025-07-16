@@ -155,11 +155,28 @@ public class ServletClienteTransferencia extends HttpServlet {
 
 				return;
 			}
+			
+			//Revisa si la cuenta no esta dada de baja
+			Cuenta cuentaDestino = cuentaNegocio.buscarIdConCbu(cbu);
+			if(cuentaDestino.isActiva() == false)
+			{		
+				request.setAttribute("cliente", cliente);
 
+				// Cargar las cuentas del cliente para el desplegable
+				List<Cuenta> cuentasCliente = cuentaNegocio.obtenerCuentasPorCliente(cliente.getIdCliente());
+				request.setAttribute("cuentasCliente", cuentasCliente);
+
+				request.setAttribute("cbuInexistente", 1);
+
+				RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioClienteTransferencias.jsp");
+				dispatcher.forward(request, response);
+
+				return;	
+			}
+			
 			// Resta el monto al saldo de la cuenta origen y lo suma en la cuenta destino a
 			// la que le pertenezca ese CBU:
-			Cuenta cuentaOrigen = cuentaNegocio.buscarPorID(idCuenta);
-			Cuenta cuentaDestino = cuentaNegocio.buscarIdConCbu(cbu);
+			Cuenta cuentaOrigen = cuentaNegocio.buscarPorID(idCuenta);			
 			boolean movimientoRegistrado = false;
 			boolean transferenciaRegistrada = false;
 			Boolean debitoResultado = false;

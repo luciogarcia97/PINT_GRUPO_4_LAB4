@@ -643,7 +643,7 @@ public class CuentaDaoImpl implements CuentaDao {
 				cuenta.setNumeroCuenta(rs.getString("numero_cuenta"));
 				cuenta.setCbu(rs.getString("cbu"));	
 				cuenta.setSaldo(rs.getBigDecimal("saldo"));	
-				cuenta.setIdCuenta(rs.getInt("id_cuenta"));					
+				cuenta.setActiva(rs.getBoolean("activa")); 				
 		    }		
 			
 		} catch (SQLException e) {
