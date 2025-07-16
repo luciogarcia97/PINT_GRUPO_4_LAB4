@@ -377,7 +377,7 @@ public class PrestamoDaolmpl implements PrestamoDao {
 		PreparedStatement pst = null;
 		Connection cn = null;
 		boolean resultado = false;
-
+		
 		try {
 			cn = Conexion.getConexion().getSQLConexion();
 			String query = "CALL sp_pagar_cuota(?, ?, ?)";
