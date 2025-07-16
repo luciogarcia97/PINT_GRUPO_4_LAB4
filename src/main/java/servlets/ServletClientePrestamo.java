@@ -96,6 +96,13 @@ public class ServletClientePrestamo extends HttpServlet {
 			String[] datosCuotaArray = datosCuota.split("\\|");
 			int idCuota = Integer.parseInt(datosCuotaArray[0]);
 			double monto = Double.parseDouble(datosCuotaArray[1]);
+			
+			Cuenta cuentaSeleccionada = cuentaNegocio.buscarPorID(idCuenta);
+			  BigDecimal montoBigDecimal = BigDecimal.valueOf(monto);
+			  
+			if(cuentaSeleccionada.getSaldo().compareTo(montoBigDecimal) < 0) {
+				request.setAttribute("error", "Error al pagar la cuota. Verifique su saldo.");
+			}else {
 
 			resultado = prestamoNegocio.pagarCuota(idCuota, idCuenta, monto);
 
@@ -112,6 +119,7 @@ public class ServletClientePrestamo extends HttpServlet {
 				    request.setAttribute("error", "Error al pagar la cuota. Verifique su saldo.");
 				}
 			}
+			}
 		    prestamosConCuotasPendientes = prestamoNegocio.obtenerPrestamosConCuotasPendientes(usuarioLogueado.getId_cliente());
 		    request.setAttribute("prestamosConCuotasPendientes", prestamosConCuotasPendientes);
 			request.setAttribute("resultado", resultado);
@@ -119,6 +127,7 @@ public class ServletClientePrestamo extends HttpServlet {
 			rd.forward(request, response);
 			return;
 		}
+	    
 
 		if (request.getParameter("btnSolicitarPrestamo") != null) {
 
