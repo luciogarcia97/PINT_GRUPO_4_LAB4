@@ -155,17 +155,34 @@ public class ServletClienteTransferencia extends HttpServlet {
 
 				return;
 			}
+			
+			//Revisa si la cuenta no esta dada de baja o no le permite transferir
+			Cuenta cuentaDestino = cuentaNegocio.buscarIdConCbu(cbu);
+			if(cuentaDestino.isActiva() == false)
+			{		
+				request.setAttribute("cliente", cliente);
 
+				// Cargar las cuentas del cliente para el desplegable
+				List<Cuenta> cuentasCliente = cuentaNegocio.obtenerCuentasPorCliente(cliente.getIdCliente());
+				request.setAttribute("cuentasCliente", cuentasCliente);
+
+				request.setAttribute("cbuInexistente", 1);
+
+				RequestDispatcher dispatcher = request.getRequestDispatcher("usuarioClienteTransferencias.jsp");
+				dispatcher.forward(request, response);
+
+				return;	
+			}
+			
 			// Resta el monto al saldo de la cuenta origen y lo suma en la cuenta destino a
 			// la que le pertenezca ese CBU:
-			Cuenta cuentaOrigen = cuentaNegocio.buscarPorID(idCuenta);
-			Cuenta cuentaDestino = cuentaNegocio.buscarIdConCbu(cbu);
+			Cuenta cuentaOrigen = cuentaNegocio.buscarPorID(idCuenta);			
 			boolean movimientoRegistrado = false;
 			boolean transferenciaRegistrada = false;
 			Boolean debitoResultado = false;
 			BigDecimal saldoFinal = cuentaOrigen.getSaldo().subtract(monto);
 			debitoResultado = cuentaNegocio.modificarSaldo(cuentaOrigen.getIdCuenta(), saldoFinal);
-
+			
 			Boolean acreditacionResultado = false;
 			saldoFinal = cuentaDestino.getSaldo().add(monto);
 			acreditacionResultado = cuentaNegocio.modificarSaldo(cuentaDestino.getIdCuenta(), saldoFinal);
@@ -189,7 +206,7 @@ public class ServletClienteTransferencia extends HttpServlet {
 			historialTransferencias = transferenciaNegocio.mostrar_historial_transferencia(cuentaOrigen.getIdCliente());
 			request.setAttribute("historial", historialTransferencias);
 
-			// Recargar datos y mostrar la página de transferencias
+			// Recargar los datos y mostrar la página de transferencias
 			request.setAttribute("cliente", cliente);
 
 			// Cargar las cuentas del cliente para el desplegable
