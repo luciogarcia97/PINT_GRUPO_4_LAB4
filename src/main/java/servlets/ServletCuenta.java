@@ -299,13 +299,11 @@ private static final long serialVersionUID = 1L;
                 
             } catch (NumberFormatException e) {
                 request.setAttribute("error", "Datos numéricos inválidos");
-                RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
-                rd.forward(request, response);
+                cargarListado(request, response);               
             } catch (Exception e) {
                 e.printStackTrace();
                 request.setAttribute("error", "Error interno del sistema");
-                RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
-                rd.forward(request, response);
+                cargarListado(request, response);                
             }
         }
         
