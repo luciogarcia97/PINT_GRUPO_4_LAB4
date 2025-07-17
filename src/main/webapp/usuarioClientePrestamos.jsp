@@ -116,7 +116,9 @@
 					
 					<div class="mb-3">
 						<label for="montoPrestamo" class="form-label">Monto	solicitado</label>
-						 <input type="number" min="500" step="0.01" class="form-control" 
+						 <input type="text" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '')                      
+        					.replace(/^(\d*\.\d{0,2}).*$/, '$1').replace(/(\..*)\./g, '$1');if (parseFloat(this.value) < 500) {
+        					this.setCustomValidity('El monto mínimo es 500');this.reportValidity();} else {this.setCustomValidity('');}" 
 							id="montoPrestamo" name="montoPrestamo" placeholder="Monto del préstamo">
 					</div>
 					<div class="mb-3">
