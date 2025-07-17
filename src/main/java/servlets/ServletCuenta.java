@@ -152,32 +152,30 @@ private static final long serialVersionUID = 1L;
             try {
             	
                 // Obtener datos del formulario
-                int idCuenta = Integer.parseInt(request.getParameter("idCuenta"));
-                int idCliente = Integer.parseInt(request.getParameter("txtIdCliente"));
-                int idTipoCuenta = Integer.parseInt(request.getParameter("ddlTipoCuenta"));
+                int idCuenta = Integer.parseInt(request.getParameter("idCuenta").trim());
+                int idCliente = Integer.parseInt(request.getParameter("txtIdCliente").trim());
+                int idTipoCuenta = Integer.parseInt(request.getParameter("ddlTipoCuenta").trim());
                 
-                String numeroCuenta = request.getParameter("txtNumeroCuenta");
-                String cbu = request.getParameter("txtCbu");
+                String numeroCuenta = request.getParameter("txtNumeroCuenta").trim();
+                String cbu = request.getParameter("txtCbu").trim();
                 
-                BigDecimal saldo = new BigDecimal(request.getParameter("txtSaldo"));
+                BigDecimal saldo = new BigDecimal(request.getParameter("txtSaldo").trim());
                 
-                boolean activa = Boolean.parseBoolean(request.getParameter("txtActiva"));
+                boolean activa = Boolean.parseBoolean(request.getParameter("txtActiva").trim());
                 
-                String fechaCreacionStr = request.getParameter("txtFechaCreacion");
+                String fechaCreacionStr = request.getParameter("txtFechaCreacion").trim();
                 LocalDate fechaCreacion = null;
                 
                 try {
                     fechaCreacion = LocalDate.parse(fechaCreacionStr);
                     if (fechaCreacion.isAfter(LocalDate.now())) {
                         request.setAttribute("error", "La fecha de creación no puede ser futura.");
-                        RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
-                        rd.forward(request, response);
+                        cargarListado(request, response);
                         return;
                     }
                 } catch (DateTimeParseException e) {
                     request.setAttribute("error", "La fecha de creación es inválida.");
-                    RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
-                    rd.forward(request, response);
+                    cargarListado(request, response);
                     return;
                 }
                 
@@ -185,24 +183,21 @@ private static final long serialVersionUID = 1L;
                 Cuenta cuentaExistente = cuentaNegocio.buscarPorID(idCuenta);
                 if (cuentaExistente == null) {
                     request.setAttribute("error", "La cuenta no existe");
-                    RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
-                    rd.forward(request, response);
+                    cargarListado(request, response);
                     return;
                 }
                 
                 // Verifica que el ID del cliente sea válido
                 if (idCliente <= 0) {
                     request.setAttribute("error", "Debe especificar un ID de cliente válido");
-                    RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
-                    rd.forward(request, response);
+                    cargarListado(request, response);
                     return;
                 }
                 
                 // Verifica que el cliente existe
                 if (!clienteNegocio.existeCliente(idCliente)) {
                     request.setAttribute("error", "El cliente con ID " + idCliente + " no existe o está eliminado");
-                    RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
-                    rd.forward(request, response);
+                    cargarListado(request, response);
                     return;
                 }
                 
@@ -210,38 +205,33 @@ private static final long serialVersionUID = 1L;
                 TipoCuenta tipoCuenta = tipoCuentaNegocio.obtenerTipoPorId(idTipoCuenta);
                 if (tipoCuenta == null) {
                     request.setAttribute("error", "Tipo de cuenta no válido");
-                    RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
-                    rd.forward(request, response);
+                    cargarListado(request, response);
                     return;
                 }
                 
                 // Verifica que los campos no estén vacíos
                 if (numeroCuenta == null || numeroCuenta.trim().isEmpty()) {
                     request.setAttribute("error", "El número de cuenta no puede estar vacío");
-                    RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
-                    rd.forward(request, response);
+                    cargarListado(request, response);
                     return;
                 }
                 // Verifica que el número de cuenta debe ser numérico, no debe ser 0 y no debe contener letras
                 if (!numeroCuenta.matches("^[1-9][0-9]*$") ) {
                     request.setAttribute("error", "El número de cuenta debe ser un número positivo, sin letras ni ceros iniciales");
-                    RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
-                    rd.forward(request, response);
+                    cargarListado(request, response);
                     return;
                 }
                 // Verifica que CBU debe ser solo números y tener exactamente 22 dígitos
                 if (cbu == null || !cbu.matches("^\\d{22}$")) {
                     request.setAttribute("error", "El CBU debe contener exactamente 22 dígitos numéricos");
-                    RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
-                    rd.forward(request, response);
+                    cargarListado(request, response);
                     return;
                 }
                 
                 // Verifica que el saldo no sea negativo
                 if (saldo.compareTo(BigDecimal.ZERO) < 0) {
                     request.setAttribute("error", "El saldo no puede ser negativo");
-                    RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
-                    rd.forward(request, response);
+                    cargarListado(request, response);
                     return;
                 }
                 
@@ -249,8 +239,7 @@ private static final long serialVersionUID = 1L;
                 if (activa) {
                     if (!cuentaNegocio.puedeCrearCuenta(idCliente, idCuenta)) {
                         request.setAttribute("error", "No se puede asignar la cuenta al cliente " + idCliente + ": ya tiene el máximo de 3 cuentas activas");
-                        RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
-                        rd.forward(request, response);
+                        cargarListado(request, response);
                         return;
                     }
                 }
@@ -259,8 +248,7 @@ private static final long serialVersionUID = 1L;
                 if (!numeroCuenta.equals(cuentaExistente.getNumeroCuenta())) {
                     if (cuentaNegocio.existeNumeroCuenta(numeroCuenta)) {
                         request.setAttribute("error", "El número de cuenta ya existe en el sistema");
-                        RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
-                        rd.forward(request, response);
+                        cargarListado(request, response);
                         return;
                     }
                 }
@@ -269,8 +257,7 @@ private static final long serialVersionUID = 1L;
                 if (!cbu.equals(cuentaExistente.getCbu())) {
                     if (cuentaNegocio.existeCBU(cbu)) {
                         request.setAttribute("error", "El CBU ya existe en el sistema");
-                        RequestDispatcher rd = request.getRequestDispatcher("/administrarCuentas.jsp");
-                        rd.forward(request, response);
+                        cargarListado(request, response);
                         return;
                     }
                 }
