@@ -77,7 +77,7 @@
 			</div>	
 
             <div id="transferencias" class="panel" style="display: block">
-                <h4>Transferencias</h4>
+                <h4>Transferencias</h4>                        
 
                 <% if(saldoInsuficiente != 0) { %>
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -137,17 +137,16 @@
 								⚠️ Todavía no tiene cuentas asociadas para realizar una transferencia.
 							</div>
 						<% } %>										
-
-                   
+                  
                     <div class="mb-3">
                         <label for="cbuDestino" class="form-label">CBU Destino</label>
-                        <input type="text" class="form-control" name="txtCbu" id="cbuDestino" placeholder="Ingrese CBU"
+                        <input type="text" <% if (cuentas == null || cuentas.isEmpty()) { %> disabled <% } %> class="form-control" name="txtCbu" id="cbuDestino" placeholder="Ingrese CBU"
                         oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/^(\d*\.\d{0,2}).*$/, '$1').replace(/(\..*)\./g, '$1');">
                     </div>
 
                     <div class="mb-3">
                         <label for="montoTransferencia" class="form-label">Monto</label>
-                        <input type="text" name="txtMonto" class="form-control" id="montoTransferencia" placeholder="$XXXX"
+                        <input type="text" <% if (cuentas == null || cuentas.isEmpty()) { %> disabled <% } %> name="txtMonto" class="form-control" id="montoTransferencia" placeholder="$XXXX"
                         oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/^(\d*\.\d{0,2}).*$/, '$1').replace(/(\..*)\./g, '$1');">
                     </div>
 
@@ -155,7 +154,7 @@
                         Titular: <span id="nombreTitular"></span>
                     </div>
 
-                    <button type="button"  class="btn btn-success" onclick="validarYMostrarModal()">Realizar Transferencia</button>
+                    <button type="button" <% if (cuentas == null || cuentas.isEmpty()) { %> disabled <% } %>  class="btn btn-success" onclick="validarYMostrarModal()">Realizar Transferencia</button>
                 </form>
                 
                 
