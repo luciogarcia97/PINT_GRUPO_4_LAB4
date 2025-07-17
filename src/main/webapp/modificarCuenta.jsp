@@ -48,13 +48,13 @@
 	
 	        <div class="row">
 	            <div class="mb-3 col-md-6">
-	                <input type="hidden" name="idCuenta" class="form-control" id="idCuenta"
+	                <input type="hidden" disabled name="idCuenta" class="form-control" id="idCuenta"
 	                 value="<%= cuenta != null ? cuenta.getIdCuenta() : "" %>" required>
 	            </div>
 	            
 	            <div class="mb-3 col-md-6">
 	                <label for="idCliente" class="form-label">ID Cliente</label>
-	                <input type="number" name="txtIdCliente" class="form-control" id="idCliente"
+	                <input type="number" disabled name="txtIdCliente" class="form-control" id="idCliente"
 	                 value="<%= cuenta != null ? cuenta.getIdCliente() : "" %>" required>
 	            </div>
 	            
@@ -74,7 +74,7 @@
 	            
 	            <div class="mb-3 col-md-6">
 	                <label for="numeroCuenta" class="form-label">Número de Cuenta</label>
-	                <input type="text" name="txtNumeroCuenta" class="form-control" id="numeroCuenta"
+	                <input type="text" disabled name="txtNumeroCuenta" class="form-control" id="numeroCuenta"
 	                 value="<%= cuenta != null ? cuenta.getNumeroCuenta() : "" %>" required>
 	            </div>
 	            
@@ -86,7 +86,7 @@
 	            
 	            <div class="mb-3 col-md-6">
 	                <label for="saldo" class="form-label">Saldo</label>
-	                <input type="number" step="0.01" name="txtSaldo" class="form-control" id="saldo"
+	                <input type="number" disabled step="0.01" name="txtSaldo" class="form-control" id="saldo"
 	                 value="<%= cuenta != null ? cuenta.getSaldo() : "" %>" required>
 	            </div>
 	            
@@ -100,7 +100,7 @@
 	            
 	            <div class="mb-3 col-md-6">
 	                <label for="fechaCreacion" class="form-label">Fecha de Creación</label>
-	                <input type="date" name="txtFechaCreacion" class="form-control" id="fechaCreacion"
+	                <input type="date" disabled name="txtFechaCreacion" class="form-control" id="fechaCreacion"
 	                 value="<%= cuenta != null ? cuenta.getFechaCreacion() : "" %>"
 	                 max="<%= java.time.LocalDate.now() %>" required>
 	            </div>
