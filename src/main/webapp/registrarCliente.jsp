@@ -121,11 +121,13 @@
 		        <div class="row">
 		            <div class="mb-3 col-md-6">
 		                <label for="nombre" class="form-label">Nombre</label>
-		                <input type="text" class="form-control" id="nombre" name="txtNombre" placeholder="Tu Nombre" required>
+		                <input type="text" class="form-control" id="nombre" name="txtNombre" placeholder="Tu Nombre" required
+		                oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
 		            </div>
 		            <div class="mb-3 col-md-6">
 		                <label for="apellido" class="form-label">Apellido</label>
-		                <input type="text" class="form-control" id="apellido" name="txtApellido" placeholder="Tu Apellido" required>
+		                <input type="text" class="form-control" id="apellido" name="txtApellido" placeholder="Tu Apellido" required
+		                oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
 		            </div>
 		
 		            <div class="mb-3 col-md-6">
@@ -139,7 +141,8 @@
 		            </div>
 		            <div class="mb-3 col-md-6">
 		                <label for="nacionalidad" class="form-label">Nacionalidad</label>
-		                <input type="text" class="form-control" id="nacionalidad" name="txtNacionalidad" placeholder="Nacionalidad" required>
+		                <input type="text" class="form-control" id="nacionalidad" name="txtNacionalidad" placeholder="Nacionalidad" required
+		                oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
 		            </div>
 		
 		            <div class="mb-3 col-md-6">

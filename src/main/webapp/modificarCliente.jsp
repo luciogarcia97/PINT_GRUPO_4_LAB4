@@ -147,13 +147,14 @@
 
 					<label for="nombre" class="form-label">Nombre</label> <input
 						type="text" name="txtNombre" class="form-control" id="nombre"
-						value="<%= cliente != null ? cliente.getNombre() : "" %>" required>
+						value="<%= cliente != null ? cliente.getNombre() : "" %>" required
+						oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
 				</div>
 				<div class="mb-3 col-md-6">
 					<label for="apellido" class="form-label">Apellido</label> <input
 						type="text" name="txtApellido" class="form-control" id="apellido"
-						value="<%= cliente != null ? cliente.getApellido() : "" %>"
-						required>
+						value="<%= cliente != null ? cliente.getApellido() : "" %>" required
+						oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
 
 				</div>
 
@@ -173,8 +174,8 @@
 					<label for="nacionalidad" class="form-label">Nacionalidad</label> <input
 						type="text" name="txtNacionalidad" class="form-control"
 						id="nacionalidad" placeholder="Nacionalidad"
-						value="<%= cliente != null ? cliente.getNacionalidad() : "" %>"
-						required>
+						value="<%= cliente != null ? cliente.getNacionalidad() : "" %>" required
+						oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
 				</div>
 
 				<div class="mb-3 col-md-6">
