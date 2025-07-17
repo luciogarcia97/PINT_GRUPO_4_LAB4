@@ -116,7 +116,7 @@
 					
 					<div class="mb-3">
 						<label for="montoPrestamo" class="form-label">Monto	solicitado</label>
-						 <input type="text" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/^(\d*\.\d{0,2}).*$/, '$1').replace(/(\..*)\./g, '$1');"
+						 <input type="number" min="500" step="0.01" class="form-control" 
 							id="montoPrestamo" name="montoPrestamo" placeholder="Monto del préstamo">
 					</div>
 					<div class="mb-3">
