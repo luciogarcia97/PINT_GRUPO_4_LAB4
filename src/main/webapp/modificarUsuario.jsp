@@ -72,8 +72,8 @@
 			
 			<div class="center row">			
 	            <div class="mb-3">
-	                <label for="usuario" class="form-label">Usuario</label>
-	                <input type="text" class="form-control" id="usuario" placeholder="Usuario" name="txtNombre" value="<%= (usuario != null) ? usuario : "" %>" required>
+	                <label for="usuario" class="form-label">Usuario</label>	                
+	                <input type="text" class="form-control" id="usuario" placeholder="Usuario" name="txtNombre" value="<%= (usuario != null) ? usuario : "" %>" required style="letter-spacing: normal; padding-right: 6px; font-family: sans-serif;">
 	            </div>
 	            <div class="mb-3">
 	                <label for="clave" class="form-label">Contraseña</label>
