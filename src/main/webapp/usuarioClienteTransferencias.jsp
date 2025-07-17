@@ -183,6 +183,7 @@
                                 <tr>
                                     <th>Fecha</th>
                                     <th>Monto</th>
+                                    <th>Cuenta origen</th>
                                     <th>Cuenta destino</th>
                                 </tr>
                             </thead>
@@ -195,6 +196,7 @@
                                 <tr>
                                     <td><%= transferencia.getFecha() %></td>
                                     <td>$<%= transferencia.getImporte() %></td>
+                                    <td><%= transferencia.getCuenta_origen() %></td>
                                     <td><%= transferencia.getCuenta_destino() %></td>
                                 </tr>
                                 <%   }
