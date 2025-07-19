@@ -47,7 +47,7 @@ CREATE TABLE `cliente` (
 
 LOCK TABLES `cliente` WRITE;
 /*!40000 ALTER TABLE `cliente` DISABLE KEYS */;
-INSERT INTO `cliente` VALUES (1,40536522,'20405365228','Lucio','Garcia','Masculino','Argentino','1997-05-29','aguilar 2472','Capital','Buenos Aires','lgarcia@mail.com',0),(2,41098583,'20410985836','Matias','Soubelet','Masculino','Argentino','1998-12-22','calle falsa 123','Cordoba','Cordoba','matis@mail.com',1),(3,33456789,'20334567894','María','González','Femenino','Argentina','1987-03-15','Av. Corrientes 1234','Buenos Aires','Buenos Aires','maria.gonzalez@email.com',0),(4,44567890,'20445678905','Carlos','López','Masculino','Argentina','1992-07-22','San Martín 567','Córdoba','Córdoba','carlos.lopez@email.com',0),(5,35678901,'27356789016','Ana','Martínez','Femenino','Argentina','1989-11-08','Belgrano 890','Rosario','Santa Fe','ana.martinez@email.com',0),(6,42789012,'20427890127','Roberto','Silva','Masculino','Argentina','1995-01-30','Rivadavia 2345','Mendoza','Mendoza','roberto.silva@email.com',0),(7,38890123,'27388901238','Laura','Fernández','Femenino','Argentina','1991-06-12','Mitre 678','La Plata','Buenos Aires','laura.fernandez@email.com',0),(8,29456123,'20294561234','Martín','Rodríguez','Masculino','Argentina','1985-04-18','Av. San Martín 1567','Tucumán','Tucumán','martin.rodriguez@email.com',0),(9,31567234,'27315672349','Valentina','Torres','femenino','Argentina','1988-09-25','Sarmiento 890','Salta','Salta','valu_kpa@email.com',0),(10,36678345,'20366783456','Diego','Morales','Masculino','Argentina','1990-12-03','Independencia 2234','Neuquén','Neuquén','diego.morales@email.com',0),(11,40789456,'27407894567','Sofía','Vargas','Femenino','Argentina','1993-02-14','España 445','Bahía Blanca','Buenos Aires','sofia.vargas@email.com',0),(12,33890567,'20338905678','Joaquín','Herrera','Masculino','Argentina','1986-08-07','Pellegrini 1123','Santa Fe','Santa Fe','joaquin.herrera@email.com',0),(13,27637282,'20276372828','Carlos','Rodriguez','masculino','Argentino','1991-10-10','Julian Navarro','RÃ­o Cuarto','Buenos Aires','carlosprofe@mail.com',0);
+INSERT INTO `cliente` VALUES (1,35546642,'20355466428','Lucio','Garcia','Masculino','Argentino','1997-05-29','aguilar 3245','Capital','Buenos Aires','lgarcia@mail.com',0),(2,41098583,'20410985836','Matias','Soubelet','Masculino','Argentino','1998-12-22','calle falsa 123','Cordoba','Cordoba','matis@mail.com',1),(3,33456789,'20334567894','María','González','Femenino','Argentina','1987-03-15','Av. Corrientes 1234','Buenos Aires','Buenos Aires','maria.gonzalez@email.com',0),(4,44567890,'20445678905','Carlos','López','Masculino','Argentina','1992-07-22','San Martín 567','Córdoba','Córdoba','carlos.lopez@email.com',0),(5,35678901,'27356789016','Ana','Martínez','Femenino','Argentina','1989-11-08','Belgrano 890','Rosario','Santa Fe','ana.martinez@email.com',0),(6,42789012,'20427890127','Roberto','Silva','Masculino','Argentina','1995-01-30','Rivadavia 2345','Mendoza','Mendoza','roberto.silva@email.com',0),(7,38890123,'27388901238','Laura','Fernández','Femenino','Argentina','1991-06-12','Mitre 678','La Plata','Buenos Aires','laura.fernandez@email.com',0),(8,29456123,'20294561234','Martín','Rodríguez','Masculino','Argentina','1985-04-18','Av. San Martín 1567','Tucumán','Tucumán','martin.rodriguez@email.com',0),(9,31567234,'27315672349','Valentina','Torres','femenino','Argentina','1988-09-25','Sarmiento 890','Salta','Salta','valu_kpa@email.com',0),(10,36678345,'20366783456','Diego','Morales','Masculino','Argentina','1990-12-03','Independencia 2234','Neuquén','Neuquén','diego.morales@email.com',0),(11,40789456,'27407894567','Sofía','Vargas','Femenino','Argentina','1993-02-14','España 445','Bahía Blanca','Buenos Aires','sofia.vargas@email.com',0),(12,33890567,'20338905678','Joaquín','Herrera','Masculino','Argentina','1986-08-07','Pellegrini 1123','Santa Fe','Santa Fe','joaquin.herrera@email.com',0),(13,27637282,'20276372828','Carlos','Rodriguez','masculino','Argentino','1991-10-10','Julian Navarro','RÃ­o Cuarto','Buenos Aires','carlosprofe@mail.com',0);
 /*!40000 ALTER TABLE `cliente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -391,34 +391,61 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `aceptar_prestamo_valida_cliente_activo`(
-    IN idPrestamo INT, 
-    OUT resultado INT
+CREATE DEFINER=`root`@`localhost` PROCEDURE `aceptar_prestamo_valida_cliente_activo`(
+
+    IN idPrestamo INT, 
+
+    OUT resultado INT
+
 )
-salida: BEGIN
-    DECLARE eliminado_cliente TINYINT DEFAULT NULL;
-
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-        ROLLBACK;
-        SET resultado = -1;
-    END;
-
-    START TRANSACTION;
-   
-    SELECT c.eliminado INTO eliminado_cliente FROM prestamo p
-    JOIN cliente c ON p.id_cliente = c.id_cliente WHERE p.id_prestamo = idPrestamo;
-    
-    IF eliminado_cliente IS NULL OR eliminado_cliente = 1 THEN
-        ROLLBACK;
-        SET resultado = 0;
-        LEAVE salida;
-    END IF;
-  
-    UPDATE prestamo SET estado='aceptado',fecha_aprobacion=DATE(CURRENT_TIMESTAMP()) WHERE id_prestamo = idPrestamo;
-
-    COMMIT;
-    SET resultado = 1;
+salida: BEGIN
+
+    DECLARE eliminado_cliente TINYINT DEFAULT NULL;
+
+
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+
+    BEGIN
+
+        ROLLBACK;
+
+        SET resultado = -1;
+
+    END;
+
+
+
+    START TRANSACTION;
+
+   
+
+    SELECT c.eliminado INTO eliminado_cliente FROM prestamo p
+
+    JOIN cliente c ON p.id_cliente = c.id_cliente WHERE p.id_prestamo = idPrestamo;
+
+    
+
+    IF eliminado_cliente IS NULL OR eliminado_cliente = 1 THEN
+
+        ROLLBACK;
+
+        SET resultado = 0;
+
+        LEAVE salida;
+
+    END IF;
+
+  
+
+    UPDATE prestamo SET estado='aceptado',fecha_aprobacion=DATE(CURRENT_TIMESTAMP()) WHERE id_prestamo = idPrestamo;
+
+
+
+    COMMIT;
+
+    SET resultado = 1;
+
 END salida ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -436,19 +463,32 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `eliminar_usuario_completo`( IN p_idUsuario INT, IN p_idCliente INT )
-BEGIN
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-        ROLLBACK;
-    END;
-    START TRANSACTION;    
-    UPDATE usuario SET eliminado = 1 WHERE id_usuario = p_idUsuario;
-   
-    UPDATE cliente  SET eliminado = 1 WHERE id_cliente = p_idCliente;
-   
-    UPDATE cuenta SET activa = 0 WHERE id_cliente = p_idCliente;
-    
-    COMMIT;
+BEGIN
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+
+    BEGIN
+
+        ROLLBACK;
+
+    END;
+
+    START TRANSACTION;    
+
+    UPDATE usuario SET eliminado = 1 WHERE id_usuario = p_idUsuario;
+
+   
+
+    UPDATE cliente  SET eliminado = 1 WHERE id_cliente = p_idCliente;
+
+   
+
+    UPDATE cuenta SET activa = 0 WHERE id_cliente = p_idCliente;
+
+    
+
+    COMMIT;
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -465,32 +505,57 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_historial_transferencias_cliente`(
-    IN p_id_cliente INT
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_historial_transferencias_cliente`(
+
+    IN p_id_cliente INT
+
 )
-BEGIN
-    SELECT 
-        t.id_transferencia,
-        t.id_movimiento,
-        t.cuenta_origen,
-        t.cuenta_destino,
-        m.fecha,
-        m.detalle,
-        m.importe,
-        co.numero_cuenta as num_cuenta_origen,
-        cd.numero_cuenta as num_cuenta_destino,
-        CONCAT(co.numero_cuenta, ' → ', cd.numero_cuenta) as transferencia_detalle,
-        mt.descripcion as tipo_movimiento,
-        CONCAT(cli.nombre, ' ', cli.apellido) as cliente_nombre
-    FROM movimiento m
-    INNER JOIN cuenta co ON m.id_cuenta = co.id_cuenta
-    INNER JOIN cliente cli ON co.id_cliente = cli.id_cliente
-    INNER JOIN movimiento_tipo mt ON m.id_tipo_movimiento = mt.id_tipo_movimiento
-    INNER JOIN transferencia t ON m.id_movimiento = t.id_movimiento
-    LEFT JOIN cuenta cd ON t.cuenta_destino = cd.id_cuenta
-    WHERE co.id_cliente = p_id_cliente
-    AND t.cuenta_origen = co.id_cuenta
-    ORDER BY m.fecha DESC;
+BEGIN
+
+    SELECT 
+
+        t.id_transferencia,
+
+        t.id_movimiento,
+
+        t.cuenta_origen,
+
+        t.cuenta_destino,
+
+        m.fecha,
+
+        m.detalle,
+
+        m.importe,
+
+        co.numero_cuenta as num_cuenta_origen,
+
+        cd.numero_cuenta as num_cuenta_destino,
+
+        CONCAT(co.numero_cuenta, ' → ', cd.numero_cuenta) as transferencia_detalle,
+
+        mt.descripcion as tipo_movimiento,
+
+        CONCAT(cli.nombre, ' ', cli.apellido) as cliente_nombre
+
+    FROM movimiento m
+
+    INNER JOIN cuenta co ON m.id_cuenta = co.id_cuenta
+
+    INNER JOIN cliente cli ON co.id_cliente = cli.id_cliente
+
+    INNER JOIN movimiento_tipo mt ON m.id_tipo_movimiento = mt.id_tipo_movimiento
+
+    INNER JOIN transferencia t ON m.id_movimiento = t.id_movimiento
+
+    LEFT JOIN cuenta cd ON t.cuenta_destino = cd.id_cuenta
+
+    WHERE co.id_cliente = p_id_cliente
+
+    AND t.cuenta_origen = co.id_cuenta
+
+    ORDER BY m.fecha DESC;
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -507,53 +572,99 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_pagar_cuota`(
-    IN p_id_cuota INT,
-    IN p_id_cuenta INT,
-    IN p_monto DECIMAL(10,2)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_pagar_cuota`(
+
+    IN p_id_cuota INT,
+
+    IN p_id_cuenta INT,
+
+    IN p_monto DECIMAL(10,2)
+
 )
-BEGIN
-    DECLARE v_saldo_actual DECIMAL(10,2);
-    DECLARE v_cuota_pendiente DECIMAL(10,2);
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-        ROLLBACK;
-        RESIGNAL;
-    END;
-    
-    -- Iniciar transacción
-    START TRANSACTION;
-    
-    -- Obtener saldo actual de la cuenta
-    SELECT saldo INTO v_saldo_actual 
-    FROM cuenta 
-    WHERE id_cuenta = p_id_cuenta;
-    
-    -- Obtener monto de la cuota
-    SELECT monto INTO v_cuota_pendiente 
-    FROM prestamo_cuota 
-    WHERE id_prestamo_cuota = p_id_cuota AND pagada = 0;
-    
-    -- Verificar si hay suficiente saldo
-    IF v_saldo_actual >= p_monto THEN
-        -- Actualizar saldo de la cuenta
-        UPDATE cuenta 
-        SET saldo = saldo - p_monto 
-        WHERE id_cuenta = p_id_cuenta;
-        
-        -- Marcar cuota como pagada
-        UPDATE prestamo_cuota 
-        SET pagada = 1, 
-            fecha_pago = curdate() 
-        WHERE id_prestamo_cuota = p_id_cuota;
-        
-        COMMIT;
-        SELECT 'Pago realizado exitosamente' AS mensaje;
-    ELSE
-        ROLLBACK;
-        SELECT 'Saldo insuficiente' AS mensaje;
-    END IF;
-    
+BEGIN
+
+    DECLARE v_saldo_actual DECIMAL(10,2);
+
+    DECLARE v_cuota_pendiente DECIMAL(10,2);
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+
+    BEGIN
+
+        ROLLBACK;
+
+        RESIGNAL;
+
+    END;
+
+    
+
+    -- Iniciar transacción
+
+    START TRANSACTION;
+
+    
+
+    -- Obtener saldo actual de la cuenta
+
+    SELECT saldo INTO v_saldo_actual 
+
+    FROM cuenta 
+
+    WHERE id_cuenta = p_id_cuenta;
+
+    
+
+    -- Obtener monto de la cuota
+
+    SELECT monto INTO v_cuota_pendiente 
+
+    FROM prestamo_cuota 
+
+    WHERE id_prestamo_cuota = p_id_cuota AND pagada = 0;
+
+    
+
+    -- Verificar si hay suficiente saldo
+
+    IF v_saldo_actual >= p_monto THEN
+
+        -- Actualizar saldo de la cuenta
+
+        UPDATE cuenta 
+
+        SET saldo = saldo - p_monto 
+
+        WHERE id_cuenta = p_id_cuenta;
+
+        
+
+        -- Marcar cuota como pagada
+
+        UPDATE prestamo_cuota 
+
+        SET pagada = 1, 
+
+            fecha_pago = curdate() 
+
+        WHERE id_prestamo_cuota = p_id_cuota;
+
+        
+
+        COMMIT;
+
+        SELECT 'Pago realizado exitosamente' AS mensaje;
+
+    ELSE
+
+        ROLLBACK;
+
+        SELECT 'Saldo insuficiente' AS mensaje;
+
+    END IF;
+
+    
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
