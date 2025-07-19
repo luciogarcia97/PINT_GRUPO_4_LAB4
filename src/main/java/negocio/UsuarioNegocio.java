@@ -1,9 +1,7 @@
 package negocio;
 
-import java.util.List;
-
-import entidades.Cliente;
 import entidades.Usuario;
+import java.util.List;
 
 public interface UsuarioNegocio {
 	
@@ -16,6 +14,7 @@ public interface UsuarioNegocio {
     public boolean eliminarClienteUsuarioCuentas(int idUsuario, int idCliente);
     
     public int buscarPorIDUsuario(int idCliente);
+    
     
     public boolean existeNombreUsuario(String nombre, int idUsuario);    
     
