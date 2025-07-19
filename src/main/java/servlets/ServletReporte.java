@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -40,9 +42,11 @@ public class ServletReporte extends HttpServlet {
 				Object resultadoGeneral = 0;				
 				String tipoReporte = request.getParameter("txtReporte");
 				
+				//Obtiene fechas del formulario
 				String fechaInicioStr = request.getParameter("fechaDesde");
 				String fechaFinStr = request.getParameter("fechaHasta");
 				
+				//Las convierte de String a Date
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 				Date fechaInicio = null;
 				Date fechaFin = null;
@@ -57,6 +61,7 @@ public class ServletReporte extends HttpServlet {
 				    e.printStackTrace();
 				}				
 				
+				// Obtener el tipo de reporte y las fechas para el resultado
 				switch (tipoReporte) {					
 					case "depositos":						
 						 resultadoGeneral = reporteNegocio.sumaDepositos(fechaInicio, fechaFin);
@@ -72,9 +77,17 @@ public class ServletReporte extends HttpServlet {
 						break;
 					default:	
 						break;				
-				}				
+				}
+				
+				// Obtener los datos detallados para la tabla
+				List<Map<String, Object>> datosDetallados = reporteNegocio.obtenerDatosDetallados(tipoReporte, fechaInicio, fechaFin);
 					
-			    request.setAttribute("resultado", resultadoGeneral);		
+			    request.setAttribute("resultado", resultadoGeneral);
+			    request.setAttribute("datosDetallados", datosDetallados);
+			    request.setAttribute("tipoReporte", tipoReporte);
+			    request.setAttribute("fechaInicio", fechaInicioStr);
+			    request.setAttribute("fechaFin", fechaFinStr);
+			    
 			    RequestDispatcher rd = request.getRequestDispatcher("/reportesInformes.jsp");
 			    rd.forward(request, response);			
 			}		

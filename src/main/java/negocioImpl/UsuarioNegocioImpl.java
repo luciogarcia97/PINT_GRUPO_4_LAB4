@@ -1,17 +1,14 @@
 package negocioImpl;
 
-import java.util.List;
-
-import dao.UsuarioDao;
 import dao.ClienteDao;
 import dao.CuentaDao;
-import daoImpl.UsuarioDaoImpl;
+import dao.UsuarioDao;
 import daoImpl.ClienteDaolmpl;
 import daoImpl.CuentaDaoImpl;
-import entidades.Cliente;
+import daoImpl.UsuarioDaoImpl;
 import entidades.Usuario;
+import java.util.List;
 import negocio.UsuarioNegocio;
-import negocio.ClienteNegocio;
 
 public class UsuarioNegocioImpl implements UsuarioNegocio {
 
@@ -31,8 +28,7 @@ public class UsuarioNegocioImpl implements UsuarioNegocio {
 	public boolean insertarUsuario(Usuario usuario) {
 
 		return usuarioDao.insertarUsuario(usuario);
-	}
-	
+	}	
 
 	@Override
 	public List<Usuario> obtenerUsuarios() {
@@ -47,20 +43,27 @@ public class UsuarioNegocioImpl implements UsuarioNegocio {
 	}
 	
 	@Override
-	public boolean eliminarUsuario(int idUsuario, int idCliente) {
+	public boolean eliminarClienteUsuarioCuentas(int idUsuario, int idCliente) {		
 		
-		if(usuarioDao.eliminarUsuario(idUsuario, idCliente) && clienteDao.eliminarCliente(idCliente) && cuentaNegocio.eliminarCuentasUsuario(idCliente))
-		{
-			return true;
-		}
-		
-		return false;
+		return  clienteDao.eliminarClienteUsuarioCuentas(idUsuario, idCliente);		
 	}
 	
 	@Override
-	public int buscarPorIDUsuario(int idCliente)
-	{
+	public int buscarPorIDUsuario(int idCliente) {
+	
 		return usuarioDao.buscarPorIDUsuario(idCliente);
+	}
+	
+	@Override
+	public Usuario buscarPorIdCliente(int idCliente) {
+	
+		return usuarioDao.buscarPorIdCliente(idCliente);
+	}
+
+	@Override
+	public boolean existeNombreUsuario(String nombre, int idUsuario) {
+		
+		return usuarioDao.existeNombreUsuario(nombre, idUsuario);
 	}
 
 }

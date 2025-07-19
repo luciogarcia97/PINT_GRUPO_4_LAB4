@@ -1,6 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
 <%@ page import="entidades.TipoCuenta" %>
+<%@ page import="entidades.Usuario" %>
+<%
+    // Verificar autenticación de admin
+    Usuario adminLogueado = (Usuario) session.getAttribute("adminLogueado");
+    if (adminLogueado == null) {
+        response.sendRedirect("index.jsp");
+        return;
+    }
+%>
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,6 +32,13 @@
                     <%= request.getAttribute("error") %>
                 </div>
             <% } %>
+            
+            <% if (request.getAttribute("exito") != null) { %>
+			    <div class="alert alert-success" role="alert">
+			        <%= request.getAttribute("exito") %>
+			    </div>
+			<% } %>        
+            
 
             <div class="row">
                 <div class="center row">

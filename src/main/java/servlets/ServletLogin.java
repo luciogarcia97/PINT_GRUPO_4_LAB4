@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import entidades.Usuario;
 import negocio.UsuarioNegocio;
@@ -25,14 +26,13 @@ public class ServletLogin extends HttpServlet {
         this.usuarioNegocio = new UsuarioNegocioImpl();
         
     }
-
-	
+/////
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		if(request.getParameter("btnLogin") != null) {			
 			
-			String usuario = request.getParameter("usuario");
-			String contrasena = request.getParameter("contrasena");
+			String usuario = request.getParameter("usuario").trim();
+			String contrasena = request.getParameter("contrasena").trim();
 			boolean loginExitoso = false;
 			
 			List<Usuario> lista = usuarioNegocio.obtenerUsuarios();				
@@ -42,16 +42,18 @@ public class ServletLogin extends HttpServlet {
 				if(usuarioLog.getUsuario().equals(usuario) &&
 				   usuarioLog.getContrasena().equals(contrasena)) {					
 					
-					  loginExitoso = true;						  
 					  			      
-					  if (usuarioLog.getTipo_usuario().equals("admin") && usuarioLog.getEliminado() == 0){
+					  if (usuarioLog.getEliminado() == 0) {
+						  loginExitoso = true;
+						  if (usuarioLog.getTipo_usuario().equals("admin")){
 		                    request.getSession().setAttribute("adminLogueado", usuarioLog);
-		                    request.getRequestDispatcher("ServletCliente?listar=1").forward(request, response);
+							  response.sendRedirect("ServletCliente?listar=1");
 		                } else {
 		                    request.getSession().setAttribute("usuarioLogueado", usuarioLog);
-		                    request.getRequestDispatcher("usuarioCliente.jsp").forward(request, response); 
-		                }	
-				      break;    
+						    response.sendRedirect("ServletClienteMenu");
+						}
+		             }	
+				 break;    
 				 }
 				
 			}
@@ -65,10 +67,16 @@ public class ServletLogin extends HttpServlet {
 		
 		
 		if(request.getParameter("btnCerrar") != null) {
-				
-				request.getSession().invalidate();			
-				response.sendRedirect("index.jsp");
-			}
+			HttpSession session = request.getSession(false);
+		    
+			if (session != null) {
+		        session.invalidate();
+		    }
+		    
+		    request.getSession(true);
+		    response.sendRedirect("index.jsp");
+			
+		}
 		
 	}
 

@@ -17,24 +17,24 @@
 <html lang="es">
 
 <head>
-<meta charset="UTF-8">
-<title>Administrador - Clientes</title>
-<link rel="icon" type="image/x-icon" href="img/banco.png">
-
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-	rel="stylesheet">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-<link rel="stylesheet"
-	href="https://cdn.datatables.net/2.3.2/css/dataTables.bootstrap5.css">
-
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
-<script
-	src="https://cdn.datatables.net/2.3.2/js/dataTables.bootstrap5.min.js"></script>
+		<meta charset="UTF-8">
+		<title>Administrador - Clientes</title>
+		<link rel="icon" type="image/x-icon" href="img/banco.png">
+		
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+			rel="stylesheet">
+		<link rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+		<link rel="stylesheet"
+			href="https://cdn.datatables.net/2.3.2/css/dataTables.bootstrap5.css">
+		
+		<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
+		<script
+			src="https://cdn.datatables.net/2.3.2/js/dataTables.bootstrap5.min.js"></script>
 </head>
 
 <body
@@ -51,7 +51,8 @@
 			</form>
 
 		</div>
-	</nav>
+	</nav>	
+	
 
 	<div class="container text-center flex-grow-1">
 		<div class="row">
@@ -69,7 +70,7 @@
 				    <a href="ServletCuenta?listar=!" class="btn btn-light"> <i
 						class="bi bi-credit-card me-2"></i> Administrar Cuentas
 					</a>
-				    <a href="prestamos.jsp" class="btn btn-light"> <i
+				    <a href="ServletPrestamo?listar=1" class="btn btn-light"> <i
 						class="bi bi-cash-coin me-2"></i> Autorizar Préstamos
 					</a> 
 					<a href="reportesInformes.jsp" class="btn btn-light"> <i
@@ -86,10 +87,121 @@
 					<h3 class="text-white">
 						<i class="bi bi-people me-2"></i> Administrar Clientes
 					</h3>
-					<a href="registrarCliente.jsp" class="btn btn-success"> <i
-						class="bi bi-plus me-1"></i> Registrar Cliente
+					<a href="ServletCliente?cargarFormulario=1" class="btn btn-success"> <i
+						class="bi bi-plus me-1"></i> Registrar Cliente y Usuario
 					</a>
 				</div>
+				
+				<div>
+						<% 
+							 boolean errorBorrar = false;		        	
+							 if(request.getAttribute("error") != null) {
+								    errorBorrar = (boolean)request.getAttribute("error");
+								        	
+								    if(errorBorrar){
+						 %>
+							<div class="alert alert-danger" role="alert">
+								¡No se pudo eliminar el cliente!
+							</div>
+					
+						<% 	  }
+							}		        
+						%>
+						
+						<% 
+							 boolean errorModificar = false;		        	
+							 if(request.getAttribute("errorModificar") != null) {
+								    errorModificar = (boolean)request.getAttribute("errorModificar");
+								        	
+								    if(errorModificar){
+						 %>
+							<div class="alert alert-danger" role="alert">
+								¡No se puede modificar un cliente que ya está eliminado!
+							</div>
+					
+						<% 	  }
+							}		        
+						%>
+						
+						<% 
+							 boolean errorModificarNull = false;		        	
+							 if(request.getAttribute("errorModificarNull") != null) {
+								    errorModificarNull = (boolean)request.getAttribute("errorModificarNull");
+								        	
+								    if(errorModificarNull){
+						 %>
+							<div class="alert alert-danger" role="alert">
+								¡No se puede modificar un cliente Id.Cliente nulo!
+							</div>
+					
+						<% 	  }
+							}		        
+						%>						
+						
+						
+					    <% 
+							 boolean NoModificado = false;		        	
+								if(request.getAttribute("NoModificado") != null) {
+									 NoModificado = (boolean)request.getAttribute("NoModificado");
+										        	
+									 if(NoModificado){
+						 %>
+							<div class="alert alert-danger" role="alert">
+								"No se pudo modificar, los datos no pudieron ser establecidos."
+							</div>
+							
+						<% 	  }
+							}		        
+						%>										
+												
+						
+						<% 
+							 boolean exitoBorrar = false;		        	
+							 if(request.getAttribute("exito") != null) {
+								   exitoBorrar = (boolean)request.getAttribute("exito");
+								        	
+								   if(exitoBorrar){
+						 %>
+							<div class="alert alert-success" role="alert">
+								¡Cliente, usuario y sus cuentas relacionadas eliminados!
+							</div>
+					
+						<% 	  }
+							}		        
+						%>	
+						
+						<% 
+							 boolean exitoModificado = false;		        	
+							 if(request.getAttribute("exitoModificado") != null) {
+								   exitoModificado = (boolean)request.getAttribute("exitoModificado");
+								        	
+								   if(exitoModificado){
+						 %>
+							<div class="alert alert-success" role="alert">
+								¡Cliente modificado con éxito!
+							</div>
+					
+						<% 	  }
+							}		        
+						%>	
+						
+						<% 
+							 boolean clienteRegistrado = false;		        	
+							 if(request.getAttribute("clienteRegistrado") != null) {
+								    clienteRegistrado = (boolean)request.getAttribute("clienteRegistrado");
+								        	
+								    if(clienteRegistrado){
+						 %>
+							<div class="alert alert-success" role="alert">
+								¡Cliente Registrado!
+							</div>
+					
+						<% 	  }
+							}		        
+						%>
+						
+									
+				</div>				
 
 				<div class="card shadow">
 					<div class="card-header bg-primary text-white">
@@ -147,7 +259,8 @@
 													class="d-inline">
 													<input type="hidden" name="idCliente"
 														value="<%= c.getIdCliente() %>" />														
-													<button type="submit" class="btn btn-sm btn-outline-danger"
+													<button type="submit" class="btn btn-sm btn-outline-danger" 
+														onclick="return confirm('¿Estás seguro que deseas eliminar este cliente?')"
 														title="Eliminar Cliente" name="btnEliminarCliente">
 														<i class="bi bi-trash"></i>
 													</button>
@@ -166,15 +279,15 @@
 		</div>
 	</div>
 
-	<footer class="bg-light text-center text-muted py-3 mt-auto">
+	<footer class="bg-light text-center text-muted py-3 mt-5">
 		<div class="container">
 			<span>© 2025 Banco UTN – Todos los derechos reservados</span>
 		</div>
 	</footer>
 
 	<script>
-                    new DataTable('#example');
-                </script>
+       new DataTable('#example');
+    </script>
 
 </body>
 

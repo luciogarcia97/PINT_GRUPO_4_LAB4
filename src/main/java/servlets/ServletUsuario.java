@@ -21,13 +21,12 @@ import negocioImpl.ClienteNegociolmpl;
 @WebServlet("/ServletUsuario")
 public class ServletUsuario extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private UsuarioNegocioImpl usuarioNegocio;
-	private ClienteNegociolmpl clienteNegocio;
+	private UsuarioNegocio usuarioNegocio;
+	
 
 	public ServletUsuario() {
 		super();
-		this.usuarioNegocio = new UsuarioNegocioImpl();
-		this.clienteNegocio = new ClienteNegociolmpl();
+		this.usuarioNegocio = new UsuarioNegocioImpl();		
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -44,70 +43,17 @@ public class ServletUsuario extends HttpServlet {
 
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-
-		Boolean resultado = false;
-		Boolean resultado1 = false;		
-		
-		if (request.getParameter("btnRegistrarUsuario") != null) {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 			
-			Cliente cliente = new Cliente();			
-			cliente.setDni(Integer.parseInt(request.getParameter("txtDni")));
-			cliente.setCuil(request.getParameter("txtCuil"));
-			cliente.setNombre(request.getParameter("txtNombre"));
-			cliente.setApellido(request.getParameter("txtApellido"));
-			cliente.setSexo(request.getParameter("txtSexo"));
-			cliente.setNacionalidad(request.getParameter("txtNacionalidad"));
-			cliente.setFechaNacimiento(request.getParameter("txtFechaNacimiento"));
-			cliente.setDireccion(request.getParameter("txtDireccion"));
-			cliente.setLocalidad(request.getParameter("txtLocalidad"));
-			cliente.setProvincia(request.getParameter("txtProvincia"));
-			cliente.setCorreoElectronico(request.getParameter("txtCorreo"));
-			cliente.setEliminado(true);
-						
-			
-			int ultimoId = clienteNegocio.ultimoIdCliente() + 1;
-			
-			Usuario usuario = new Usuario();			
-			usuario.setId_cliente(ultimoId);
-			usuario.setUsuario(request.getParameter("txtUsuario"));
-			usuario.setContrasena(request.getParameter("txtContrasena"));
-			usuario.setTipo_usuario("cliente");
-			usuario.setEliminado(0);
-			usuario.setFecha_creacion(LocalDate.now());
-
-		
-			resultado1 = clienteNegocio.insertarCliente(cliente);
-			resultado = usuarioNegocio.insertarUsuario(usuario);
-
-			if(resultado1 && ultimoId != -1 && resultado) {
-				
-				List<Usuario> listaUsuarios = usuarioNegocio.obtenerUsuarios();
-				request.setAttribute("listaUsuarios", listaUsuarios);
-
-				RequestDispatcher rd = request.getRequestDispatcher("/administrarUsuarios.jsp");
-				rd.forward(request, response);				
-				
-			} else {
-				
-				request.setAttribute("error", "No se pudo registrar el usuario.");
-			    List<Usuario> listaUsuarios = usuarioNegocio.obtenerUsuarios();
-			    request.setAttribute("listaUsuarios", listaUsuarios);		
-			    RequestDispatcher rd = request.getRequestDispatcher("/administrarUsuarios.jsp");
-			    rd.forward(request, response);
-			}
-
-		}
-		
 		
 		if(request.getParameter("btnModificar") != null) {
 									
 			int idUsuario = Integer.parseInt(request.getParameter("idUsuario").trim());
-			String usuarioNuevo = request.getParameter("txtNombre");
+			String usuarioNuevo = request.getParameter("txtNombre").trim();
 			String clave = request.getParameter("txtContrasena");
 			int idCliente = Integer.parseInt(request.getParameter("idCliente").trim());
 			String fechaCreacionStr = request.getParameter("fechaCreacion").trim();
+			String tipoUsuario = request.getParameter("tipoUsuario").trim();
 						
 			LocalDate fechaCreacion = LocalDate.parse(fechaCreacionStr);
 			
@@ -116,15 +62,27 @@ public class ServletUsuario extends HttpServlet {
 			usuario.setId_cliente(idCliente); 
 			usuario.setUsuario(usuarioNuevo);
 			usuario.setContrasena(clave);
-			usuario.setTipo_usuario("cliente");
+			usuario.setTipo_usuario(tipoUsuario);
 			usuario.setEliminado(0);
-			usuario.setFecha_creacion(fechaCreacion);
+			usuario.setFecha_creacion(fechaCreacion);			
+			
+			
+			boolean existe = usuarioNegocio.existeNombreUsuario(usuarioNuevo, idUsuario);
+						
+			if (existe) {
+			   
+				request.setAttribute("errorNombre", true); 			    
+			    RequestDispatcher rd = request.getRequestDispatcher("/modificarUsuario.jsp");
+			    rd.forward(request, response);
+			    return;
+			}
 			
 			if (usuarioNegocio.modificarUsuario(usuario)) {			 
 				
 				List<Usuario> listaUsuarios = usuarioNegocio.obtenerUsuarios();
 				request.setAttribute("listaUsuarios", listaUsuarios);		    
 			   
+				request.setAttribute("exitoModificado", true);
 			    RequestDispatcher rd = request.getRequestDispatcher("/administrarUsuarios.jsp");
 			    rd.forward(request, response);
 			} 
@@ -136,21 +94,22 @@ public class ServletUsuario extends HttpServlet {
 			int idEliminar = Integer.parseInt(request.getParameter("idEliminar"));			
 			int idCliente = Integer.parseInt(request.getParameter("idCliente"));
 			
-			if (usuarioNegocio.eliminarUsuario(idEliminar, idCliente)) {			 
+			if (usuarioNegocio.eliminarClienteUsuarioCuentas(idEliminar, idCliente)) {			 
 							
 				List<Usuario> listaUsuarios = usuarioNegocio.obtenerUsuarios();
 				request.setAttribute("listaUsuarios", listaUsuarios);		    
-						   
+					
+				request.setAttribute("exito", true);
 			    RequestDispatcher rd = request.getRequestDispatcher("/administrarUsuarios.jsp");
 				rd.forward(request, response);
 			 } else {
 					
-					request.setAttribute("error", "No se pudo eliminar el usuario.");
+				 	request.setAttribute("error", false);
 				    List<Usuario> listaUsuarios = usuarioNegocio.obtenerUsuarios();
 				    request.setAttribute("listaUsuarios", listaUsuarios);		
 				    RequestDispatcher rd = request.getRequestDispatcher("/administrarUsuarios.jsp");
 				    rd.forward(request, response);
-				}
+			 }
 			
 		}		
 		

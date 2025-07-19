@@ -1,5 +1,6 @@
 package negocio;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -30,8 +31,6 @@ public interface CuentaNegocio {
 
     public boolean puedeCrearCuenta(int idCliente);
     
-    //public boolean existeCliente(int idCliente);
-    
     public boolean reactivarCuenta(int idCuenta);
     
     public Cuenta obtenerCuentaPorId(int idCuenta);
@@ -41,5 +40,13 @@ public interface CuentaNegocio {
     public boolean existeCBU(String cbu);
 
     public boolean puedeCrearCuenta(int idCliente, int idCuentaExcluir);
+    
+    public boolean tieneSaldoSuficiente(int idCuenta, BigDecimal monto);
+    
+    public boolean modificarSaldo(int idCuenta, BigDecimal saldoFinal);
+    
+    public Cuenta buscarIdConCbu(String cbu);
+    
+    public int obtenerUltimaIdCuenta();
 
 }

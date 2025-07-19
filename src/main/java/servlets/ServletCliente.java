@@ -15,7 +15,13 @@ import dao.ClienteDao;
 import negocio.ClienteNegocio;
 import negocio.UsuarioNegocio;
 import entidades.Cliente;
+import entidades.Validaciones;
+import entidades.Localidad;
+import entidades.Provincia;
 import entidades.Usuario;
+import excepciones.ClienteMenorEdad;
+import excepciones.CuilInvalido;
+import excepciones.DniInvalido;
 import entidades.TipoCuenta;
 import negocioImpl.ClienteNegociolmpl;
 import negocioImpl.UsuarioNegocioImpl;
@@ -23,8 +29,8 @@ import negocioImpl.UsuarioNegocioImpl;
 @WebServlet("/ServletCliente")
 public class ServletCliente extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private ClienteNegociolmpl clienteNegocio;
-	private UsuarioNegocioImpl usuarioNegocio;
+	private ClienteNegocio clienteNegocio;
+	private UsuarioNegocio usuarioNegocio;
        
    
     public ServletCliente() {
@@ -33,12 +39,22 @@ public class ServletCliente extends HttpServlet {
         this.usuarioNegocio = new UsuarioNegocioImpl();
         
     }
-
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	
+		
+		  if (request.getParameter("cargarFormulario") != null) {
+		        List<Provincia> listaProvincia = clienteNegocio.listarProvincias();
+		        request.setAttribute("listaProvincias", listaProvincia);
+		        List<Localidad> listaLocalidades = clienteNegocio.listarLocalidades();
+		        request.setAttribute("listaLocalidades", listaLocalidades);
+
+		        RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
+		        rd.forward(request, response);
+		        return;
+		    }
+		
 	    
-	    // Para listar todos los clientes
 	    if (request.getParameter("listar") != null) {
 	        List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
 	        
@@ -47,89 +63,125 @@ public class ServletCliente extends HttpServlet {
 	        RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
 	        rd.forward(request, response);
 	    }
+	    
+	   
 	}
 
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		Boolean resultado = false;
-		Boolean resultado1 = false;
+		 
+		Cliente clienteModificar;
 		
 		if(request.getParameter("btnRegistrarCliente")!= null) {
 			
-			Cliente cliente = new Cliente();			
-			cliente.setDni(Integer.parseInt(request.getParameter("txtDni")));
-			cliente.setCuil(request.getParameter("txtCuil"));
-			cliente.setNombre(request.getParameter("txtNombre"));
-			cliente.setApellido(request.getParameter("txtApellido"));
-			cliente.setSexo(request.getParameter("txtSexo"));
-			cliente.setNacionalidad(request.getParameter("txtNacionalidad"));
-			cliente.setFechaNacimiento(request.getParameter("txtFechaNacimiento"));
-			cliente.setDireccion(request.getParameter("txtDireccion"));
-			cliente.setLocalidad(request.getParameter("txtLocalidad"));
-			cliente.setProvincia(request.getParameter("txtProvincia"));
-			cliente.setCorreoElectronico(request.getParameter("txtCorreo"));
-			cliente.setEliminado(false);				
+			Cliente cliente = new Cliente();
+			Boolean resultado = false;
+			int resultado1 = -1;			
+						
+			try {
+				
+				cliente.setNombre(request.getParameter("txtNombre"));
+				cliente.setApellido(request.getParameter("txtApellido"));
+				cliente.setSexo(request.getParameter("txtSexo"));
+				cliente.setNacionalidad(request.getParameter("txtNacionalidad"));			
+				cliente.setDireccion(request.getParameter("txtDireccion"));
+				cliente.setLocalidad(request.getParameter("ddlLocalidades"));
+				cliente.setProvincia(request.getParameter("ddlProvincias"));
+				cliente.setCorreoElectronico(request.getParameter("txtCorreo"));
+				cliente.setEliminado(false);				
+				
+				Validaciones.verificarDniInvalido(request.getParameter("txtDni"));				
+				cliente.setDni(Integer.parseInt(request.getParameter("txtDni")));
+				
+				LocalDate fechaNacimiento = LocalDate.parse(request.getParameter("txtFechaNacimiento").trim());
+			    Validaciones.esMenorDeEdad(fechaNacimiento);				
+				cliente.setFechaNacimiento(request.getParameter("txtFechaNacimiento"));
+				
+				Validaciones.verificarCuilInvalido(request.getParameter("txtCuil"));
+				cliente.setCuil(request.getParameter("txtCuil"));			
+				
+			} catch (DniInvalido e) {
+				
+				request.setAttribute("dniInvalido", true);
+				cargarDesplegablesRegistrar (request,response);								
+				e.getMessage();				
+				return; 
+				
+		   } catch (ClienteMenorEdad e) {				
+				
+				request.setAttribute("menorEdad", true);
+				cargarDesplegablesRegistrar (request,response);				
+				e.getMessage();
+				return;
+				
+			} catch (CuilInvalido e) {
+				
+				request.setAttribute("cuilInvalido", true);				
+				cargarDesplegablesRegistrar (request,response);			
+				e.getMessage();				
+				return; 	
+			}							
 			
-			if(clienteNegocio.existeDni(cliente.getDni())) 
-			{
-				// vuelve al registro con un cartel de que hubo un dni repetido	
+			// vuelve al registro con un cartel de que hubo un dni repetido	
+			if(clienteNegocio.existeDni(cliente.getDni())) {
+				
 				request.setAttribute("dni", 1);
-
-				RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
-				rd.forward(request, response);	
+				request.setAttribute("clienteEditado", cliente);
+				cargarDesplegablesRegistrar (request,response);					
 				return;
 			}
-			if(clienteNegocio.existeCuil(cliente.getCuil()))
-			{
-				// vuelve al registro con un cartel de que hubo un cuil repetido
+			
+			// vuelve al registro con un cartel de que hubo un cuil repetido
+			if(clienteNegocio.existeCuil(cliente.getCuil())) {		
+				
 				request.setAttribute("cuil", 1);
-
-				RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
-				rd.forward(request, response);
+				request.setAttribute("clienteEditado", cliente);
+				cargarDesplegablesRegistrar (request,response);				
 				return;
 			}
 			
-			
-			int ultimoId = clienteNegocio.ultimoIdCliente();	// Busca en DB el ultimo Id_cliente
-			List<Usuario> listaUsuario = usuarioNegocio.obtenerUsuarios();	
-		
+			//inserta cliente devuelve ultimo ID
+			resultado1 = clienteNegocio.insertarCliente(cliente); 
+						
 			Usuario usuario = new Usuario();			
-			usuario.setId_cliente(ultimoId + 1);
+			usuario.setId_cliente(resultado1);
 			usuario.setUsuario(request.getParameter("txtUsuario"));
 			usuario.setContrasena(request.getParameter("txtContrasena"));
-			usuario.setTipo_usuario("cliente");
-			usuario.setEliminado(0);
-			usuario.setEliminado(0);
+			usuario.setTipo_usuario(request.getParameter("txtTipoUsuario"));
+			usuario.setEliminado(0);			
 			usuario.setFecha_creacion(LocalDate.now());
 			
-			for(Usuario u : listaUsuario) // Chequea que ya exista ese nombre de usuario de un usuario activo
-			{
-				if(u.getUsuario().equals(usuario.getUsuario())) 
-				{
-					// vuelve al registro con un cartel de que hubo un usuario repetido
+			List<Usuario> listaUsuario = usuarioNegocio.obtenerUsuarios();
+			
+			// Chequea que ya exista ese nombre de usuario de un usuario activo
+			for(Usuario u : listaUsuario) {
+				
+				// vuelve al registro con un cartel de que hubo un usuario repetido
+				if(u.getUsuario().equals(usuario.getUsuario())) {			
+					
 					request.setAttribute("usuario", 1);
 	
 					RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
 					rd.forward(request, response);
 					return;
 				}
-			}
+			}			
 			
-			resultado1 = clienteNegocio.insertarCliente(cliente); // Guarda en DB al cliente
-			resultado = usuarioNegocio.insertarUsuario(usuario); // Guarda en DB al usuario
+			// Guarda en DB al usuario
+			resultado = usuarioNegocio.insertarUsuario(usuario); 
 
-			if(resultado1 && ultimoId != -1 && resultado) {
+			if(resultado1 > 0 && resultado) {
 					
 				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
 				request.setAttribute("listaClientes", listaClientes);
 
+				request.setAttribute("clienteRegistrado", true);
 				RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
 				rd.forward(request, response);				
 					
 			} else {
 					
-				request.setAttribute("error", "No se pudo eliminar el usuario.");
+				request.setAttribute("error", "No se pudo registrar el cliente.");
 				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
 				request.setAttribute("listaUsuarios", listaClientes);		
 				RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
@@ -137,83 +189,191 @@ public class ServletCliente extends HttpServlet {
 			}							
 		}
 		
-		if(request.getParameter("btnModificarCliente")!= null) {
+		
+		//MODIFICAR CLIENTE		
+		if(request.getParameter("btnModificarCliente")!= null) {			
 			
+			Cliente c = new Cliente();			
 			
-			Cliente c = new Cliente();
-			Boolean resultado2 = false;
-		    c.setIdCliente(Integer.parseInt(request.getParameter("idCliente"))); 
-			c.setNombre(request.getParameter("txtNombre"));
-			c.setApellido(request.getParameter("txtApellido"));
-			c.setSexo(request.getParameter("txtSexo"));
-			c.setNacionalidad(request.getParameter("txtNacionalidad"));
-			c.setFechaNacimiento(request.getParameter("txtFechaNacimiento"));
-			c.setDireccion(request.getParameter("txtDireccion"));
-			c.setLocalidad(request.getParameter("txtLocalidad"));
-			c.setProvincia(request.getParameter("txtProvincia"));
-			c.setCorreoElectronico(request.getParameter("txtEmail"));
-			c.setDni(Integer.parseInt(request.getParameter("txtDni")));
-			c.setCuil(request.getParameter("txtCuil"));
+			try {				
+				 
+				// Creo cliente con los atributos del ID que viene por parametro			
+				c.setIdCliente(Integer.parseInt(request.getParameter("idCliente")));			 
+				c.setNombre(request.getParameter("txtNombre"));
+				c.setApellido(request.getParameter("txtApellido"));
+				c.setSexo(request.getParameter("txtSexo"));
+				c.setNacionalidad(request.getParameter("txtNacionalidad"));				
+				c.setDireccion(request.getParameter("txtDireccion"));
+				c.setLocalidad(request.getParameter("txtLocalidad"));
+				c.setProvincia(request.getParameter("txtProvincia"));
+				c.setCorreoElectronico(request.getParameter("txtEmail"));
+				
+				
+			} catch (Exception e) {
+				request.setAttribute("NoModificado", true);
+				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
+				request.setAttribute("listaClientes", listaClientes);
+				RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");				
+				rd.forward(request, response);	
+				return;			
+			}
 			
-			System.out.println(c.getCuil());
-			// Creo cliente con los atributos del ID que viene por parametro, es una replica ANTES de la modificacion
-			Cliente cliente = clienteNegocio.BuscarPorID(c.getIdCliente());
+			clienteModificar = clienteNegocio.BuscarPorID(c.getIdCliente());
 			
+			if (clienteModificar == null) {
+				request.setAttribute("errorModificarNull", true);
+				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
+				request.setAttribute("listaClientes", listaClientes);
+				RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
+				rd.forward(request, response);
+				return;
+			}
+						
+			
+			//validar si ya esta eliminado no puedo modificar			
+			if(clienteNegocio.verificoClienteEliminado(Integer.parseInt(request.getParameter("idCliente")))) {
+				
+				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
+				request.setAttribute("listaClientes", listaClientes);
+				
+				request.setAttribute("errorModificar", true);				
+				RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
+				rd.forward(request, response);	
+				return;									
+			}			
+			
+			try {				
+				
+				Validaciones.verificarDniInvalido(request.getParameter("txtDni"));				
+				c.setDni(Integer.parseInt(request.getParameter("txtDni")));
+				
+				Validaciones.verificarCuilInvalido(request.getParameter("txtCuil"));
+				c.setCuil(request.getParameter("txtCuil"));				
+				
+				LocalDate fechaNacimiento = LocalDate.parse(request.getParameter("txtFechaNacimiento").trim());
+			    Validaciones.esMenorDeEdad(fechaNacimiento);				
+				c.setFechaNacimiento(request.getParameter("txtFechaNacimiento"));								
+				
+			} catch (DniInvalido e) {
+				
+				request.setAttribute("dniInvalido", true);				
+				cargarDesplegablesModificar (request,response,clienteModificar);				
+				e.getMessage();				
+				return;
+				
+		   } catch (CuilInvalido e) {
+				
+				request.setAttribute("cuilInvalido", true);
+				cargarDesplegablesModificar (request,response,clienteModificar);				
+				e.getMessage();				
+				return; 
+				
+			} catch (ClienteMenorEdad e) {				
+				
+				request.setAttribute("menorEdad", true);
+				cargarDesplegablesModificar (request,response,clienteModificar);			
+				e.getMessage();
+				return;				
+			}			
 			
 			//Si el Dni existe y es distinto al del ID modificado
-			if(clienteNegocio.existeDni(c.getDni()) && cliente.getDni() != c.getDni())
-			{
-				// vuelve al registro con un cartel de que hubo un dni repetido	
-				request.setAttribute("dni", 1);
-
+			if(clienteNegocio.existeDni(c.getDni()) && clienteModificar.getDni() != c.getDni()) {
+					
+				request.setAttribute("dni", 1);				
+				request.setAttribute("cliente", c);
 				RequestDispatcher rd = request.getRequestDispatcher("/modificarCliente.jsp");
 				rd.forward(request, response);	
 				return;									
 			}
-			if(clienteNegocio.existeCuil(c.getCuil()) && !cliente.getCuil().equals(c.getCuil())) //Si el Cuil existe y es distinto al de este ID
-			{
-				// vuelve al registro con un cartel de que hubo un cuil repetido
-				System.out.println("entre al if cuil");
-				request.setAttribute("cuil", 1);
-
+			
+			//Si el Cuil existe y es distinto al de este ID
+			if(clienteNegocio.existeCuil(c.getCuil()) && !clienteModificar.getCuil().equals(c.getCuil())) {
+				
+				request.setAttribute("cuil", 1);					
+				request.setAttribute("cliente", c);
 				RequestDispatcher rd = request.getRequestDispatcher("/modificarCliente.jsp");
 				rd.forward(request, response);
 				return;
 			}
 					
-               if (clienteNegocio.modificarCliente(c)) {			 
+            if (clienteNegocio.modificarCliente(c)) {			 
 				
 				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
-				request.setAttribute("listaClientes", listaClientes);		    
-			   
+				request.setAttribute("listaClientes", listaClientes);			   
+					
+				request.setAttribute("exitoModificado", true);
 			    RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
 			    rd.forward(request, response);
-			} 
-		}
+			}  else {
+			    List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
+			    request.setAttribute("listaClientes", listaClientes);
+			    request.setAttribute("NoModificado", true);
+			    RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
+			    rd.forward(request, response);
+			    return; 
+			}			
+		}		
+		
 		
 		if(request.getParameter("btnEliminarCliente")!= null) {
 					
 			int idCliente = Integer.parseInt(request.getParameter("idCliente"));			
+			int idUsuario = clienteNegocio.buscarPorIDCliente(idCliente);			
 			
-			int idEliminar = usuarioNegocio.buscarPorIDUsuario(idCliente);			
+			//validar si ya esta eliminado msj ya esta eliminado			
+			if(clienteNegocio.verificoClienteEliminado(idCliente)) {
+				
+				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
+				request.setAttribute("listaClientes", listaClientes);
+				
+				request.setAttribute("error", true);				
+				RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
+				rd.forward(request, response);	
+				return;									
+			}
 			
-			if (usuarioNegocio.eliminarUsuario(idEliminar, idCliente)) {			 
+			if (clienteNegocio.eliminarClienteUsuarioCuentas(idUsuario, idCliente)) {			 
 							
 				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
 				request.setAttribute("listaClientes", listaClientes);		    
-						   
+				
+				request.setAttribute("exito", true);
 			    RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
 				rd.forward(request, response);
-			 } else {
-					
-					request.setAttribute("error", "No se pudo eliminar el usuario.");
-				    List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
-				    request.setAttribute("listaClientes", listaClientes);		
-				    RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
-				    rd.forward(request, response);
-				}			
+			 
+			} else {					
+				request.setAttribute("error", false);
+				List<Cliente> listaClientes = clienteNegocio.obtenerClientes();
+				request.setAttribute("listaClientes", listaClientes);		
+			    RequestDispatcher rd = request.getRequestDispatcher("/administrarClientes.jsp");
+				rd.forward(request, response);
+			}			
 		}
 		
+	}	
+	
+	public void cargarDesplegablesRegistrar (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		List<Provincia> listaProvincia = clienteNegocio.listarProvincias();
+	    request.setAttribute("listaProvincias", listaProvincia);
+
+	    List<Localidad> listaLocalidades = clienteNegocio.listarLocalidades();
+	    request.setAttribute("listaLocalidades", listaLocalidades);				
+		
+		RequestDispatcher rd = request.getRequestDispatcher("/registrarCliente.jsp");
+		rd.forward(request, response);		
+	} 
+	
+	public void cargarDesplegablesModificar (HttpServletRequest request, HttpServletResponse response, Cliente clienteModificar) throws ServletException, IOException {
+		List<Provincia> listaProvincia = clienteNegocio.listarProvincias();
+	    request.setAttribute("listaProvincias", listaProvincia);
+
+	    List<Localidad> listaLocalidades = clienteNegocio.listarLocalidades();
+	    request.setAttribute("listaLocalidades", listaLocalidades);				
+		
+	    request.setAttribute("cliente", clienteModificar);
+		RequestDispatcher rd = request.getRequestDispatcher("/modificarCliente.jsp");
+		rd.forward(request, response);		
+	   
 	}
 
 

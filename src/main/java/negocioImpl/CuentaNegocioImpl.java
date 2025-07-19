@@ -1,16 +1,16 @@
 package negocioImpl;
 
+import dao.ClienteDao;
+import dao.CuentaDao;
+import daoImpl.ClienteDaolmpl;
+import daoImpl.CuentaDaoImpl;
+import entidades.Cuenta;
+
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
-import dao.CuentaDao;
-import daoImpl.CuentaDaoImpl;
-import entidades.Cuenta;
 import negocio.CuentaNegocio;
-
-import dao.ClienteDao;
-import daoImpl.ClienteDaolmpl;
 
 public class CuentaNegocioImpl implements CuentaNegocio {
 	
@@ -121,8 +121,34 @@ public class CuentaNegocioImpl implements CuentaNegocio {
 
 	@Override
 	public boolean puedeCrearCuenta(int idCliente) {
-		// TODO Auto-generated method stub
+		int cantidadCuentas = cuentaDao.contarCuentasActivasPorCliente(idCliente);
+		if (cantidadCuentas < 3) {
+			return true;
+		}
 		return false;
 	}
-
+	
+	@Override
+	public boolean tieneSaldoSuficiente(int idCuenta, BigDecimal monto)
+	{
+		return cuentaDao.tieneSaldoSuficiente(idCuenta, monto);
+	}
+	
+	@Override
+	public boolean modificarSaldo(int idCuenta, BigDecimal saldoFinal)
+	{
+		return cuentaDao.modificarSaldo(idCuenta, saldoFinal);
+	}
+	
+	@Override
+	public Cuenta buscarIdConCbu(String cbu) 
+	{
+		return cuentaDao.buscarIdConCbu(cbu);
+	}
+	
+	@Override
+	public int obtenerUltimaIdCuenta() {
+	    return cuentaDao.obtenerUltimaIdCuenta();
+	}
+	
 }

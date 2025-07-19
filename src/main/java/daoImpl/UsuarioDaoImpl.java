@@ -144,47 +144,8 @@ public class UsuarioDaoImpl implements UsuarioDao {
 		
 		return resultado;		
 		
-	}
+	}	
 	
-	@Override
-	public boolean eliminarUsuario(int idUsuario, int idCliente) {
-		PreparedStatement pst = null;
-		Connection conexion = Conexion.getConexion().getSQLConexion();
-		boolean resultado = false;
-		
-		ClienteNegociolmpl clienteNegocio = new ClienteNegociolmpl();
-		CuentaNegocioImpl cuentaNegocio = new CuentaNegocioImpl(); 
-		
-		try {
-			String query = "UPDATE usuario SET eliminado = 1 WHERE id_usuario = ?";
-			pst = conexion.prepareStatement(query);
-			pst.setInt(1, idUsuario);
-			
-			if (pst.executeUpdate() > 0) { 
-				conexion.commit();
-				resultado = true;
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (pst != null)
-				pst.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		if(resultado) {
-			return true;
-		} else {
-			return false;
-		}	
-			
-	}
-	
-
 	@Override
 	public int buscarPorIDUsuario(int id) {
 		PreparedStatement pst = null;
@@ -216,5 +177,76 @@ public class UsuarioDaoImpl implements UsuarioDao {
 
 		return resultado;
 	}
+	
+	@Override
+	public boolean existeNombreUsuario(String nombre, int idUsuario) {
+	    PreparedStatement pst = null;
+	    ResultSet rs = null;
+	    Connection conexion = Conexion.getConexion().getSQLConexion();
+	    boolean existe = false;
+
+	    try {
+	        String query = "SELECT 1 FROM usuario WHERE usuario = ? AND id_usuario <> ? AND eliminado = 0 LIMIT 1";
+	        pst = conexion.prepareStatement(query);
+	        pst.setString(1, nombre);
+	        pst.setInt(2, idUsuario);
+	        rs = pst.executeQuery();
+
+	        if (rs.next()) {
+	            existe = true; 
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pst != null) pst.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return existe;
+	}	
+	
+	@Override
+	public Usuario buscarPorIdCliente(int idCliente) {
+	    PreparedStatement pst = null;
+	    ResultSet rs = null;
+	    Connection conexion = Conexion.getConexion().getSQLConexion();
+	    Usuario usuario = null;
+
+	    try {
+	        String query = "SELECT * FROM usuario WHERE id_cliente = ? AND eliminado = 0";
+	        pst = conexion.prepareStatement(query);
+	        pst.setInt(1, idCliente);
+	        rs = pst.executeQuery();
+
+	        if (rs.next()) {
+	            usuario = new Usuario();
+	            usuario.setId_usuario(rs.getInt("id_usuario"));
+				usuario.setId_cliente(rs.getInt("id_cliente"));								
+				usuario.setUsuario(rs.getString("usuario"));
+				usuario.setContrasena(rs.getString("contraseña"));
+				usuario.setTipo_usuario(rs.getString("tipo_usuario"));
+				usuario.setEliminado(rs.getInt("eliminado"));
+				usuario.setFecha_creacion(rs.getDate("fecha_creacion").toLocalDate());
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pst != null) pst.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return usuario;
+	}
+
 
 }

@@ -24,10 +24,5 @@ hs_err_pid*
 replay_pid*
 /build/
 
-# path de eclipse
+# Eclipse
 .classpath
-.project
-.settings/
-bin/
-target/
-.metadata/

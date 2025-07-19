@@ -1,5 +1,6 @@
 package dao;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -40,5 +41,12 @@ public interface CuentaDao {
 	    public boolean existeCBU(String cbu);
 
 	    public int contarCuentasActivasPorClienteExcepto(int idCliente, int idCuentaExcluir);
-
+	    
+	    public boolean tieneSaldoSuficiente(int idCuenta, BigDecimal monto);
+	    
+	    public boolean modificarSaldo(int idCuenta, BigDecimal saldoFinal);
+	    
+	    public Cuenta buscarIdConCbu(String cbu);
+	    
+	    public int obtenerUltimaIdCuenta();
 }

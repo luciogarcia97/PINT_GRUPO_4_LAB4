@@ -3,7 +3,7 @@
     
     <%@ page import="entidades.Usuario" %>
 	<%
-    // Verificar autenticación de admin
+  
     Usuario adminLogueado = (Usuario) session.getAttribute("adminLogueado");
     if (adminLogueado == null) {
         response.sendRedirect("index.jsp");
@@ -24,35 +24,65 @@
     </head>
 <body>	
 
-	<%
-    	String idUsuario = request.getParameter("id");
-	    String idCliente = request.getParameter("idCliente");
-	    String fechaCreacion = request.getParameter("fechaCreacion");
-	    String usuario = request.getParameter("usuario");
-	%>
-
+		<%
+		    String idUsuario = request.getParameter("idUsuario");
+		    if (idUsuario == null) idUsuario = (String) request.getAttribute("id");
+		
+		    String idCliente = request.getParameter("idCliente");
+		    if (idCliente == null) idCliente = (String) request.getAttribute("idCliente");
+		
+		    String fechaCreacion = request.getParameter("fechaCreacion");
+		    if (fechaCreacion == null) fechaCreacion = (String) request.getAttribute("fechaCreacion");
+		
+		    String usuario = request.getParameter("usuario");
+		    if (usuario == null) usuario = (String) request.getAttribute("usuario");
+		    
+		    String tipoUsuario = request.getParameter("tipoUsuario");
+		    if(tipoUsuario == null) tipoUsuario = (String) request.getAttribute("tipoUsuario");
+		    
+		    String contrasena = request.getParameter("contrasena");
+		    if(contrasena == null) contrasena = (String) request.getAttribute("contrasena");
+		%>
 
      <form class="w-75 mx-auto mt-5" onsubmit="return validarContraseñas()" action="ServletUsuario" method="post">
      	<input type="hidden" name="idUsuario" value="<%= idUsuario %>">
      	<input type="hidden" name="idCliente" value="<%= idCliente %>">
 		<input type="hidden" name="fechaCreacion" value="<%= fechaCreacion %>">
+	    <input type="hidden" name="tipoUsuario" value="<%= tipoUsuario %>">
+	    <input type="hidden" name="contrasena" value="<%= contrasena %>">
 	    <div class="inicio">
 	         
 	        <h2 class="text-center pt-2 pb-2"> Modificar usuario</h2>    
 			
-			<div class="center row">
+			
+			<div>
+				<%
+					Boolean errorNombre = (Boolean) request.getAttribute("errorNombre");
+					if (errorNombre != null && errorNombre) {
+					%>
+						<div class="alert alert-danger" role="alert">
+						     ¡Existe nombre de Usuario!
+						</div>
+				<%
+					}
+				%>
+						
+			
+			</div>
+			
+			<div class="center row">			
 	            <div class="mb-3">
-	                <label for="usuario" class="form-label">Usuario</label>
-	                <input type="text" class="form-control" id="usuario" placeholder="Usuario" name="txtNombre" value="<%= usuario %>" required>
+	                <label for="usuario" class="form-label">Usuario</label>	                
+	                <input type="text" class="form-control" id="usuario" placeholder="Usuario" name="txtNombre" value="<%= (usuario != null) ? usuario : "" %>" required style="letter-spacing: normal; padding-right: 6px; font-family: sans-serif;">
 	            </div>
 	            <div class="mb-3">
 	                <label for="clave" class="form-label">Contraseña</label>
-	                <input type="password" class="form-control" id="clave" placeholder="Tu contraseña" name="txtContrasena" required>
+	                <input type="password" class="form-control" id="clave" placeholder="Tu contraseña" name="txtContrasena" value="<%= (contrasena != null) ? contrasena : "" %>" required>
 	            </div>
 	
 	            <div class="mb-3">
 	                <label for="repetirClave" class="form-label">Repetir Contraseña</label>
-	                <input type="password" class="form-control" id="repetirClave" placeholder="Repetir Contraseña" name="txtReContrasena" required>
+	                <input type="password" class="form-control" id="repetirClave" placeholder="Repetir Contraseña" name="txtReContrasena" value="<%= (contrasena != null) ? contrasena : "" %>" required>
 	            </div>
 	        </div>	        
 	

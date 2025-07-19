@@ -186,3 +186,219 @@ INSERT INTO movimiento_tipo (descripcion) VALUES
 ('Extracción'),
 ('Débito automático'),
 ('Acreditación de sueldo');
+
+-- CORRECCIONES 
+/* CREACIÓN DE TABLAS PROVINCIA Y LOCALIDADES*/
+use `banco_db`;
+CREATE TABLE transferencia (
+id_transferencia INT AUTO_INCREMENT PRIMARY KEY,
+id_movimiento INT,
+cuenta_origen INT,
+cuenta_destino INT,
+FOREIGN KEY (id_movimiento) REFERENCES movimiento(id_movimiento)
+);
+Create table provincias (
+id_provincia int AUTO_INCREMENT PRIMARY KEY,
+nombre_provincia varchar(100) not null unique
+);
+
+CREATE TABLE localidades (
+    id_localidad INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_localidad VARCHAR(100) NOT NULL,
+    id_provincia INT NOT NULL,
+    FOREIGN KEY (id_provincia) REFERENCES provincias(id_provincia)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+/*INSERT DE DATOS*/
+INSERT INTO provincias (nombre_provincia) VALUES
+('Buenos Aires'),
+('Córdoba'),
+('Santa Fe'),
+('Mendoza'),
+('Salta');
+
+-- Localidades de Buenos Aires (id_provincia = 1)
+INSERT INTO localidades (nombre_localidad, id_provincia) VALUES
+('La Plata', 1),
+('Mar del Plata', 1),
+('Bahía Blanca', 1),
+('Quilmes', 1);
+
+-- Localidades de Córdoba (id_provincia = 2)
+INSERT INTO localidades (nombre_localidad, id_provincia) VALUES
+('Córdoba Capital', 2),
+('Villa Carlos Paz', 2),
+('Río Cuarto', 2);
+
+-- Localidades de Santa Fe (id_provincia = 3)
+INSERT INTO localidades (nombre_localidad, id_provincia) VALUES
+('Rosario', 3),
+('Santa Fe Capital', 3),
+('Venado Tuerto', 3);
+
+-- Localidades de Mendoza (id_provincia = 4)
+INSERT INTO localidades (nombre_localidad, id_provincia) VALUES
+('Mendoza Capital', 4),
+('San Rafael', 4),
+('Godoy Cruz', 4);
+
+-- Localidades de Salta (id_provincia = 5)
+INSERT INTO localidades (nombre_localidad, id_provincia) VALUES
+('Salta Capital', 5),
+('Orán', 5),
+('Tartagal', 5);
+
+-- ELIMINO COLUMNA ID_CUENTA_DESTINO 
+alter table movimiento
+drop foreign key  `fk_movimiento_cuenta_destino` ;
+
+
+ALTER TABLE movimiento
+DROP COLUMN id_cuenta_destino;
+
+-- sp pago cuota prestamo
+DELIMITER //
+
+CREATE PROCEDURE sp_pagar_cuota(
+    IN p_id_cuota INT,
+    IN p_id_cuenta INT,
+    IN p_monto DECIMAL(10,2)
+)
+BEGIN
+    DECLARE v_saldo_actual DECIMAL(10,2);
+    DECLARE v_cuota_pendiente DECIMAL(10,2);
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
+    
+    -- Iniciar transacción
+    START TRANSACTION;
+    
+    -- Obtener saldo actual de la cuenta
+    SELECT saldo INTO v_saldo_actual 
+    FROM cuenta 
+    WHERE id_cuenta = p_id_cuenta;
+    
+    -- Obtener monto de la cuota
+    SELECT monto INTO v_cuota_pendiente 
+    FROM prestamo_cuota 
+    WHERE id_prestamo_cuota = p_id_cuota AND pagada = 0;
+    
+    -- Verificar si hay suficiente saldo
+    IF v_saldo_actual >= p_monto THEN
+        -- Actualizar saldo de la cuenta
+        UPDATE cuenta 
+        SET saldo = saldo - p_monto 
+        WHERE id_cuenta = p_id_cuenta;
+        
+        -- Marcar cuota como pagada
+        UPDATE prestamo_cuota 
+        SET pagada = 1, 
+            fecha_pago = curdate() 
+        WHERE id_prestamo_cuota = p_id_cuota;
+        
+        COMMIT;
+        SELECT 'Pago realizado exitosamente' AS mensaje;
+    ELSE
+        ROLLBACK;
+        SELECT 'Saldo insuficiente' AS mensaje;
+    END IF;
+    
+END //
+
+-- Restaurar el delimitador original
+DELIMITER ;
+
+
+-- procedimiento almacenado elimina cliente, usuario y cuentas
+DELIMITER $$
+CREATE PROCEDURE eliminar_usuario_completo ( IN p_idUsuario INT, IN p_idCliente INT )
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
+    START TRANSACTION;    
+    UPDATE usuario SET eliminado = 1 WHERE id_usuario = p_idUsuario;
+   
+    UPDATE cliente  SET eliminado = 1 WHERE id_cliente = p_idCliente;
+   
+    UPDATE cuenta SET activa = 0 WHERE id_cliente = p_idCliente;
+    
+    COMMIT;
+END$$
+DELIMITER ;
+
+
+-- procedimiento almacenado valida cliente activo antes de aceptar el prestamo 
+DELIMITER $$
+CREATE PROCEDURE aceptar_prestamo_valida_cliente_activo (
+    IN idPrestamo INT, 
+    OUT resultado INT
+)
+salida: BEGIN
+    DECLARE eliminado_cliente TINYINT DEFAULT NULL;
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SET resultado = -1;
+    END;
+
+    START TRANSACTION;
+   
+    SELECT c.eliminado INTO eliminado_cliente FROM prestamo p
+    JOIN cliente c ON p.id_cliente = c.id_cliente WHERE p.id_prestamo = idPrestamo;
+    
+    IF eliminado_cliente IS NULL OR eliminado_cliente = 1 THEN
+        ROLLBACK;
+        SET resultado = 0;
+        LEAVE salida;
+    END IF;
+  
+    UPDATE prestamo SET estado='aceptado',fecha_aprobacion=DATE(CURRENT_TIMESTAMP()) WHERE id_prestamo = idPrestamo;
+
+    COMMIT;
+    SET resultado = 1;
+END salida$$
+DELIMITER ;
+
+
+-- SP HISTORIAL DE TRANSFERENCIAS
+DELIMITER $
+CREATE PROCEDURE sp_historial_transferencias_cliente(
+    IN p_id_cliente INT
+)
+BEGIN
+    SELECT 
+        t.id_transferencia,
+        t.id_movimiento,
+        t.cuenta_origen,
+        t.cuenta_destino,
+        m.fecha,
+        m.detalle,
+        m.importe,
+        co.numero_cuenta as num_cuenta_origen,
+        cd.numero_cuenta as num_cuenta_destino,
+        CONCAT(co.numero_cuenta, ' → ', cd.numero_cuenta) as transferencia_detalle,
+        mt.descripcion as tipo_movimiento,
+        CONCAT(cli.nombre, ' ', cli.apellido) as cliente_nombre
+    FROM movimiento m
+    INNER JOIN cuenta co ON m.id_cuenta = co.id_cuenta
+    INNER JOIN cliente cli ON co.id_cliente = cli.id_cliente
+    INNER JOIN movimiento_tipo mt ON m.id_tipo_movimiento = mt.id_tipo_movimiento
+    INNER JOIN transferencia t ON m.id_movimiento = t.id_movimiento
+    LEFT JOIN cuenta cd ON t.cuenta_destino = cd.id_cuenta
+    WHERE co.id_cliente = p_id_cliente
+    AND t.cuenta_origen = co.id_cuenta
+    ORDER BY m.fecha DESC;
+END$
+DELIMITER ;
+
+
+
+
+

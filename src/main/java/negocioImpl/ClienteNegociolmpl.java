@@ -3,6 +3,8 @@ import java.util.List;
 import dao.ClienteDao;
 import daoImpl.ClienteDaolmpl;
 import entidades.Cliente;
+import entidades.Localidad;
+import entidades.Provincia;
 import negocio.ClienteNegocio;
 
 
@@ -16,37 +18,33 @@ public class ClienteNegociolmpl implements ClienteNegocio {
 	}
 	
 	@Override
-	public boolean insertarCliente(Cliente cliente) {
+	public int insertarCliente(Cliente cliente) {
 		
-		boolean fila = clienteDao.insertarCliente(cliente);
-		
-		return fila;
-	}
+		return clienteDao.insertarCliente(cliente);	
+	}	  
+	
 	
 	@Override
-	public int ultimoIdCliente() {
+	public boolean eliminarClienteUsuarioCuentas(int idUsuario, int idCliente) {
 		
-		return clienteDao.ultimoIdCliente();
-	}
-    
-	@Override
-	public boolean eliminarCliente(int idCliente) {
+		return clienteDao.eliminarClienteUsuarioCuentas(idUsuario, idCliente);
+	}	
 	
-		boolean fila = clienteDao.eliminarCliente(idCliente);
+	@Override
+	public int buscarPorIDCliente(int id) {
 		
-		return fila;
+		return clienteDao.buscarPorIDCliente(id);
 	}
     
 	@Override
 	public boolean modificarCliente(Cliente cliente) {
 
-		boolean fila = clienteDao.ModificarCliente(cliente);
-		
-		return fila;
+		return clienteDao.ModificarCliente(cliente);		
 	}
 
 	@Override
 	public List<Cliente> obtenerClientes() {
+		
 		return clienteDao.obtenerClientes();
 	}
 	
@@ -59,22 +57,38 @@ public class ClienteNegociolmpl implements ClienteNegocio {
 	@Override
 	public boolean existeCliente(int idCliente) {
 		
-		return clienteDao.existeCliente(idCliente);
-		
+		return clienteDao.existeCliente(idCliente);		
 	}
 	
 	@Override
-	public boolean existeCuil(String cuil)
-	{
+	public boolean existeCuil(String cuil) {
+	
 		return clienteDao.existeCuil(cuil);
-	}
-    
+	}    
 	
 	@Override
-    public boolean existeDni(int dni)
-    {
+    public boolean existeDni(int dni) {
+    
 		return clienteDao.existeDni(dni);
     }
+
+	@Override
+	public List<Provincia> listarProvincias() {
+
+		return clienteDao.listarProvincias();
+	}
+
+	@Override
+	public List<Localidad> listarLocalidades() {
+		
+		return clienteDao.listarLocalidades();
+	}
+
+	@Override
+	public boolean verificoClienteEliminado(int idCliente) {
+		
+		return clienteDao.verificoClienteEliminado(idCliente);
+	}			
     
 }
 	

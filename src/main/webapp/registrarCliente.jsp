@@ -1,4 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="entidades.Provincia" %>
+<%@ page import="entidades.Localidad" %>
+<%@ page import="entidades.Usuario" %>
+<%
+    // Verificar autenticación de admin
+    Usuario adminLogueado = (Usuario) session.getAttribute("adminLogueado");
+    if (adminLogueado == null) {
+        response.sendRedirect("index.jsp");
+        return;
+    }
+%>
+
+
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -13,24 +28,24 @@
     <body>
      
     <%
-    int dni = 0; 
-    int cuil = 0;
-    int usuario = 0;
-    
-    if(request.getAttribute("dni") != null)
-    {
-    	dni = Integer.parseInt(request.getAttribute("dni").toString());
-    }
-    
-    if(request.getAttribute("cuil") != null)
-    {
-    	cuil = Integer.parseInt(request.getAttribute("cuil").toString());
-    }
-    
-    if(request.getAttribute("usuario") != null)
-    {
-    	usuario = Integer.parseInt(request.getAttribute("usuario").toString());
-    }
+	    int dni = 0; 
+	    int cuil = 0;
+	    int usuario = 0;
+	    
+	    if(request.getAttribute("dni") != null)
+	    {
+	    	dni = Integer.parseInt(request.getAttribute("dni").toString());
+	    }
+	    
+	    if(request.getAttribute("cuil") != null)
+	    {
+	    	cuil = Integer.parseInt(request.getAttribute("cuil").toString());
+	    }
+	    
+	    if(request.getAttribute("usuario") != null)
+	    {
+	    	usuario = Integer.parseInt(request.getAttribute("usuario").toString());
+	    }
     %>
 
 	    <form class="w-75 mx-auto mt-5" action="ServletCliente" method="post" onsubmit="return validarContraseñas()">
@@ -40,32 +55,85 @@
 		        <%
 		        if(dni != 0){
 		        %>
-		        <div class="alert alert-danger" role="alert">
-  				¡Ya existe un cliente con ese DNI!
-				</div>
+			        <div class="alert alert-danger" role="alert">
+	  					¡Ya existe un cliente con ese DNI!
+					</div>
 		        <%
-		        }else if(cuil != 0){
+		        } else if(cuil != 0){
 		        %>
-		        <div class="alert alert-danger" role="alert">
-  				¡Ya existe un cliente con ese CUIL!
-				</div>
+			        <div class="alert alert-danger" role="alert">
+	  					¡Ya existe un cliente con ese CUIL!
+					</div>
 		        <%
 		        }
-		        %>			       
+		        %>	
+		        
+		        <% 
+		        	boolean dniInvalido = false;
+		        	
+			        if(request.getAttribute("dniInvalido") != null) {
+			        	dniInvalido = (boolean)request.getAttribute("dniInvalido");
+			        	
+			        	if(dniInvalido){
+		        %>	
+		         	 <div class="alert alert-danger" role="alert">
+	  					¡El DNI solo lleva números!
+					</div>       
+		         
+		        <% 	  }
+		        	}		        
+		        %>	
+		        
+		        <% 
+		        	boolean cuilInvalido = false;
+		        	
+			        if(request.getAttribute("cuilInvalido") != null) {
+			        	cuilInvalido = (boolean)request.getAttribute("cuilInvalido");
+			        	
+			        	if(cuilInvalido){
+		        %>	
+		         	 <div class="alert alert-danger" role="alert">
+	  					¡El CUIL solo lleva números!
+					</div>       
+		         
+		        <% 	  }
+		        	}		        
+		        %>		        	  
+		        
+		        
+		         <% 
+		        	boolean menorEdad = false;
+		        	
+			        if(request.getAttribute("menorEdad") != null) {
+			        	menorEdad = (boolean)request.getAttribute("menorEdad");
+			        	
+			        	if(menorEdad){
+		        %>	
+		         	 <div class="alert alert-danger" role="alert">
+	  					¡La persona no tiene la edad suficiente para registrarse como cliente!
+					</div>       
+		         
+		        <% 	  }
+		        	}		        
+		        %>     		        
+		    		          		             
 		
 		        <div class="row">
 		            <div class="mb-3 col-md-6">
 		                <label for="nombre" class="form-label">Nombre</label>
-		                <input type="text" class="form-control" id="nombre" name="txtNombre" placeholder="Tu Nombre" required>
+		                <input type="text" class="form-control" id="nombre" name="txtNombre" placeholder="Tu Nombre" required
+		                oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
 		            </div>
 		            <div class="mb-3 col-md-6">
 		                <label for="apellido" class="form-label">Apellido</label>
-		                <input type="text" class="form-control" id="apellido" name="txtApellido" placeholder="Tu Apellido" required>
+		                <input type="text" class="form-control" id="apellido" name="txtApellido" placeholder="Tu Apellido" required
+		                oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
 		            </div>
 		
 		            <div class="mb-3 col-md-6">
 		                <label for="sexo" class="form-label">Sexo</label>
-		                <select id="sexo" name="txtSexo" class="form-control">
+		                <select id="sexo" name="txtSexo" class="form-control" required>
+		                	<option value="" disabled selected>Selecciona sexo</option>
 		                    <option value="femenino">Femenino</option>
 		                    <option value="masculino">Masculino</option>
 		                    <option value="otro">No contesta</option>
@@ -73,7 +141,8 @@
 		            </div>
 		            <div class="mb-3 col-md-6">
 		                <label for="nacionalidad" class="form-label">Nacionalidad</label>
-		                <input type="text" class="form-control" id="nacionalidad" name="txtNacionalidad" placeholder="Nacionalidad" required>
+		                <input type="text" class="form-control" id="nacionalidad" name="txtNacionalidad" placeholder="Nacionalidad" required
+		                oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
 		            </div>
 		
 		            <div class="mb-3 col-md-6">
@@ -84,15 +153,45 @@
 		                <label for="direccion" class="form-label">Dirección</label>
 		                <input type="text" class="form-control" id="direccion" name="txtDireccion" placeholder="Tu Dirección" required>
 		            </div>
-		
+						<div class="mb-3 col-md-6">
+		                <label for="provincia" class="form-label">Provincia</label>
+		                 <select id="ddlProvincias" name="ddlProvincias" class="form-control" required>
+		                 <option value="" disabled selected>Selecciona una provincia</option>             
+		                
+		                
+							<%
+						    List<Provincia> listaProvincia = (List<Provincia>)request.getAttribute("listaProvincias");
+						    if (listaProvincia != null) {
+						        for (Provincia prov : listaProvincia) {
+							%>
+						            <option value="<%= prov.getNombre() %>"><%= prov.getNombre() %></option>
+							<%
+						      	  }
+						    	}
+							%>
+		                 
+		                 
+		                 </select>
+		            </div>
 		            <div class="mb-3 col-md-6">
 		                <label for="localidad" class="form-label">Localidad</label>
-		                <input type="text" class="form-control" id="localidad" name="txtLocalidad" placeholder="Localidad" required>
+		                  <select id="ddlLocalidades" name="ddlLocalidades" class="form-control" required>		                
+		                 <option value="" disabled selected>Selecciona una localidad</option>
+		                 
+		                  <%
+						    List<Localidad> listaLocalidad = (List<Localidad>)request.getAttribute("listaLocalidades");
+						    if (listaLocalidad != null) {
+						        for (Localidad loc : listaLocalidad) {
+						  %>
+						            <option value="<%= loc.getNombre() %>"><%= loc.getNombre() %></option>
+						  <%
+						        }
+						    }
+						  %>
+		                 
+		                 </select>
 		            </div>
-		            <div class="mb-3 col-md-6">
-		                <label for="provincia" class="form-label">Provincia</label>
-		                <input type="text" class="form-control" id="provincia" name="txtProvincia" placeholder="Provincia" required>
-		            </div>
+		            
 		
 		            <div class="mb-3 col-md-6">
 		                <label for="correo" class="form-label">Email</label>
@@ -100,21 +199,23 @@
 		            </div>
 		            <div class="mb-3 col-md-6">
 		                <label for="telefono" class="form-label">Teléfono</label>
-		                <input type="number" class="form-control" id="telefono" name="txtTelefono" placeholder="Teléfono"
+		                <input type="number" class="form-control" id="telefono" name="txtTelefono" placeholder="Teléfono" min="0"
 		                    oninput="this.value = this.value.slice(0, 11);" required>
 		            </div>
 		
 		            <div class="mb-3 col-md-6">
 		                <label for="dni" class="form-label">DNI</label>
-		                <input type="number" class="form-control" id="dni" name="txtDni" placeholder="DNI"
+		                <input type="number" class="form-control" id="dni" name="txtDni" placeholder="DNI" min="0"
 		                    oninput="this.value = this.value.slice(0, 8);" required>
 		            </div>
 		            <div class="mb-3 col-md-6">
 		                <label for="cuil" class="form-label">CUIL</label>
-		                <input type="number" class="form-control" id="cuil" name="txtCuil" placeholder="CUIL"
+		                <input type="number" class="form-control" id="cuil" name="txtCuil" placeholder="CUIL" min="0"
 		                    oninput="this.value = this.value.slice(0, 11);" required>
 		            </div>
-		         </div> 
+		         </div>
+		       
+		        </div>   
 		         
 		       <div class="inicio">
           
@@ -130,10 +231,20 @@
 		        }
 		        %>
 				
-				<div class="center row">					
+				<div class="center row">
+					 
+					 <div class="mb-3">
+		                <label for="tipoUsuario" class="form-label">Tipo Usuario</label>
+		                <select id="tipoUsuario" name="txtTipoUsuario" class="form-control" required>		                	
+		                    <option value="" disabled selected>Selecciona tipo de usuario</option>
+		                    <option value="admin">Administrador</option>
+		                    <option value="cliente">Cliente</option>		                    
+		                </select>
+		            </div>
+									
 		            <div class="mb-3">
 		                <label for="usuario" class="form-label">Usuario</label>
-		                <input type="text" class="form-control" id="usuario" name="txtUsuario" placeholder="Usuario" required>
+		                <input type="text" class="form-control" id="usuario" name="txtUsuario" placeholder="Nombre Usuario" required>
 		            </div>
 		            <div class="mb-3">
 		                <label for="clave" class="form-label">Contraseña</label>
@@ -148,7 +259,7 @@
 		           	    
 		
 		        <div class="text-center mt-3">
-		            <a href="administrarClientes.jsp">Cancelar</a>
+		            <a href="ServletCliente?listar=1">Cancelar</a>
 		        </div>
 		
 		        <div class="mt-3">
