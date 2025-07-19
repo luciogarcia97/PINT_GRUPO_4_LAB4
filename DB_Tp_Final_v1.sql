@@ -190,12 +190,12 @@ INSERT INTO movimiento_tipo (descripcion) VALUES
 -- CORRECCIONES 
 /* CREACIÓN DE TABLAS PROVINCIA Y LOCALIDADES*/
 use `banco_db`;
-create table transferencia (
-id_transferencia int auto_increment primary key,
-id_tipo_movimiento int,
-cuenta_origen int ,
-cuenta_destino int,
-foreign key (id_tipo_movimiento) references movimiento_tipo(id_tipo_movimiento)
+CREATE TABLE transferencia (
+id_transferencia INT AUTO_INCREMENT PRIMARY KEY,
+id_movimiento INT,
+cuenta_origen INT,
+cuenta_destino INT,
+FOREIGN KEY (id_movimiento) REFERENCES movimiento(id_movimiento)
 );
 Create table provincias (
 id_provincia int AUTO_INCREMENT PRIMARY KEY,
@@ -257,7 +257,7 @@ drop foreign key  `fk_movimiento_cuenta_destino` ;
 ALTER TABLE movimiento
 DROP COLUMN id_cuenta_destino;
 
---sp pago cuota prestamo
+-- sp pago cuota prestamo
 DELIMITER //
 
 CREATE PROCEDURE sp_pagar_cuota(
@@ -313,7 +313,7 @@ END //
 DELIMITER ;
 
 
---procedimiento almacenado elimina cliente, usuario y cuentas
+-- procedimiento almacenado elimina cliente, usuario y cuentas
 DELIMITER $$
 CREATE PROCEDURE eliminar_usuario_completo ( IN p_idUsuario INT, IN p_idCliente INT )
 BEGIN
@@ -367,15 +367,7 @@ END salida$$
 DELIMITER ;
 
 
--- CORRECCIONES EN TABLA Y CONSTRAIN FK
-ALTER TABLE transferencia 
-CHANGE COLUMN id_tipo_movimiento id_movimiento INT(11);
-
-ALTER TABLE transferencia 
-ADD CONSTRAINT fk_transferencia_movimiento 
-FOREIGN KEY (id_movimiento) REFERENCES movimiento(id_movimiento);
-
---SP HISTORIAL DE TRANSFERENCIAS
+-- SP HISTORIAL DE TRANSFERENCIAS
 DELIMITER $
 CREATE PROCEDURE sp_historial_transferencias_cliente(
     IN p_id_cliente INT
